@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	feature_config.h
+ * @file	main.c
  *
- * @brief	This is the header file for BLE SDK
+ * @brief	This is the source file for BLE SDK
  *
  * @author	BLE GROUP
- * @date	06,2020
+ * @date	2020.06
  *
  * @par     Copyright (c) 2020, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -43,30 +43,65 @@
  *          SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *******************************************************************************************************/
-#ifndef FEATURE_CONFIG_H_
-#define FEATURE_CONFIG_H_
+#include "tl_common.h"
+#include "drivers.h"
+#include "stack/ble/ble.h"
+
+#include "app.h"
 
 
-
-/////////////////// TEST FEATURE SELECTION /////////////////////////////////
-#define	TEST_FEATURE_BACKUP								0
-
-//ble link layer test
-#define TEST_POWER_ADV  											1
-#define TEST_ADVERTISING_IN_CONN_SLAVE_ROLE  2
+#if (FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_TIMER)
 
 
-#define TEST_SDATA_LENGTH_EXTENSION           3
-#define TEST_SLAVE_MD											4
-
-#define TEST_USER_BLT_SOFT_TIMER                     5
-
-
-
-#define FEATURE_TEST_MODE								TEST_FEATURE_BACKUP
-
+/**
+ * @brief   IRQ handler
+ * @param   none.
+ * @return  none.
+ */
+_attribute_ram_code_ void irq_handler(void)
+{
+	blc_sdk_irq_handler();
+}
 
 
 
 
-#endif /* FEATURE_CONFIG_H_ */
+
+/**
+ * @brief		This is main function
+ * @param[in]	none
+ * @return      none
+ */
+int main(void)
+{
+	#if (BLE_APP_PM_ENABLE)
+		blc_pm_select_internal_32k_crystal();
+	#endif
+
+
+	cpu_wakeup_init(EXTERNAL_XTAL_24M);
+
+	clock_init(SYS_CLK_TYPE);
+
+	gpio_init(1);
+
+	#if 0
+		/* Check MCU flash size */
+		blc_readFlashSize_autoConfigCustomFlashSector();
+	#endif
+
+	/* load customized freq_offset CAP value and TP value. */
+	blc_app_loadCustomizedParameters();
+
+	rf_ble_1m_param_init();
+
+	user_init_normal ();
+
+    irq_enable();
+
+	while (1) {
+		main_loop ();
+	}
+}
+
+#endif  //end of (FEATURE_TEST_MODE == xxx)

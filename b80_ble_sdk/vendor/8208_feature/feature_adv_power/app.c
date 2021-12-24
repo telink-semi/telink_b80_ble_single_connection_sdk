@@ -50,47 +50,27 @@
 
 #include "app.h"
 #include "app_buffer.h"
-#include "app_att.h"
+#include "../default_att.h"
 
 
 
-#if (FEATURE_TEST_MODE == TEST_SLAVE_MD)
+#if (FEATURE_TEST_MODE == TEST_POWER_ADV)
 
 
 #define MY_APP_ADV_CHANNEL			BLT_ENABLE_ADV_ALL
 #define MY_ADV_INTERVAL_MIN			ADV_INTERVAL_30MS
 #define MY_ADV_INTERVAL_MAX			ADV_INTERVAL_35MS
 
-#define MY_RF_POWER_INDEX			RF_POWER_P6p97dBm
+#define MY_RF_POWER_INDEX			RF_POWER_P2p87dBm
 
-#define TEST_DATA_LEN		20
+
 
 
 
 _attribute_data_retention_ u32	advertise_begin_tick;
 _attribute_data_retention_ u32 latest_user_event_tick;
-_attribute_data_retention_ int write_data_test_tick = 0;
-
-_attribute_data_retention_	u8	app_test_data[TEST_DATA_LEN]={0x00,0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,
-															  0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,0x11,0x11,0x11};
 
 
-/**
- * @brief	BLE Advertising data
- */
-const u8	tbl_advData[] = {
-	 8,  DT_COMPLETE_LOCAL_NAME, 				'f','e','a','t','u','r','e',
-	 2,	 DT_FLAGS, 								0x05, 					// BLE limited discoverable mode and BR/EDR not supported
-	 3,  DT_APPEARANCE, 						0x80, 0x01, 			// 384, Generic Remote Control, Generic category
-	 5,  DT_INCOMPLT_LIST_16BIT_SERVICE_UUID,	0x12, 0x18, 0x0F, 0x18,	// incomplete list of service class UUIDs (0x1812, 0x180F)
-};
-
-/**
- * @brief	BLE Scan Response Packet data
- */
-const u8	tbl_scanRsp [] = {
-	 8,  DT_COMPLETE_LOCAL_NAME, 				'f','e','a','t','u','r','e',
-};
 
 
 
@@ -109,9 +89,9 @@ const u8	tbl_scanRsp [] = {
  */
 void task_connect(u8 e, u8 *p, int n)
 {
+
 	bls_l2cap_requestConnParamUpdate (CONN_INTERVAL_10MS, CONN_INTERVAL_10MS, 99, CONN_TIMEOUT_4S);  // 1 S
 
-	write_data_test_tick = clock_time();
 	latest_user_event_tick = clock_time();
 
 	#if (UI_LED_ENABLE)
@@ -145,7 +125,7 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 
 
 	#if (UI_LED_ENABLE)
-		gpio_write(GPIO_LED_RED, !LED_ON_LEVAL);  //yellow light off
+		gpio_write(GPIO_LED_RED, !LED_ON_LEVAL);  //light off
 	#endif
 
 	advertise_begin_tick = clock_time();
@@ -175,34 +155,160 @@ _attribute_ram_code_ void user_set_rf_power (u8 e, u8 *p, int n)
 void blt_pm_proc(void)
 {
 #if(BLE_APP_PM_ENABLE)
-		bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
-
 		#if (UI_KEYBOARD_ENABLE)
+			bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
+
 			if(scan_pin_need || key_not_released )
 			{
-				bls_pm_setSuspendMask (SUSPEND_DISABLE);
+				bls_pm_setManualLatency(0);
 			}
 		#endif
 #endif//END of  BLE_APP_PM_ENABLE
 }
 
 
-/**
- * @brief      callback function of LinkLayer Event "BLT_EV_FLAG_ADV_DURATION_TIMEOUT"
- * @param[in]  e - LinkLayer Event type
- * @param[in]  p - data pointer of event
- * @param[in]  n - data length of event
- * @return     none
- */
-void app_switch_to_indirect_adv(u8 e, u8 *p, int n)
-{
-	bls_ll_setAdvParam( MY_ADV_INTERVAL_MIN, MY_ADV_INTERVAL_MAX,
-						ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
-						0,  NULL,
-						MY_APP_ADV_CHANNEL,
-						ADV_FP_NONE);
 
-	bls_ll_setAdvEnable(BLC_ADV_ENABLE);  //must: set adv enable
+
+/******************************************************************************************************
+ * Here are just some ADV power example
+ * The actual measured power is affected by several ADV parameters, such as:
+ * 1. ADV data length: long ADV data means bigger power
+ *
+ * 2. ADV type:   non_connectable undirected: ADV power is small, cause only data sending involved, no
+ *                                           need receiving any packet from master
+ *                connectable ADV: must try to receive scan_req/scan_conn from master after sending adv
+ *                                           data, so power is bigger.
+ *                                               And if needing send scan_rsp to master's scan_req,
+ *                                           power will increase. Here we can use whiteList to disable scan_rsp.
+ *											     With connectable ADV, user should test power under a clean
+ *											 and shielded environment to avoid receiving scan_req/conn_req
+ *
+ * 3. ADV power index: We use 0dBm in examples, higher power index will cause poser to increase
+ *
+ * 4. ADV interval: Bigger adv interval lead to smaller power, cause more timing for suspend/deepSleep retention
+ *
+ * 5. ADV channel: Power with 3 channel is bigger than power with 1 or 2 channel
+ *
+ *
+ * If you want test ADV power with different ADV parameters from our examples, you should modify these
+ *      parameters in code, and re_test by yourself.
+ *****************************************************************************************************/
+void app_feature_adv_power(void)
+{
+	//set to special ADV channel can avoid master's scan_req to get a very clean power,
+	// but remember that special channel ADV packet can not be scanned by BLE master and captured by BLE sniffer
+    //	blc_ll_setAdvCustomedChannel(33,34,35);
+
+
+#if   (APP_ADV_POWER_TEST_TYPE == CONNECT_12B_1S_1CHANNEL)
+	// ADV data length:	12 byte
+	// ADV type: 		connectable undirected ADV
+	// ADV power index: 0 dBm
+	// ADV interval: 	1S
+	// ADV channel: 	1 channel
+	// test result: 	8258 : 9 uA; 8278 : 14uA;
+	u8 status = bls_ll_setAdvParam( ADV_INTERVAL_1S, ADV_INTERVAL_1S,
+									ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+									 0,  NULL,  BLT_ENABLE_ADV_37, ADV_FP_ALLOW_SCAN_WL_ALLOW_CONN_WL);  //no scan, no connect
+#elif  (APP_ADV_POWER_TEST_TYPE == CONNECT_12B_1S_3CHANNEL)
+	// ADV data length:	12 byte
+	// ADV type: 		connectable undirected ADV
+	// ADV power index: 0 dBm
+	// ADV interval: 	1S
+	// ADV channel: 	3 channel
+	// test result: 	15 uA
+	u8 status = bls_ll_setAdvParam( ADV_INTERVAL_1S, ADV_INTERVAL_1S,
+									ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+									 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_ALLOW_SCAN_WL_ALLOW_CONN_WL);  //no scan, no connect
+#elif   (APP_ADV_POWER_TEST_TYPE == CONNECT_12B_500MS_3CHANNEL)
+	// ADV data length:	12 byte
+	// ADV type: 		connectable undirected ADV
+	// ADV power index: 0 dBm
+	// ADV interval: 	500 mS
+	// ADV channel: 	3 channel
+	// test result: 	8258 : 30 uA; 8278 : 50uA;
+	u8 status = bls_ll_setAdvParam( ADV_INTERVAL_500MS, ADV_INTERVAL_500MS,
+									ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+									 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_ALLOW_SCAN_WL_ALLOW_CONN_WL);  //no scan, no connect
+#elif   (APP_ADV_POWER_TEST_TYPE == CONNECT_12B_30MS_3CHANNEL)
+	// ADV data length:	12 byte
+	// ADV type: 		connectable undirected ADV
+	// ADV power index: 0 dBm
+	// ADV interval: 	30 mS
+	// ADV channel: 	3 channel
+	// test result: 	430 uA
+	u8 status = bls_ll_setAdvParam( ADV_INTERVAL_30MS, ADV_INTERVAL_30MS,
+									ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+									 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_ALLOW_SCAN_WL_ALLOW_CONN_WL);  //no scan, no connect
+
+#endif
+#if (APP_ADV_POWER_TEST_TYPE == CONNECT_12B_1S_1CHANNEL || APP_ADV_POWER_TEST_TYPE == CONNECT_12B_1S_3CHANNEL || APP_ADV_POWER_TEST_TYPE == CONNECT_12B_500MS_3CHANNEL||APP_ADV_POWER_TEST_TYPE == CONNECT_12B_30MS_3CHANNEL)  // connectable undirected ADV
+	//ADV data length: 12 byte
+	u8 tbl_advData[12] = {
+		 0x08, 0x09, 't', 'e', 's', 't', 'a', 'd', 'v',
+		 0x02, 0x01, 0x05,
+		};
+	u8	tbl_scanRsp [] = {
+			 0x08, 0x09, 'T', 'E', 'S', 'T', 'A', 'D', 'V',	//scan name
+		};
+
+	bls_ll_setAdvData( (u8 *)tbl_advData, sizeof(tbl_advData) );
+	bls_ll_setScanRspData( (u8 *)tbl_scanRsp, sizeof(tbl_scanRsp));
+#endif
+
+
+
+
+#if (APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1S_3CHANNEL  || APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1_5S_3CHANNEL || APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_2S_3CHANNEL || APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1S_3CHANNEL|| APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1_5S_3CHANNEL|| APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_2S_3CHANNEL) 
+	#if (APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1S_3CHANNEL  || APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1_5S_3CHANNEL || APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_2S_3CHANNEL)  	//ADV data length: 16 byte
+		u8 tbl_advData[] = {
+			 15, 0x09, 't', 'e', 's', 't', 'a', 'd', 'v', '8', '9', 'A', 'B', 'C', 'D', 'E',
+			};
+	#elif (APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1S_3CHANNEL|| APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1_5S_3CHANNEL|| APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_2S_3CHANNEL)   	//ADV data length: max 31 byte
+		u8 tbl_advData[] = {
+			 30, 0x09, 't', 'e', 's', 't', 'a', 'd', 'v', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D'
+		};
+	#endif
+
+	bls_ll_setAdvData( (u8 *)tbl_advData, sizeof(tbl_advData) );
+#endif
+#if   (APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1S_3CHANNEL||APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1S_3CHANNEL)
+	// ADV data length: 16 byte
+	// ADV type: non_connectable undirected ADV
+	// ADV power index: 0 dBm
+	// ADV interval: 1S
+	// ADV channel: 3 channel
+	// test result: 11 uA (if ADV data length change to 31 byte, test result: 14 uA)
+	u8 status = bls_ll_setAdvParam( ADV_INTERVAL_1S, ADV_INTERVAL_1S, 
+									ADV_TYPE_NONCONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+									 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_NONE);
+
+#elif (APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1_5S_3CHANNEL||APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1_5S_3CHANNEL)
+	// ADV data length: 16 byte
+	// ADV type: non_connectable undirected ADV
+	// ADV power index: 0 dBm
+	// ADV interval: 1.5S
+	// ADV channel: 3 channel
+	// test result: 8 uA (if ADV data length change to 31 byte, test result: 11 uA)
+	u8 status = bls_ll_setAdvParam( ADV_INTERVAL_1S5, ADV_INTERVAL_1S5,
+									ADV_TYPE_NONCONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+									 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_NONE);
+
+#elif (APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_2S_3CHANNEL||APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_2S_3CHANNEL)
+	// ADV data length: 16 byte
+	// ADV type: non_connectable undirected ADV
+	// ADV power index: 0 dBm
+	// ADV interval: 2S
+	// ADV channel: 3 channel
+	// test result: 6 uA (if ADV data length change to 31 byte, test result: 7 uA)
+	u8 status = bls_ll_setAdvParam( ADV_INTERVAL_2S, ADV_INTERVAL_2S,
+									ADV_TYPE_NONCONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+									 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_NONE);
+#endif
+   if(BLE_SUCCESS != status)
+   {
+	   printf("ERRO:%S = 0x%02x",__FUNCTION__,status);
+   }
 }
 
 
@@ -259,7 +365,7 @@ void user_init_normal(void)
 
 	//////////// Host Initialization  Begin /////////////////////////
 	/* GATT Initialization */
-	my_att_init();
+	my_gatt_init();
 
 
 	/* L2CAP Initialization */
@@ -269,14 +375,7 @@ void user_init_normal(void)
 	/* SMP Initialization may involve flash write/erase(when one sector stores too much information,
 	 *   is about to exceed the sector threshold, this sector must be erased, and all useful information
 	 *   should re_stored) , so it must be done after battery check */
-	#if (APP_SECURITY_ENABLE)
-		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
-		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is SMP_BONDING_DEVICE_MAX_NUM, can not bigger that this value
-													    //and this func must call before bls_smp_enableParing
-		bls_smp_enableParing (SMP_PARING_CONN_TRRIGER );
-	#else
-		bls_smp_enableParing (SMP_PARING_DISABLE_TRRIGER );
-	#endif
+	bls_smp_enableParing (SMP_PARING_DISABLE_TRRIGER );
 
 	//////////// Host Initialization  End /////////////////////////
 
@@ -287,48 +386,9 @@ void user_init_normal(void)
 
 
 //////////////////////////// User Configuration for BLE application ////////////////////////////
-	#if(APP_SECURITY_ENABLE)
-		u8 bond_number = blc_smp_param_getCurrentBondingDeviceNumber(); 		//get bonded device number
-		smp_param_save_t  bondInfo;
-		if(bond_number)   //at least 1 bonding device exist
-		{
-			//get the latest bonding device (index: bond_number-1 )
-			blc_smp_param_loadByIndex( bond_number - 1, &bondInfo);
-		}
 
-		if(bond_number)//set direct adv
-		{
-			//set direct adv
-			u8 status = bls_ll_setAdvParam( MY_ADV_INTERVAL_MIN, MY_ADV_INTERVAL_MAX,
-											ADV_TYPE_CONNECTABLE_DIRECTED_LOW_DUTY, OWN_ADDRESS_PUBLIC,
-											bondInfo.peer_addr_type,  bondInfo.peer_addr,
-											MY_APP_ADV_CHANNEL,
-											ADV_FP_NONE);
-			//debug: ADV setting err
-			if(status != BLE_SUCCESS) { while(1); }
-
-			//it is recommended that direct adv only last for several seconds, then switch to indirect adv
-			bls_ll_setAdvDuration(60000000, 1);
-			bls_app_registerEventCallback (BLT_EV_FLAG_ADV_DURATION_TIMEOUT, &app_switch_to_indirect_adv);
-		}
-		else//set indirect ADV
-	#endif
-		{
-			u8 status = bls_ll_setAdvParam(  MY_ADV_INTERVAL_MIN, MY_ADV_INTERVAL_MAX,
-											 ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
-											 0,  NULL,
-											 MY_APP_ADV_CHANNEL,
-											 ADV_FP_NONE);
-			if(status != BLE_SUCCESS) { 	while(1); }
-		}
-
-
-	bls_ll_setAdvData( (u8 *)tbl_advData, sizeof(tbl_advData) );
-	bls_ll_setScanRspData( (u8 *)tbl_scanRsp, sizeof(tbl_scanRsp));
-
-	bls_ll_setAdvEnable(BLC_ADV_ENABLE);  //adv enable
-
-
+     app_feature_adv_power();
+     bls_ll_setAdvEnable(BLC_ADV_ENABLE);  //adv enable
 	/* set rf power index, user must set it after every suspend wakeup, cause relative setting will be reset in suspend */
 	user_set_rf_power(0, 0, 0);
 
@@ -412,13 +472,13 @@ void key_change_proc(void)
 			else if(key0 == CR_VOL_DN){ //volume down
 				consumer_key = MKEY_VOL_DN;
 			}
-			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
+			blc_gatt_pushHandleValueNotify (HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
 		}
 		else
 		{
 			key_type = KEYBOARD_KEY;
 			key_buf[2] = key0;
-			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8);
+			blc_gatt_pushHandleValueNotify (HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8);
 		}
 	}
 	else   //kb_event.cnt == 0,  key release
@@ -427,12 +487,12 @@ void key_change_proc(void)
 		if(key_type == CONSUMER_KEY)
 		{
 			u16 consumer_key = 0;
-			blc_gatt_pushHandleValueNotify ( BLS_CONN_HANDLE,HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
+			blc_gatt_pushHandleValueNotify ( HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
 		}
 		else if(key_type == KEYBOARD_KEY)
 		{
 			key_buf[2] = 0;
-			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8); //release
+			blc_gatt_pushHandleValueNotify (HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8); //release
 		}
 	}
 }
@@ -516,18 +576,7 @@ void main_loop (void)
 	#if (UI_KEYBOARD_ENABLE)
 		proc_keyboard (0, 0, 0);
 	#endif
-	
-	if(write_data_test_tick && clock_time_exceed(write_data_test_tick, 500)){ // >1s
-		write_data_test_tick = clock_time() | 1;
 
-		if(blc_ll_getCurrentState() == BLS_LINK_STATE_CONN)
-		{
-			DBG_CHN10_TOGGLE;
-			if( BLE_SUCCESS == blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,SPP_SERVER_TO_CLIENT_DP_H, app_test_data, 20)){
-				app_test_data[0] ++;
-			}
-		}
-	}
 
 
 	////////////////////////////////////// PM Process /////////////////////////////////
@@ -535,33 +584,7 @@ void main_loop (void)
 
 }
 
-_attribute_data_retention_  u8 seq_num_next = 0;
 
-int myC2SWrite(void * p)
-{
-	rf_packet_att_data_t *req = (rf_packet_att_data_t*)p;
-
-	u8 seq_num = req->dat[0];
-
-	if(seq_num == seq_num_next){
-
-	}
-	else{
-		write_reg8(0x40000, 0x77);
-		irq_disable();
-
-		#if (UI_LED_ENABLE)
-			gpio_write(GPIO_LED_WHITE, LED_ON_LEVAL);
-		#endif
-
-		while(1);
-		write_reg8(0x40000, 0x22);
-	}
-
-	seq_num_next = seq_num + 1;
-
-	return 1;
-}
 
 #endif //end of (FEATURE_TEST_MODE == xxx)
 

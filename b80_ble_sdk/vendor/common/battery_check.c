@@ -220,7 +220,7 @@ void TL_BattteryCheckProc(int minVol_mV)
 		bls_ll_setAdvData( (u8 *)tbl_advData, sizeof(tbl_advData) );
 	}
 	else if(blc_ll_getCurrentState() == BLS_LINK_STATE_CONN){
-		blc_gatt_pushHandleValueNotify (BATT_LEVEL_INPUT_DP_H, tbl_advData, 20);
+		blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,BATT_LEVEL_INPUT_DP_H, tbl_advData, 20);
 	}
 #endif
 }

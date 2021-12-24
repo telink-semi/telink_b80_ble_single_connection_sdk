@@ -50,29 +50,27 @@
 
 #include "app.h"
 #include "app_buffer.h"
-#include "app_att.h"
+#include "../default_att.h"
 
 
 
-#if (FEATURE_TEST_MODE == TEST_SLAVE_MD)
+#if (FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_TIMER)
 
 
 #define MY_APP_ADV_CHANNEL			BLT_ENABLE_ADV_ALL
 #define MY_ADV_INTERVAL_MIN			ADV_INTERVAL_30MS
 #define MY_ADV_INTERVAL_MAX			ADV_INTERVAL_35MS
 
-#define MY_RF_POWER_INDEX			RF_POWER_P6p97dBm
+#define MY_RF_POWER_INDEX			RF_POWER_P2p87dBm
 
-#define TEST_DATA_LEN		20
+
 
 
 
 _attribute_data_retention_ u32	advertise_begin_tick;
 _attribute_data_retention_ u32 latest_user_event_tick;
-_attribute_data_retention_ int write_data_test_tick = 0;
 
-_attribute_data_retention_	u8	app_test_data[TEST_DATA_LEN]={0x00,0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,
-															  0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,0x11,0x11,0x11};
+
 
 
 /**
@@ -109,9 +107,9 @@ const u8	tbl_scanRsp [] = {
  */
 void task_connect(u8 e, u8 *p, int n)
 {
+
 	bls_l2cap_requestConnParamUpdate (CONN_INTERVAL_10MS, CONN_INTERVAL_10MS, 99, CONN_TIMEOUT_4S);  // 1 S
 
-	write_data_test_tick = clock_time();
 	latest_user_event_tick = clock_time();
 
 	#if (UI_LED_ENABLE)
@@ -145,7 +143,7 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 
 
 	#if (UI_LED_ENABLE)
-		gpio_write(GPIO_LED_RED, !LED_ON_LEVAL);  //yellow light off
+		gpio_write(GPIO_LED_RED, !LED_ON_LEVAL);  //light off
 	#endif
 
 	advertise_begin_tick = clock_time();
@@ -175,35 +173,92 @@ _attribute_ram_code_ void user_set_rf_power (u8 e, u8 *p, int n)
 void blt_pm_proc(void)
 {
 #if(BLE_APP_PM_ENABLE)
-		bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
-
 		#if (UI_KEYBOARD_ENABLE)
+			bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
+
 			if(scan_pin_need || key_not_released )
 			{
-				bls_pm_setSuspendMask (SUSPEND_DISABLE);
+				bls_pm_setManualLatency(0);
 			}
 		#endif
 #endif//END of  BLE_APP_PM_ENABLE
 }
 
 
-/**
- * @brief      callback function of LinkLayer Event "BLT_EV_FLAG_ADV_DURATION_TIMEOUT"
- * @param[in]  e - LinkLayer Event type
- * @param[in]  p - data pointer of event
- * @param[in]  n - data length of event
- * @return     none
- */
-void app_switch_to_indirect_adv(u8 e, u8 *p, int n)
-{
-	bls_ll_setAdvParam( MY_ADV_INTERVAL_MIN, MY_ADV_INTERVAL_MAX,
-						ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
-						0,  NULL,
-						MY_APP_ADV_CHANNEL,
-						ADV_FP_NONE);
+#if (FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_TIMER)
 
-	bls_ll_setAdvEnable(BLC_ADV_ENABLE);  //must: set adv enable
+/**
+ * @brief      This function servers gpio test
+ * @param[in]  none
+ * @return     0
+ */
+int gpio_test0(void)
+{
+	//gpio 0 toggle to see the effect
+	DBG_CHN3_TOGGLE;
+
+	return 0;
 }
+
+_attribute_data_retention_	static u8 timer_change_flg = 0;
+
+/**
+ * @brief      This function servers gpio test
+ * @param[in]  none
+ * @return     timer cycle us
+ */
+int gpio_test1(void)
+{
+	//gpio 1 toggle to see the effect
+	DBG_CHN4_TOGGLE;
+
+
+	timer_change_flg = !timer_change_flg;
+	if(timer_change_flg){
+		return 7000;
+	}
+	else{
+		return 17000;
+	}
+
+}
+
+/**
+ * @brief      This function servers gpio test
+ * @param[in]  none
+ * @return     0
+ */
+int gpio_test2(void)
+{
+	//gpio 2 toggle to see the effect
+	DBG_CHN5_TOGGLE;
+
+	//timer last for 5 second
+	if(clock_time_exceed(0, 5000000)){
+		//return -1;
+		//blt_soft_timer_delete(&gpio_test2);
+	}
+	else{
+
+	}
+
+	return 0;
+}
+
+/**
+ * @brief      This function servers gpio test
+ * @param[in]  none
+ * @return     0
+ */
+int gpio_test3(void)
+{
+	//gpio 3 toggle to see the effect
+	DBG_CHN6_TOGGLE;
+
+	return 0;
+}
+
+#endif
 
 
 /**
@@ -259,7 +314,7 @@ void user_init_normal(void)
 
 	//////////// Host Initialization  Begin /////////////////////////
 	/* GATT Initialization */
-	my_att_init();
+	my_gatt_init();
 
 
 	/* L2CAP Initialization */
@@ -270,7 +325,6 @@ void user_init_normal(void)
 	 *   is about to exceed the sector threshold, this sector must be erased, and all useful information
 	 *   should re_stored) , so it must be done after battery check */
 	#if (APP_SECURITY_ENABLE)
-		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
 		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is SMP_BONDING_DEVICE_MAX_NUM, can not bigger that this value
 													    //and this func must call before bls_smp_enableParing
 		bls_smp_enableParing (SMP_PARING_CONN_TRRIGER );
@@ -287,40 +341,13 @@ void user_init_normal(void)
 
 
 //////////////////////////// User Configuration for BLE application ////////////////////////////
-	#if(APP_SECURITY_ENABLE)
-		u8 bond_number = blc_smp_param_getCurrentBondingDeviceNumber(); 		//get bonded device number
-		smp_param_save_t  bondInfo;
-		if(bond_number)   //at least 1 bonding device exist
-		{
-			//get the latest bonding device (index: bond_number-1 )
-			blc_smp_param_loadByIndex( bond_number - 1, &bondInfo);
-		}
+	u8 status = bls_ll_setAdvParam(  MY_ADV_INTERVAL_MIN, MY_ADV_INTERVAL_MAX,
+									 ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+									 0,  NULL,
+									 MY_APP_ADV_CHANNEL,
+									 ADV_FP_NONE);
+	if(status != BLE_SUCCESS) { 	while(1); }
 
-		if(bond_number)//set direct adv
-		{
-			//set direct adv
-			u8 status = bls_ll_setAdvParam( MY_ADV_INTERVAL_MIN, MY_ADV_INTERVAL_MAX,
-											ADV_TYPE_CONNECTABLE_DIRECTED_LOW_DUTY, OWN_ADDRESS_PUBLIC,
-											bondInfo.peer_addr_type,  bondInfo.peer_addr,
-											MY_APP_ADV_CHANNEL,
-											ADV_FP_NONE);
-			//debug: ADV setting err
-			if(status != BLE_SUCCESS) { while(1); }
-
-			//it is recommended that direct adv only last for several seconds, then switch to indirect adv
-			bls_ll_setAdvDuration(60000000, 1);
-			bls_app_registerEventCallback (BLT_EV_FLAG_ADV_DURATION_TIMEOUT, &app_switch_to_indirect_adv);
-		}
-		else//set indirect ADV
-	#endif
-		{
-			u8 status = bls_ll_setAdvParam(  MY_ADV_INTERVAL_MIN, MY_ADV_INTERVAL_MAX,
-											 ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
-											 0,  NULL,
-											 MY_APP_ADV_CHANNEL,
-											 ADV_FP_NONE);
-			if(status != BLE_SUCCESS) { 	while(1); }
-		}
 
 
 	bls_ll_setAdvData( (u8 *)tbl_advData, sizeof(tbl_advData) );
@@ -364,6 +391,16 @@ void user_init_normal(void)
 
 
 	advertise_begin_tick = clock_time();
+	
+#if (FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_TIMER)
+	//common/blt_soft_timer.h   #define		BLT_SOFTWARE_TIMER_ENABLE				1
+	blt_soft_timer_init();
+	blt_soft_timer_add(&gpio_test0, 23000);//23ms
+	blt_soft_timer_add(&gpio_test1, 7000); //7ms <-> 17ms
+	blt_soft_timer_add(&gpio_test2, 13000);//13ms
+	blt_soft_timer_add(&gpio_test3, 27000);//27ms
+#endif
+	
 }
 
 
@@ -412,13 +449,13 @@ void key_change_proc(void)
 			else if(key0 == CR_VOL_DN){ //volume down
 				consumer_key = MKEY_VOL_DN;
 			}
-			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
+			blc_gatt_pushHandleValueNotify (HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
 		}
 		else
 		{
 			key_type = KEYBOARD_KEY;
 			key_buf[2] = key0;
-			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8);
+			blc_gatt_pushHandleValueNotify (HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8);
 		}
 	}
 	else   //kb_event.cnt == 0,  key release
@@ -427,12 +464,12 @@ void key_change_proc(void)
 		if(key_type == CONSUMER_KEY)
 		{
 			u16 consumer_key = 0;
-			blc_gatt_pushHandleValueNotify ( BLS_CONN_HANDLE,HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
+			blc_gatt_pushHandleValueNotify ( HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
 		}
 		else if(key_type == KEYBOARD_KEY)
 		{
 			key_buf[2] = 0;
-			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8); //release
+			blc_gatt_pushHandleValueNotify (HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8); //release
 		}
 	}
 }
@@ -516,18 +553,7 @@ void main_loop (void)
 	#if (UI_KEYBOARD_ENABLE)
 		proc_keyboard (0, 0, 0);
 	#endif
-	
-	if(write_data_test_tick && clock_time_exceed(write_data_test_tick, 500)){ // >1s
-		write_data_test_tick = clock_time() | 1;
 
-		if(blc_ll_getCurrentState() == BLS_LINK_STATE_CONN)
-		{
-			DBG_CHN10_TOGGLE;
-			if( BLE_SUCCESS == blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,SPP_SERVER_TO_CLIENT_DP_H, app_test_data, 20)){
-				app_test_data[0] ++;
-			}
-		}
-	}
 
 
 	////////////////////////////////////// PM Process /////////////////////////////////
@@ -535,33 +561,7 @@ void main_loop (void)
 
 }
 
-_attribute_data_retention_  u8 seq_num_next = 0;
 
-int myC2SWrite(void * p)
-{
-	rf_packet_att_data_t *req = (rf_packet_att_data_t*)p;
-
-	u8 seq_num = req->dat[0];
-
-	if(seq_num == seq_num_next){
-
-	}
-	else{
-		write_reg8(0x40000, 0x77);
-		irq_disable();
-
-		#if (UI_LED_ENABLE)
-			gpio_write(GPIO_LED_WHITE, LED_ON_LEVAL);
-		#endif
-
-		while(1);
-		write_reg8(0x40000, 0x22);
-	}
-
-	seq_num_next = seq_num + 1;
-
-	return 1;
-}
 
 #endif //end of (FEATURE_TEST_MODE == xxx)
 

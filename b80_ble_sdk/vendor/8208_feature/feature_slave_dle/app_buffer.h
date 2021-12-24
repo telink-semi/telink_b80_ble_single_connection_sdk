@@ -58,7 +58,7 @@
  * usage limitation:
  * 1. should be in range of 27 ~ 251
  */
-#define ACL_CONN_MAX_RX_OCTETS			100
+#define ACL_CONN_MAX_RX_OCTETS			27
 
 
 /**
@@ -67,7 +67,7 @@
  * usage limitation:
  * 1. connMaxTxOctets should be in range of 27 ~ 251
  */
-#define ACL_CONN_MAX_TX_OCTETS			100
+#define ACL_CONN_MAX_TX_OCTETS			27
 
 
 
@@ -85,7 +85,7 @@
  * 2. at least 4; recommended value: 8, 16
  */
 #define ACL_RX_FIFO_SIZE				CAL_LL_ACL_RX_FIFO_SIZE(ACL_CONN_MAX_RX_OCTETS)
-#define ACL_RX_FIFO_NUM					4	// must be: 2^n
+#define ACL_RX_FIFO_NUM					8	// must be: 2^n
 
 
 /**
@@ -100,7 +100,7 @@
  * 2. at least 8; recommended value: 8, 16, 32; other value not allowed.
  */
 #define ACL_TX_FIFO_SIZE				CAL_LL_ACL_TX_FIFO_SIZE(ACL_CONN_MAX_TX_OCTETS)
-#define ACL_TX_FIFO_NUM					8
+#define ACL_TX_FIFO_NUM					16
 
 
 

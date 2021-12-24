@@ -76,8 +76,11 @@ _attribute_data_retention_ u32	advertise_begin_tick;
 _attribute_data_retention_ own_addr_type_t app_own_address_type = OWN_ADDRESS_PUBLIC;
 
 
+	#define		MTU_RX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
+	#define		MTU_TX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
 
-
+	_attribute_data_retention_ u8 mtu_rx_fifo[MTU_RX_BUFF_SIZE_MAX];
+	_attribute_data_retention_ u8 mtu_tx_fifo[MTU_TX_BUFF_SIZE_MAX];
 
 
 /**
@@ -253,21 +256,12 @@ void blt_pm_proc(void)
 			{
 				bls_pm_setSuspendMask(SUSPEND_DISABLE);
 			}
-#else
+		#else
 			if(scan_pin_need || key_not_released )
 			{
 				bls_pm_setManualLatency(0);
 			}
-#endif
-
-
-		#elif (UI_BUTTON_ENABLE)
-			if(button_not_released){
-				bls_pm_setSuspendMask (SUSPEND_DISABLE);
-			}
-			else{
-				bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
-			}
+		#endif
 		#endif
 
 #if (PM_DEEPSLEEP_ENABLE)   //test connection power, should disable deepSleep
@@ -316,11 +310,7 @@ void user_init_normal(void)
 	//////////////////////////// BLE stack Initialization  Begin //////////////////////////////////
 	u8 mac_public[6];
 	u8 mac_random_static[6];
-#if (FLASH_SIZE_OPTION == FLASH_SIZE_OPTION_128K)
-	blc_initMacAddress(CFG_ADR_MAC_128K_FLASH, mac_public, mac_random_static);
-#else
-	blc_initMacAddress(CFG_ADR_MAC_512K_FLASH, mac_public, mac_random_static);
-#endif
+	blc_initMacAddress(CFG_ADR_MAC, mac_public, mac_random_static);
 
 
 	#if(BLE_DEVICE_ADDRESS_TYPE == BLE_DEVICE_ADDRESS_PUBLIC)
@@ -373,15 +363,14 @@ void user_init_normal(void)
 
 	/* L2CAP Initialization */
 	blc_l2cap_register_handler(blc_l2cap_packet_receive);
-#if CHANGE_NEW_CODE
-	blc_l2cap_initMtuBuffer(app_acl_rxfifo,23,app_acl_txfifo,23);
-#endif
+	blc_l2cap_initMtuBuffer(mtu_rx_fifo, MTU_RX_BUFF_SIZE_MAX, mtu_tx_fifo, MTU_TX_BUFF_SIZE_MAX);
 
 	/* SMP Initialization */
 	/* SMP Initialization may involve flash write/erase(when one sector stores too much information,
 	 *   is about to exceed the sector threshold, this sector must be erased, and all useful information
 	 *   should re_stored) , so it must be done after battery check */
 	#if (APP_SECURITY_ENABLE)
+		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
 		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is SMP_BONDING_DEVICE_MAX_NUM, can not bigger that this value
 													    //and this func must call before bls_smp_enableParing
 		bls_smp_enableParing (SMP_PARING_CONN_TRRIGER );
@@ -468,11 +457,6 @@ void user_init_normal(void)
 		}
 
 		bls_app_registerEventCallback (BLT_EV_FLAG_GPIO_EARLY_WAKEUP, &proc_keyboard);
-
-	#elif (UI_BUTTON_ENABLE)
-		cpu_set_gpio_wakeup (SW1_GPIO, Level_Low,1);  //button pin pad low wakeUp suspend/deepSleep
-		cpu_set_gpio_wakeup (SW2_GPIO, Level_Low,1);  //button pin pad low wakeUp suspend/deepSleep
-		bls_app_registerEventCallback (BLT_EV_FLAG_GPIO_EARLY_WAKEUP, &proc_button);
 	#endif
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -495,22 +479,11 @@ void main_loop (void)
 	////////////////////////////////////// BLE entry /////////////////////////////////
 	blc_sdk_main_loop();
 
-	gpio_write(GPIO_LED_WHITE,1);
+	gpio_write(GPIO_LED_GREEN,1);
 
 	////////////////////////////////////// UI entry /////////////////////////////////
 	#if (UI_KEYBOARD_ENABLE)
 		proc_keyboard (0, 0, 0);
-
-	#elif (UI_BUTTON_ENABLE)
-			// process button 1 second later after power on, to avoid power unstable
-			if(!button_detect_en && clock_time_exceed(0, 1000000)){
-				button_detect_en = 1;
-			}
-			if(button_detect_en && clock_time_exceed(button_detect_tick, 5000))
-			{
-				button_detect_tick = clock_time();
-				proc_button(0,0,0);  //button triggers pair & unpair  and OTA
-			}
 	#endif
 
 

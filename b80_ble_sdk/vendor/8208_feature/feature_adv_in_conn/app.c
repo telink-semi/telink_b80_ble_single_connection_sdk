@@ -204,7 +204,7 @@ void user_init_normal(void)
 	//////////////////////////// BLE stack Initialization  Begin //////////////////////////////////
 	u8 mac_public[6];
 	u8 mac_random_static[6];
-	blc_initMacAddress(CFG_ADR_MAC_512K_FLASH, mac_public, mac_random_static);
+	blc_initMacAddress(CFG_ADR_MAC, mac_public, mac_random_static);
 
 	//////////// LinkLayer Initialization  Begin /////////////////////////
 
@@ -251,6 +251,7 @@ void user_init_normal(void)
 	 *   is about to exceed the sector threshold, this sector must be erased, and all useful information
 	 *   should re_stored) , so it must be done after battery check */
 	#if (APP_SECURITY_ENABLE)
+		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
 		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is SMP_BONDING_DEVICE_MAX_NUM, can not bigger that this value
 													    //and this func must call before bls_smp_enableParing
 		bls_smp_enableParing (SMP_PARING_CONN_TRRIGER );
@@ -383,13 +384,13 @@ void key_change_proc(void)
 			else if(key0 == CR_VOL_DN){ //volume down
 				consumer_key = MKEY_VOL_DN;
 			}
-			blc_gatt_pushHandleValueNotify (HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
+			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
 		}
 		else
 		{
 			key_type = KEYBOARD_KEY;
 			key_buf[2] = key0;
-			blc_gatt_pushHandleValueNotify (HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8);
+			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8);
 		}
 	}
 	else   //kb_event.cnt == 0,  key release
@@ -398,12 +399,12 @@ void key_change_proc(void)
 		if(key_type == CONSUMER_KEY)
 		{
 			u16 consumer_key = 0;
-			blc_gatt_pushHandleValueNotify ( HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
+			blc_gatt_pushHandleValueNotify ( BLS_CONN_HANDLE,HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
 		}
 		else if(key_type == KEYBOARD_KEY)
 		{
 			key_buf[2] = 0;
-			blc_gatt_pushHandleValueNotify (HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8); //release
+			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8); //release
 		}
 	}
 }

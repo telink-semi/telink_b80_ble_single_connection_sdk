@@ -49,16 +49,32 @@
 
 #include "../feature_config.h"
 
-#if (FEATURE_TEST_MODE == TEST_SDATA_LENGTH_EXTENSION)
+#if (FEATURE_TEST_MODE == TEST_POWER_ADV)
 
 ///////////////////////// Feature Configuration////////////////////////////////////////////////
+//TEST_POWER_ADV config start
+#define CONNECT_12B_1S_1CHANNEL      	0
+#define CONNECT_12B_1S_3CHANNEL      	1
+#define CONNECT_12B_500MS_3CHANNEL   	2
+#define CONNECT_12B_30MS_3CHANNEL    	3
+
+#define UNCONNECT_16B_1S_3CHANNEL       4
+#define UNCONNECT_16B_1_5S_3CHANNEL     5
+#define UNCONNECT_16B_2S_3CHANNEL   	6
+
+#define UNCONNECT_32B_1S_3CHANNEL      	7
+#define UNCONNECT_32B_1_5S_3CHANNEL     8
+#define UNCONNECT_32B_2S_3CHANNEL   	9
+
+#define APP_ADV_POWER_TEST_TYPE        UNCONNECT_16B_1S_3CHANNEL
+//TEST_POWER_ADV end
+
 /**
  *  @brief  Feature select in bLE Sample project
  */
 #define FLASH_SIZE_OPTION							FLASH_SIZE_OPTION_512K //very important, user need confirm !!!
 #define BLE_APP_PM_ENABLE							1
 #define PM_DEEPSLEEP_RETENTION_ENABLE            	0 //Todo SunWei
-#define APP_SECURITY_ENABLE      					0
 
 
 

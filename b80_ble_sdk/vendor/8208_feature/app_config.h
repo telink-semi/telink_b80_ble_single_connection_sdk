@@ -57,6 +57,10 @@
 	#include "feature_slave_dle/app_config.h"
 #elif (FEATURE_TEST_MODE == TEST_SLAVE_MD)
 	#include "feature_slave_md/app_config.h"
+#elif (FEATURE_TEST_MODE ==TEST_USER_BLT_SOFT_TIMER)
+	#include "feature_misc/app_config.h"
+#elif (FEATURE_TEST_MODE ==TEST_POWER_ADV)
+	#include "feature_adv_power/app_config.h"
 #endif
 
 

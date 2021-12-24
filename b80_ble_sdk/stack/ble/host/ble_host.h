@@ -54,7 +54,7 @@
 
 
 #include "stack/ble/host/attr/att.h"
-//#include "stack/ble/host/attr/gatt.h"
+#include "stack/ble/host/attr/gatt.h"
 
 
 #include "stack/ble/host/smp/smp.h"

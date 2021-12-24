@@ -461,8 +461,7 @@ int 		bls_smp_enableParing (smp_paringTrriger_t encrypt_en);
 
 
 
-
-void 		bls_smp_configParingSecurityInfoStorageAddr (int addr);
+void 		blc_smp_configPairingSecurityInfoStorageAddress (int addr);
 
 ble_sts_t  	blc_smp_param_setBondingDeviceMaxNumber ( int device_num);
 

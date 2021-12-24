@@ -205,7 +205,7 @@ void user_init_normal(void)
 	//////////////////////////// BLE stack Initialization  Begin //////////////////////////////////
 	u8 mac_public[6];
 	u8 mac_random_static[6];
-	blc_initMacAddress(CFG_ADR_MAC_512K_FLASH, mac_public, mac_random_static);
+	blc_initMacAddress(CFG_ADR_MAC, mac_public, mac_random_static);
 
 	//////////// LinkLayer Initialization  Begin /////////////////////////
 
@@ -366,13 +366,13 @@ void key_change_proc(void)
 			else if(key0 == CR_VOL_DN){ //volume down
 				consumer_key = MKEY_VOL_DN;
 			}
-			blc_gatt_pushHandleValueNotify (HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
+			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
 		}
 		else
 		{
 			key_type = KEYBOARD_KEY;
 			key_buf[2] = key0;
-			blc_gatt_pushHandleValueNotify (HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8);
+			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8);
 		}
 	}
 	else   //kb_event.cnt == 0,  key release
@@ -381,12 +381,12 @@ void key_change_proc(void)
 		if(key_type == CONSUMER_KEY)
 		{
 			u16 consumer_key = 0;
-			blc_gatt_pushHandleValueNotify ( HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
+			blc_gatt_pushHandleValueNotify ( BLS_CONN_HANDLE,HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
 		}
 		else if(key_type == KEYBOARD_KEY)
 		{
 			key_buf[2] = 0;
-			blc_gatt_pushHandleValueNotify (HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8); //release
+			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8); //release
 		}
 	}
 }

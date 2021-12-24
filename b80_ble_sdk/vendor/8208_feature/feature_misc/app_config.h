@@ -49,9 +49,11 @@
 
 #include "../feature_config.h"
 
-#if (FEATURE_TEST_MODE == TEST_SDATA_LENGTH_EXTENSION)
+#if (FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_TIMER)
 
 ///////////////////////// Feature Configuration////////////////////////////////////////////////
+#define BLT_SOFTWARE_TIMER_ENABLE					1
+
 /**
  *  @brief  Feature select in bLE Sample project
  */
@@ -76,7 +78,7 @@
 /**
  *  @brief  DEBUG  Configuration
  */
-#define DEBUG_GPIO_ENABLE							0
+#define DEBUG_GPIO_ENABLE							1
 
 
 

@@ -209,6 +209,21 @@ static inline unsigned int sys_get_stimer_tick(void)
 
 #define aeskey_reg_start		0x710				//attention: used in aes_ccm
 
+
+
+
+
+/******************************* other ********************************************************************/
+/**
+ * @brief 	Multiple boot address enumeration
+ */
+typedef enum{
+	MULTI_BOOT_ADDR_0x10000 	= 0x10000,	//64 K
+	MULTI_BOOT_ADDR_0x20000 	= 0x20000,	//128 K
+	MULTI_BOOT_ADDR_0x40000		= 0x40000,  //256 K
+}multi_boot_addr_e;
+/******************************* other ********************************************************************/
+
 #endif
 
 

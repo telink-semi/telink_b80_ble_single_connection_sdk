@@ -111,34 +111,6 @@ typedef struct{
 	u16 errHandle;
 	u8  errReason;
 }rf_packet_att_errRsp_t;
-#if CHANGE_NEW_CODE
-
-typedef struct{
-	u8	type;				//RFU(3)_MD(1)_SN(1)_NESN(1)-LLID(2)
-	u8  rf_len;				//LEN(5)_RFU(3)
-
-	u16	l2capLen;
-	u16	chanId;
-	u8  opcode;
-	u16	startingHandle;
-	u16	endingHandle;
-
-	u8	attType[2];				//
-}rf_packet_att_readByType_t;
-
-typedef struct{
-	u8	type;				//RFU(3)_MD(1)_SN(1)_NESN(1)-LLID(2)
-	u8  rf_len;				//LEN(5)_RFU(3)
-
-	u16	l2capLen;
-	u16	chanId;
-	u8  opcode;
-	u16	startingHandle;
-	u16	endingHandle;
-	u8	attType[2];
-	u8  attValue[2];
-}rf_packet_att_findByTypeReq_t;
-#else
 
 typedef struct{
 	u8	type;				//RFU(3)_MD(1)_SN(1)_NESN(1)-LLID(2)
@@ -168,7 +140,7 @@ typedef struct{
 	u8	attType[2];
 	u8  attValue[2];
 }rf_packet_att_findByTypeReq_t;
-#endif
+
 
 
 
@@ -192,17 +164,7 @@ typedef struct{
 	u8 handle;
 	u8 handle1;
 }rf_packet_att_read_t;
-#if CHANGE_NEW_CODE
-typedef struct{
-	u8	type;				//RFU(3)_MD(1)_SN(1)_NESN(1)-LLID(2)
-	u8  rf_len;				//LEN(5)_RFU(3)
-	u16	l2capLen;
-	u16	chanId;
-	u8  opcode;
-	u16 handle;
-	u16 offset;
-}rf_packet_att_readBlob_t;
-#else
+
 typedef struct{
 	u8	type;				//RFU(3)_MD(1)_SN(1)_NESN(1)-LLID(2)
 	u8  rf_len;				//LEN(5)_RFU(3)
@@ -214,7 +176,7 @@ typedef struct{
 	u8 offset0;
 	u8 offset1;
 }rf_packet_att_readBlob_t;
-#endif
+
 typedef struct{
 	u8	type;				//RFU(3)_MD(1)_SN(1)_NESN(1)-LLID(2)
 	u8  rf_len;				//LEN(5)_RFU(3)
@@ -273,17 +235,7 @@ typedef struct{
 	u8  opcode;
 	u8 flags;
 }rf_packet_att_executeWriteReq_t;
-#if CHANGE_NEW_CODE
-typedef struct{
-	u8	type;				//RFU(3)_MD(1)_SN(1)_NESN(1)-LLID(2)
-	u8  rf_len;				//LEN(5)_RFU(3)
-	u16	l2capLen;
-	u16	chanId;
-	u8  opcode;
-	u16 handle;
-	u8 value;
-}rf_packet_att_write_t;
-#else
+
 typedef struct{
 	u8	type;				//RFU(3)_MD(1)_SN(1)_NESN(1)-LLID(2)
 	u8  rf_len;				//LEN(5)_RFU(3)
@@ -294,7 +246,7 @@ typedef struct{
 	u8 handle1;
 	u8 value;
 }rf_packet_att_write_t;
-#endif
+
 typedef struct{
 	u8	type;				//RFU(3)_MD(1)_SN(1)_NESN(1)-LLID(2)
 	u8  rf_len;				//LEN(5)_RFU(3)

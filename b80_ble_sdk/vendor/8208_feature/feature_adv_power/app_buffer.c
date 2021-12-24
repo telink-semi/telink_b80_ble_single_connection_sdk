@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	feature_config.h
+ * @file	app_buffer.c
  *
- * @brief	This is the header file for BLE SDK
+ * @brief	This is the source file for BLE SDK
  *
  * @author	BLE GROUP
- * @date	06,2020
+ * @date	2020.06
  *
  * @par     Copyright (c) 2020, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -43,30 +43,27 @@
  *          SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *******************************************************************************************************/
-#ifndef FEATURE_CONFIG_H_
-#define FEATURE_CONFIG_H_
+#include "tl_common.h"
+#include "drivers.h"
+#include "stack/ble/ble.h"
+
+#include "app_buffer.h"
+#include "app_config.h"
+
+#if (FEATURE_TEST_MODE == TEST_POWER_ADV)
 
 
-
-/////////////////// TEST FEATURE SELECTION /////////////////////////////////
-#define	TEST_FEATURE_BACKUP								0
-
-//ble link layer test
-#define TEST_POWER_ADV  											1
-#define TEST_ADVERTISING_IN_CONN_SLAVE_ROLE  2
-
-
-#define TEST_SDATA_LENGTH_EXTENSION           3
-#define TEST_SLAVE_MD											4
-
-#define TEST_USER_BLT_SOFT_TIMER                     5
-
-
-
-#define FEATURE_TEST_MODE								TEST_FEATURE_BACKUP
+/********************* ACL connection LinkLayer TX & RX data FIFO allocation, Begin ********************************/
+_attribute_data_retention_ u8	app_acl_rxfifo[ACL_RX_FIFO_SIZE * ACL_RX_FIFO_NUM] = {0};
+_attribute_data_retention_ u8	app_acl_txfifo[ACL_TX_FIFO_SIZE * ACL_TX_FIFO_NUM] = {0};
+/******************** ACL connection LinkLayer TX & RX data FIFO allocation, End ***********************************/
 
 
 
 
 
-#endif /* FEATURE_CONFIG_H_ */
+
+
+
+
+#endif //end of (FEATURE_TEST_MODE == xxx)

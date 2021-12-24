@@ -86,28 +86,10 @@ typedef struct attribute
 
 
 
-typedef struct{
-	u16 init_MTU;
-	u16 effective_MTU;
-
-	u8 *pPendingPkt;
-
-	u8 Data_pending_time;    //10ms unit
-	u8 mtu_exchange_pending;
-}att_para_t;
-extern att_para_t bltAtt;
-
-extern u8 blt_indicate_handle;
 
 /******************************* User Interface  ************************************/
 //GATT server table
 void bls_att_setAttributeTable(u8 *p);
-
-//ATT notification
-ble_sts_t blc_gatt_pushHandleValueNotify(u16 attHandle, u8 *p, int len);
-
-//ATT indicator/confirm
-ble_sts_t bls_att_pushIndicateData(u16 attHandle, u8 *p, int len);
 
 void bls_att_registerHandleValueConfirmCb(att_handleValueConfirm_callback_t cb);
 
@@ -116,6 +98,7 @@ ble_sts_t blc_att_setRxMtuSize(u16 mtu_size);
 ble_sts_t blc_att_requestMtuSizeExchange(u16 connHandle, u16 mtu_size);
 void blc_att_registerMtuSizeExchangeCb(attRxMtuSizeExchangeCommpleteCb cb);
 void blt_att_resetMtuSizeToDefault(void);
+
 /**
  * @brief   This function is used to get effective MTU size.
  * @param	connHandle - connect handle
@@ -123,24 +106,6 @@ void blt_att_resetMtuSizeToDefault(void);
  */
 u16  blc_att_getEffectiveMtuSize(void);
 
-// 0x04: ATT_OP_FIND_INFO_REQ
-void att_req_find_info(u8 *dat, u16 start_attHandle, u16 end_attHandle);
-// 0x06: ATT_OP_FIND_BY_TYPE_VALUE_REQ
-void att_req_find_by_type (u8 *dat, u16 start_attHandle, u16 end_attHandle, u8 *uuid, u8* attr_value, int len);
-// 0x08: ATT_OP_READ_BY_TYPE_REQ
-void att_req_read_by_type (u8 *dat, u16 start_attHandle, u16 end_attHandle, u8 *uuid, int uuid_len);
-// 0x0a: ATT_OP_READ_REQ
-void att_req_read (u8 *dat, u16 attHandle);
-// 0x0c: ATT_OP_READ_BLOB_REQ
-void att_req_read_blob (u8 *dat, u16 attHandle, u16 offset);
-// 0x10: ATT_OP_READ_BY_GROUP_TYPE_REQ
-void att_req_read_by_group_type (u8 *dat, u16 start_attHandle, u16 end_attHandle, u8 *uuid, int uuid_len);
-// 0x12: ATT_OP_WRITE_REQ
-void att_req_write (u8 *dat, u16 attHandle, u8 *buf, int len);
-// 0x52: ATT_OP_WRITE_CMD
-void att_req_write_cmd (u8 *dat, u16 attHandle, u8 *buf, int len);
 
 ble_sts_t bls_att_setDeviceName(u8* pName,u8 len);  //only module/mesh/hci use
-
-
 int l2cap_att_client_handler (u16 conn, u8 *p);

@@ -69,9 +69,6 @@ extern int blt_ota_start_flag;
 extern u32 blt_ota_start_tick;
 extern u32 blt_ota_timeout_us;
 
-extern u32 ota_program_bootAddr;
-extern u32 ota_program_offset;
-extern u32 ota_firmware_size_k;
 
 
 typedef void (*ota_startCb_t)(void);

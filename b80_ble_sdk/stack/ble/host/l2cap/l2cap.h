@@ -58,9 +58,7 @@ void 		blc_l2cap_reg_att_sig_hander(void *p);//signaling pkt proc
 
 void 		blc_l2cap_SendConnParamUpdateResponse(u16 connHandle, int result);
 
-#if CHANGE_NEW_CODE
-	void blc_l2cap_initMtuBuffer(u8 *pMTU_rx_buff, u16 mtu_rx_size, u8 *pMTU_tx_buff, u16 mtu_tx_size);
-#endif
+void blc_l2cap_initMtuBuffer(u8 *pMTU_rx_buff, u16 mtu_rx_size, u8 *pMTU_tx_buff, u16 mtu_tx_size);
 
 
 #endif

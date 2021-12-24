@@ -78,7 +78,6 @@ int main(void)
 		blc_pm_select_internal_32k_crystal();
 	#endif
 
-
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
 
 	clock_init(SYS_CLK_TYPE);

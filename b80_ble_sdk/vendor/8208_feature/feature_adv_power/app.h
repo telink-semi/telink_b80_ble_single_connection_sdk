@@ -1,7 +1,7 @@
 /********************************************************************************************************
- * @file	app_ui.c
+ * @file	app.h
  *
- * @brief	This is the source file for BLE SDK
+ * @brief	This is the header file for BLE SDK
  *
  * @author	BLE GROUP
  * @date	2020.06
@@ -44,89 +44,48 @@
  *
  *******************************************************************************************************/
 
-#include "tl_common.h"
-#include "drivers.h"
-#include "stack/ble/ble.h"
-#include "application/application.h"
-
-#include "app.h"
-#include "app_att.h"
-#include "app_ui.h"
+#ifndef _APP_H
+#define _APP_H
 
 
+#include "app_config.h"
 
-
-_attribute_data_retention_ u32 latest_user_event_tick;
-
-
-
-
-
-
-#if (UI_KEYBOARD_ENABLE)
-
-_attribute_data_retention_	int 	key_not_released;
-_attribute_data_retention_	u8 		key_type;
-_attribute_data_retention_	static u32 keyScanTick = 0;
-
-extern u32	scan_pin_need;
-
-#define CONSUMER_KEY   	   		1
-#define KEYBOARD_KEY   	   		2
-
+#if (FEATURE_TEST_MODE == TEST_POWER_ADV)
 /**
- * @brief		this function is used to process keyboard matrix status change.
+ * @brief		user initialization when MCU power on or wake_up from deepSleep mode
  * @param[in]	none
  * @return      none
  */
-void key_change_proc(void)
-{
-	latest_user_event_tick = clock_time();  //record latest key change time
 
-	u8 key0 = kb_event.keycode[0];
-	u8 key_buf[8] = {0,0,0,0,0,0,0,0};
+void user_init_normal(void);
 
-	key_not_released = 1;
-	if (kb_event.cnt == 2)   //two key press, do  not process
-	{
-	}
-	else if(kb_event.cnt == 1)
-	{
-		if(key0 >= CR_VOL_UP )  //volume up/down
-		{
-			key_type = CONSUMER_KEY;
-			u16 consumer_key;
-			if(key0 == CR_VOL_UP){  	//volume up
-				consumer_key = MKEY_VOL_UP;
-			}
-			else if(key0 == CR_VOL_DN){ //volume down
-				consumer_key = MKEY_VOL_DN;
-			}
-			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
-		}
-		else
-		{
-			key_type = KEYBOARD_KEY;
-			key_buf[2] = key0;
-			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8);
-		}
-	}
-	else   //kb_event.cnt == 0,  key release
-	{
-		key_not_released = 0;
-		if(key_type == CONSUMER_KEY)
-		{
-			u16 consumer_key = 0;
-			blc_gatt_pushHandleValueNotify ( BLS_CONN_HANDLE,HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
-		}
-		else if(key_type == KEYBOARD_KEY)
-		{
-			key_buf[2] = 0;
-			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8); //release
-		}
-	}
-}
+/**
+ * @brief		user initialization when MCU wake_up from deepSleep_retention mode
+ * @param[in]	none
+ * @return      none
+ */
+void user_init_deepRetn(void);
 
+
+
+/**
+ * @brief     BLE main loop
+ * @param[in]  none.
+ * @return     none.
+ */
+void main_loop (void);
+
+
+
+
+
+
+
+
+
+extern u32 latest_user_event_tick;
+
+extern int 	key_not_released;
 
 
 /**
@@ -136,30 +95,7 @@ void key_change_proc(void)
  * @param[in]  n - data length of event
  * @return     none
  */
-
-void proc_keyboard (u8 e, u8 *p, int n)
-{
-	if(clock_time_exceed(keyScanTick, 8000)){
-		keyScanTick = clock_time();
-	}
-	else{
-		return;
-	}
-
-	kb_event.keycode[0] = 0;
-	int det_key = kb_scan_key (0, 1);
-
-	if (det_key){
-		key_change_proc();
-	}
-}
-
-
-#endif  //end of UI_KEYBOARD_ENABLE
-
-
-
-
+void proc_keyboard (u8 e, u8 *p, int n);
 
 
 
@@ -170,19 +106,12 @@ void proc_keyboard (u8 e, u8 *p, int n)
  * @param[in]  n - data length of event
  * @return     none
  */
-void app_set_kb_wakeup(u8 e, u8 *p, int n)
-{
-#if (BLE_APP_PM_ENABLE)
-	if( blc_ll_getCurrentState() == BLS_LINK_STATE_CONN
-		&& ((u32)(bls_pm_getSystemWakeupTick() - clock_time())) > 80 *CLOCK_16M_SYS_TIMER_CLK_1MS ){  //suspend time > 30ms.add gpio wakeup
-		bls_pm_setWakeupSource(PM_WAKEUP_PAD);  //gpio CORE wakeup suspend
-	}
-#endif
-}
+void app_set_kb_wakeup(u8 e, u8 *p, int n);
 
 
 
 
 
 
-
+#endif /* APP_H_ */
+#endif //end of (FEATURE_TEST_MODE == xxx)

@@ -55,6 +55,7 @@
 /**
  *  @brief  Feature select in bLE Sample project
  */
+#define FLASH_SIZE_OPTION							FLASH_SIZE_OPTION_512K //very important, user need confirm !!!
 #define BLE_APP_PM_ENABLE							1
 #define PM_DEEPSLEEP_RETENTION_ENABLE            	0 //Todo SunWei
 #define APP_SECURITY_ENABLE      					0
@@ -111,7 +112,7 @@ enum{
 
 
 #if (UI_KEYBOARD_ENABLE)   // if test pure power, kyeScan GPIO setting all disabled
-		//---------------  KeyMatrix PC4/PC5/PC6/PC7 -----------------------------
+		//---------------  KeyMatrix PA0/PD4/PF0/PF1 -----------------------------
 		#define	MATRIX_ROW_PULL					PM_PIN_PULLDOWN_100K
 		#define	MATRIX_COL_PULL					PM_PIN_PULLUP_10K
 
@@ -126,38 +127,38 @@ enum{
 			/**
 			 *  @brief  Normal keyboard map
 			 */
-			#define		KB_MAP_NORMAL	{	{CR_VOL_DN,		VK_1},	 \
-											{CR_VOL_UP,		VK_2}, }
+			#define		KB_MAP_NORMAL	{	{CR_VOL_UP,		VK_1},	 \
+											{CR_VOL_DN,		VK_2}, }
 
 
 
 			//////////////////// KEY CONFIG (EVK board) ///////////////////////////
-			#define  KB_DRIVE_PINS  {GPIO_PC6, GPIO_PC7}
-			#define  KB_SCAN_PINS   {GPIO_PC4, GPIO_PC5}
+			#define  KB_DRIVE_PINS  {GPIO_PF0, GPIO_PF1}
+			#define  KB_SCAN_PINS   {GPIO_PA0, GPIO_PD4}
 
 			//drive pin as gpio
-			#define	PC6_FUNC				AS_GPIO
-			#define	PC7_FUNC				AS_GPIO
+			#define	PF0_FUNC				AS_GPIO
+			#define	PF1_FUNC				AS_GPIO
 
 			//drive pin need 100K pulldown
-			#define	PULL_WAKEUP_SRC_PC6		MATRIX_ROW_PULL
-			#define	PULL_WAKEUP_SRC_PC7		MATRIX_ROW_PULL
+			#define	PULL_WAKEUP_SRC_PF0		MATRIX_ROW_PULL
+			#define	PULL_WAKEUP_SRC_PF1		MATRIX_ROW_PULL
 
 			//drive pin open input to read gpio wakeup level
-			#define PC6_INPUT_ENABLE		1
-			#define PC7_INPUT_ENABLE		1
+			#define PF0_INPUT_ENABLE		1
+			#define PF1_INPUT_ENABLE		1
 
 			//scan pin as gpio
-			#define	PC4_FUNC				AS_GPIO
-			#define	PC5_FUNC				AS_GPIO
+			#define	PA0_FUNC				AS_GPIO
+			#define	PD4_FUNC				AS_GPIO
 
 			//scan  pin need 10K pullup
-			#define	PULL_WAKEUP_SRC_PC4		MATRIX_COL_PULL
-			#define	PULL_WAKEUP_SRC_PC5		MATRIX_COL_PULL
+			#define	PULL_WAKEUP_SRC_PA0		MATRIX_COL_PULL
+			#define	PULL_WAKEUP_SRC_PD4		MATRIX_COL_PULL
 
 		//scan pin open input to read gpio level
-		#define PC4_INPUT_ENABLE		1
-		#define PC5_INPUT_ENABLE		1
+		#define PA0_INPUT_ENABLE		1
+		#define PD4_INPUT_ENABLE		1
 
 		#define		KB_MAP_NUM		KB_MAP_NORMAL
 		#define		KB_MAP_FN			KB_MAP_NORMAL
@@ -170,37 +171,21 @@ enum{
 		/**
 		 *  @brief  Definition gpio for led
 		 */
-	#define	GPIO_LED_BLUE  	GPIO_PB3
-	#define	GPIO_LED_GREEN	GPIO_PB4
-	#define	GPIO_LED_WHITE	GPIO_PB5
-	#define	GPIO_LED_RED		GPIO_PB6
+	#define	GPIO_LED_BLUE  	GPIO_PA4
+	#define	GPIO_LED_GREEN	GPIO_PA5
+	#define	GPIO_LED_WHITE	GPIO_PA6
+	#define	GPIO_LED_RED		GPIO_PA7
 	#define LED_ON_LEVAL 			1 		//gpio output high voltage to turn on led
 
-	#define PB3_FUNC				AS_GPIO
-	#define PB4_FUNC				AS_GPIO
-	#define PB5_FUNC				AS_GPIO
-	#define PB6_FUNC				AS_GPIO
+	#define PA4_FUNC				AS_GPIO
+	#define PA5_FUNC				AS_GPIO
+	#define PA6_FUNC				AS_GPIO
+	#define PA7_FUNC				AS_GPIO
 
-	#define	PB3_OUTPUT_ENABLE		1
-	#define	PB4_OUTPUT_ENABLE		1
-	#define PB5_OUTPUT_ENABLE		1
-	#define	PB6_OUTPUT_ENABLE		1
-#endif
-
-
-#if(UI_BUTTON_ENABLE)
-/**
-		 *  @brief  Definition gpio for button detection
-		 */
-		#define	SW1_GPIO				GPIO_PF0
-		#define	SW2_GPIO				GPIO_PF1
-		#define PF0_FUNC				AS_GPIO
-		#define PF1_FUNC				AS_GPIO
-		#define PF0_INPUT_ENABLE		1
-		#define PF1_INPUT_ENABLE		1
-		#define PULL_WAKEUP_SRC_PF0    PM_PIN_PULLUP_10K
-		#define PULL_WAKEUP_SRC_PF1    PM_PIN_PULLUP_10K
-
+	#define	PA4_OUTPUT_ENABLE		1
+	#define	PA5_OUTPUT_ENABLE		1
+	#define PA6_OUTPUT_ENABLE		1
+	#define	PA7_OUTPUT_ENABLE		1
 #endif
 
 
@@ -215,41 +200,41 @@ enum{
  */
 
 #if(DEBUG_GPIO_ENABLE)
-		#define PA0_FUNC				AS_GPIO //debug gpio chn0 : PA0
-		#define PA4_FUNC				AS_GPIO //debug gpio chn1 : PA4
-		#define PA5_FUNC				AS_GPIO //debug gpio chn2 : PA5
-		#define PA6_FUNC				AS_GPIO //debug gpio chn3 : PA6
-		#define PA7_FUNC                AS_GPIO //debug gpio chn4 : PA7
-		#define PB0_FUNC				AS_GPIO //debug gpio chn5 : PB0
-		#define PB1_FUNC				AS_GPIO //debug gpio chn6 : PB1
-		#define PB2_FUNC				AS_GPIO //debug gpio chn7 : PB2
+		#define PB0_FUNC				AS_GPIO //debug gpio chn1 : PB0
+		#define PB1_FUNC				AS_GPIO //debug gpio chn2 : PB1
+		#define PB2_FUNC				AS_GPIO //debug gpio chn3 : PB2
+		#define PB3_FUNC                AS_GPIO //debug gpio chn4 : PB3
+		#define PB4_FUNC				AS_GPIO //debug gpio chn5 : PB4
+		#define PB5_FUNC				AS_GPIO //debug gpio chn6 : PB5
+		#define PB6_FUNC				AS_GPIO //debug gpio chn7 : PB6
+		#define PB7_FUNC				AS_GPIO //debug gpio chn0 : PB7
 
-		#define PD0_FUNC				AS_GPIO //debug gpio chn8 : PD0
-		#define PD1_FUNC                AS_GPIO //debug gpio chn9 : PD1
-		#define PD2_FUNC				AS_GPIO //debug gpio chn10: PD2
-		#define PD3_FUNC                AS_GPIO //debug gpio chn11: PD3
-		#define PD4_FUNC				AS_GPIO //debug gpio chn12: PD4
-		#define PD5_FUNC                AS_GPIO //debug gpio chn13: PD5
-		#define PD6_FUNC				AS_GPIO //debug gpio chn14: PD6
-		#define PD7_FUNC                AS_GPIO //debug gpio chn15: PD7
+		#define PC0_FUNC				AS_GPIO //debug gpio chn8 : PC0
+		#define PC1_FUNC                AS_GPIO //debug gpio chn9 : PC1
+		#define PC2_FUNC				AS_GPIO //debug gpio chn10: PC2
+		#define PC3_FUNC                AS_GPIO //debug gpio chn11: PC3
+		#define PC4_FUNC				AS_GPIO //debug gpio chn12: PC4
+		#define PC5_FUNC                AS_GPIO //debug gpio chn13: PC5
+		#define PC6_FUNC				AS_GPIO //debug gpio chn14: PC6
+		#define PC7_FUNC                AS_GPIO //debug gpio chn15: PC7
 
-		#define GPIO_CHN0				GPIO_PA0
-		#define GPIO_CHN1				GPIO_PA4
-		#define GPIO_CHN2				GPIO_PA5
-		#define GPIO_CHN3				GPIO_PA6
-		#define GPIO_CHN4				GPIO_PA7
-		#define GPIO_CHN5				GPIO_PB0
-		#define GPIO_CHN6				GPIO_PB1
-		#define GPIO_CHN7				GPIO_PB2
+		#define GPIO_CHN0				GPIO_PB0
+		#define GPIO_CHN1				GPIO_PB1
+		#define GPIO_CHN2				GPIO_PB2
+		#define GPIO_CHN3				GPIO_PB3
+		#define GPIO_CHN4				GPIO_PB4
+		#define GPIO_CHN5				GPIO_PB5
+		#define GPIO_CHN6				GPIO_PB6
+		#define GPIO_CHN7				GPIO_PB7
 
-		#define GPIO_CHN8 				GPIO_PD0
-		#define GPIO_CHN9 				GPIO_PD1
-		#define GPIO_CHN10				GPIO_PD2
-		#define GPIO_CHN11				GPIO_PD3
-		#define GPIO_CHN12				GPIO_PD4
-		#define GPIO_CHN13				GPIO_PD5
-		#define GPIO_CHN14				GPIO_PD6
-		#define GPIO_CHN15				GPIO_PD7
+		#define GPIO_CHN8 				GPIO_PC0
+		#define GPIO_CHN9 				GPIO_PC1
+		#define GPIO_CHN10				GPIO_PC2
+		#define GPIO_CHN11				GPIO_PC3
+		#define GPIO_CHN12				GPIO_PC4
+		#define GPIO_CHN13				GPIO_PC5
+		#define GPIO_CHN14				GPIO_PC6
+		#define GPIO_CHN15				GPIO_PC7
 
 #endif  //end of DEBUG_GPIO_ENABLE
 

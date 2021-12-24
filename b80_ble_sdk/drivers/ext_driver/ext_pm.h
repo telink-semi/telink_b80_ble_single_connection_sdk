@@ -28,5 +28,10 @@
 #ifndef DRIVERS_8208_EXT_PM_H_
 #define DRIVERS_8208_EXT_PM_H_
 
+
+extern unsigned int ota_program_bootAddr;
+extern unsigned int ota_program_offset;
+extern unsigned int ota_firmware_size_k;
+
 #endif
 

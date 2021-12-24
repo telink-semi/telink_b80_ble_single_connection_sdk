@@ -19,12 +19,8 @@
  *			 file under Mutual Non-Disclosure Agreement. NO WARRENTY of ANY KIND is provided. 
  *           
  *******************************************************************************************************/
-/*
- * ble_ll_ota.h
- *
- *  Created on: 2015-7-20
- *      Author: Administrator
- */
+
+#include "drivers.h"
 
 #ifndef BLE_LL_OTA_H_
 #define BLE_LL_OTA_H_
@@ -105,12 +101,24 @@ extern int otaRead(void * p);
 //extern void start_reboot(void);
 
 //firmware_size_k  must be 4k aligned
-void bls_ota_setFirmwareSizeAndOffset(int firmware_size_k, u32 ota_offset);
+void blc_ota_setFirmwareSizeAndBootAddress(int firmware_size_k, multi_boot_addr_e boot_addr);
 
 
 
 void bls_ota_clearNewFwDataArea(void);
 
 unsigned short crc16 (unsigned char *pD, int len);
+
+
+
+
+
+
+//some API name compatible with other versions of SDK
+
+#define bls_ota_setFirmwareSizeAndOffset					blc_ota_setFirmwareSizeAndBootAddress
+
+
+
 
 #endif /* BLE_LL_OTA_H_ */

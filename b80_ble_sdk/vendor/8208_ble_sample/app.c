@@ -219,7 +219,7 @@ void entry_ota_mode(void)
 
 void show_ota_result(int result)
 {
-
+#if(UI_LED_ENABLE)
 	if(result == OTA_SUCCESS){  //OTA success
 		gpio_write(GPIO_LED_BLUE, 0);
 		sleep_us(1000000);  //led off for 1 second
@@ -234,7 +234,7 @@ void show_ota_result(int result)
 		}
 
 	}
-
+#endif
 }
 
 #endif
@@ -480,9 +480,9 @@ void main_loop (void)
 
 	////////////////////////////////////// BLE entry /////////////////////////////////
 	blc_sdk_main_loop();
-
+#if(UI_LED_ENABLE)
 	gpio_write(GPIO_LED_GREEN,1);
-
+#endif
 	////////////////////////////////////// UI entry /////////////////////////////////
 	#if (UI_KEYBOARD_ENABLE)
 		proc_keyboard (0, 0, 0);

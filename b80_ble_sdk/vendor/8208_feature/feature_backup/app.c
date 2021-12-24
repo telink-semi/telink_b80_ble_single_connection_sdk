@@ -72,6 +72,13 @@ _attribute_data_retention_ u32 latest_user_event_tick;
 
 
 
+	#define		MTU_RX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
+	#define		MTU_TX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
+
+	_attribute_data_retention_ u8 mtu_rx_fifo[MTU_RX_BUFF_SIZE_MAX];
+	_attribute_data_retention_ u8 mtu_tx_fifo[MTU_TX_BUFF_SIZE_MAX];
+
+
 
 /**
  * @brief	BLE Advertising data
@@ -247,11 +254,15 @@ void user_init_normal(void)
 	/* L2CAP Initialization */
 	blc_l2cap_register_handler(blc_l2cap_packet_receive);
 
+	blc_l2cap_initMtuBuffer(mtu_rx_fifo, MTU_RX_BUFF_SIZE_MAX, mtu_tx_fifo, MTU_TX_BUFF_SIZE_MAX);
+
+
 	/* SMP Initialization */
 	/* SMP Initialization may involve flash write/erase(when one sector stores too much information,
 	 *   is about to exceed the sector threshold, this sector must be erased, and all useful information
 	 *   should re_stored) , so it must be done after battery check */
 	#if (APP_SECURITY_ENABLE)
+		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
 		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is SMP_BONDING_DEVICE_MAX_NUM, can not bigger that this value
 													    //and this func must call before bls_smp_enableParing
 		bls_smp_enableParing (SMP_PARING_CONN_TRRIGER );
@@ -470,7 +481,6 @@ void main_loop (void)
 	#if (UI_KEYBOARD_ENABLE)
 		proc_keyboard (0, 0, 0);
 	#endif
-
 
 
 	////////////////////////////////////// PM Process /////////////////////////////////

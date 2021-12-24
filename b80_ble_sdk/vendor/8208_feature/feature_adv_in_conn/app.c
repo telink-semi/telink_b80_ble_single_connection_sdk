@@ -72,6 +72,13 @@ _attribute_data_retention_ u32 latest_user_event_tick;
 
 
 
+	#define		MTU_RX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
+	#define		MTU_TX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
+
+	_attribute_data_retention_ u8 mtu_rx_fifo[MTU_RX_BUFF_SIZE_MAX];
+	_attribute_data_retention_ u8 mtu_tx_fifo[MTU_TX_BUFF_SIZE_MAX];
+
+
 
 /**
  * @brief	BLE Advertising data
@@ -245,6 +252,9 @@ void user_init_normal(void)
 
 	/* L2CAP Initialization */
 	blc_l2cap_register_handler(blc_l2cap_packet_receive);
+
+	blc_l2cap_initMtuBuffer(mtu_rx_fifo, MTU_RX_BUFF_SIZE_MAX, mtu_tx_fifo, MTU_TX_BUFF_SIZE_MAX);
+
 
 	/* SMP Initialization */
 	/* SMP Initialization may involve flash write/erase(when one sector stores too much information,

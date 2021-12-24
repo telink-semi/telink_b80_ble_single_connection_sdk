@@ -69,10 +69,15 @@
 
 _attribute_data_retention_ u32	advertise_begin_tick;
 _attribute_data_retention_ u32 latest_user_event_tick;
-_attribute_data_retention_ int write_data_test_tick = 0;
 
-_attribute_data_retention_	u8	app_test_data[TEST_DATA_LEN]={0x00,0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,
-															  0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,0x11,0x11,0x11};
+
+
+	#define		MTU_RX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
+	#define		MTU_TX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
+
+	_attribute_data_retention_ u8 mtu_rx_fifo[MTU_RX_BUFF_SIZE_MAX];
+	_attribute_data_retention_ u8 mtu_tx_fifo[MTU_TX_BUFF_SIZE_MAX];
+
 
 
 /**
@@ -145,7 +150,7 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 
 
 	#if (UI_LED_ENABLE)
-		gpio_write(GPIO_LED_RED, !LED_ON_LEVAL);  //yellow light off
+		gpio_write(GPIO_LED_RED, !LED_ON_LEVAL);  //light off
 	#endif
 
 	advertise_begin_tick = clock_time();
@@ -175,12 +180,12 @@ _attribute_ram_code_ void user_set_rf_power (u8 e, u8 *p, int n)
 void blt_pm_proc(void)
 {
 #if(BLE_APP_PM_ENABLE)
-		bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
-
 		#if (UI_KEYBOARD_ENABLE)
+			bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
+
 			if(scan_pin_need || key_not_released )
 			{
-				bls_pm_setSuspendMask (SUSPEND_DISABLE);
+				bls_pm_setManualLatency(0);
 			}
 		#endif
 #endif//END of  BLE_APP_PM_ENABLE
@@ -264,6 +269,9 @@ void user_init_normal(void)
 
 	/* L2CAP Initialization */
 	blc_l2cap_register_handler(blc_l2cap_packet_receive);
+
+	blc_l2cap_initMtuBuffer(mtu_rx_fifo, MTU_RX_BUFF_SIZE_MAX, mtu_tx_fifo, MTU_TX_BUFF_SIZE_MAX);
+
 
 	/* SMP Initialization */
 	/* SMP Initialization may involve flash write/erase(when one sector stores too much information,

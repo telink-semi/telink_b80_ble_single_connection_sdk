@@ -86,6 +86,14 @@ _attribute_data_retention_ u32 latest_user_event_tick;
 
 
 
+	#define		MTU_RX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
+	#define		MTU_TX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
+
+	_attribute_data_retention_ u8 mtu_rx_fifo[MTU_RX_BUFF_SIZE_MAX];
+	_attribute_data_retention_ u8 mtu_tx_fifo[MTU_TX_BUFF_SIZE_MAX];
+
+
+
 /**
  * @brief	BLE Advertising data
  */
@@ -168,7 +176,7 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 
 
 	#if (UI_LED_ENABLE)
-		gpio_write(GPIO_LED_RED, !LED_ON_LEVAL);  //yellow light off
+		gpio_write(GPIO_LED_RED, !LED_ON_LEVAL);  //light off
 	#endif
 
 	advertise_begin_tick = clock_time();
@@ -217,9 +225,7 @@ void blt_pm_proc(void)
 			{
 				bls_pm_setManualLatency(0);
 			}
-
 		#endif
-
 #endif//END of  BLE_APP_PM_ENABLE
 }
 
@@ -247,7 +253,7 @@ void user_init_normal(void)
 	blc_initMacAddress(CFG_ADR_MAC, mac_public, mac_random_static);
 
 	//////////// LinkLayer Initialization  Begin /////////////////////////
-	blc_l2cap_initMtuBuffer(app_acl_rxfifo,MTU_SIZE_SETTING,app_acl_txfifo,MTU_SIZE_SETTING);
+
 
 
 	blc_ll_initBasicMCU();                      //mandatory
@@ -291,6 +297,9 @@ void user_init_normal(void)
 
 	/* L2CAP Initialization */
 	blc_l2cap_register_handler(blc_l2cap_packet_receive);
+
+	blc_l2cap_initMtuBuffer(mtu_rx_fifo, MTU_RX_BUFF_SIZE_MAX, mtu_tx_fifo, MTU_TX_BUFF_SIZE_MAX);
+
 
 	/* SMP Initialization */
 	/* SMP Initialization may involve flash write/erase(when one sector stores too much information,

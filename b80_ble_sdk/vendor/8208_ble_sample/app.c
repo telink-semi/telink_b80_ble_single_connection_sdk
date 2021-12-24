@@ -180,7 +180,7 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 
 
 	#if (UI_LED_ENABLE)
-		gpio_write(GPIO_LED_RED, !LED_ON_LEVAL);  //yellow light off
+		gpio_write(GPIO_LED_RED, !LED_ON_LEVAL);  //light off
 	#endif
 
 	advertise_begin_tick = clock_time();
@@ -363,7 +363,9 @@ void user_init_normal(void)
 
 	/* L2CAP Initialization */
 	blc_l2cap_register_handler(blc_l2cap_packet_receive);
+
 	blc_l2cap_initMtuBuffer(mtu_rx_fifo, MTU_RX_BUFF_SIZE_MAX, mtu_tx_fifo, MTU_TX_BUFF_SIZE_MAX);
+
 
 	/* SMP Initialization */
 	/* SMP Initialization may involve flash write/erase(when one sector stores too much information,

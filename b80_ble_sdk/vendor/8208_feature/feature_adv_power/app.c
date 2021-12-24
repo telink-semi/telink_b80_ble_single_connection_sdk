@@ -72,6 +72,14 @@ _attribute_data_retention_ u32 latest_user_event_tick;
 
 
 
+	#define		MTU_RX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
+	#define		MTU_TX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
+
+	_attribute_data_retention_ u8 mtu_rx_fifo[MTU_RX_BUFF_SIZE_MAX];
+	_attribute_data_retention_ u8 mtu_tx_fifo[MTU_TX_BUFF_SIZE_MAX];
+
+
+
 
 
 
@@ -371,6 +379,9 @@ void user_init_normal(void)
 	/* L2CAP Initialization */
 	blc_l2cap_register_handler(blc_l2cap_packet_receive);
 
+	blc_l2cap_initMtuBuffer(mtu_rx_fifo, MTU_RX_BUFF_SIZE_MAX, mtu_tx_fifo, MTU_TX_BUFF_SIZE_MAX);
+
+
 	/* SMP Initialization */
 	/* SMP Initialization may involve flash write/erase(when one sector stores too much information,
 	 *   is about to exceed the sector threshold, this sector must be erased, and all useful information
@@ -472,13 +483,13 @@ void key_change_proc(void)
 			else if(key0 == CR_VOL_DN){ //volume down
 				consumer_key = MKEY_VOL_DN;
 			}
-			blc_gatt_pushHandleValueNotify (HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
+			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
 		}
 		else
 		{
 			key_type = KEYBOARD_KEY;
 			key_buf[2] = key0;
-			blc_gatt_pushHandleValueNotify (HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8);
+			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8);
 		}
 	}
 	else   //kb_event.cnt == 0,  key release
@@ -487,12 +498,12 @@ void key_change_proc(void)
 		if(key_type == CONSUMER_KEY)
 		{
 			u16 consumer_key = 0;
-			blc_gatt_pushHandleValueNotify ( HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
+			blc_gatt_pushHandleValueNotify ( BLS_CONN_HANDLE,HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
 		}
 		else if(key_type == KEYBOARD_KEY)
 		{
 			key_buf[2] = 0;
-			blc_gatt_pushHandleValueNotify (HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8); //release
+			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8); //release
 		}
 	}
 }

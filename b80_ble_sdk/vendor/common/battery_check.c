@@ -1,24 +1,26 @@
 /********************************************************************************************************
  * @file     battery_check.c
  *
- * @brief    for TLSR chips
+ * @brief    This is the source file for BLE SDK
  *
- * @author	 BLE Group
- * @date     May. 12, 2018
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
- * @par      Copyright (c) Telink Semiconductor (Shanghai) Co., Ltd.
- *           All rights reserved.
- *           
- *			 The information contained herein is confidential and proprietary property of Telink 
- * 		     Semiconductor (Shanghai) Co., Ltd. and is available under the terms 
- *			 of Commercial License Agreement between Telink Semiconductor (Shanghai) 
- *			 Co., Ltd. and the licensee in separate contract or the terms described here-in. 
- *           This heading MUST NOT be removed from this file.
+ * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
- * 			 Licensees are granted free, non-transferable use of the information in this 
- *			 file under Mutual Non-Disclosure Agreement. NO WARRENTY of ANY KIND is provided. 
- *           
+ *          Licensed under the Apache License, Version 2.0 (the "License");
+ *          you may not use this file except in compliance with the License.
+ *          You may obtain a copy of the License at
+ *
+ *              http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *          Unless required by applicable law or agreed to in writing, software
+ *          distributed under the License is distributed on an "AS IS" BASIS,
+ *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *          See the License for the specific language governing permissions and
+ *          limitations under the License.
  *******************************************************************************************************/
+
 #include "battery_check.h"
 #include "tl_common.h"
 #include "drivers.h"
@@ -62,7 +64,7 @@ void TL_BatteryCheckInit(void)
 	/******set adc clk as 4MHz******/
 	adc_set_sample_clk(5);
 
-	/**** 优化了ADC低温抖动的问题 ******************/
+	/**** 呕ADC露 ******************/
 	adc_set_atb(ADC_SEL_ATB_1);
 	adc_set_left_gain_bias(GAIN_STAGE_BIAS_PER100);
 	adc_set_right_gain_bias(GAIN_STAGE_BIAS_PER100);
@@ -183,7 +185,7 @@ void TL_BattteryCheckProc(int minVol_mV)
 
 	u16 adcValueEx = (adcTempBuf[2] + adcTempBuf[3] + adcTempBuf[4] + adcTempBuf[5]) >> 2;
 
-	u16 vol = (adcValueEx * 1180 * 8)>>13;//Unit:mV; 由于参考电压不准，实际的参考电压为1.18V(Vref = 1.2V)
+	u16 vol = (adcValueEx * 1180 * 8)>>13;//Unit:mV; 诓慰压准实实牟慰压为1.18V(Vref = 1.2V)
 
 	//Debug
 	A_Vol = vol;

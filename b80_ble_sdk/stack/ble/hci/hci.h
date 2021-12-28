@@ -1,34 +1,29 @@
 /********************************************************************************************************
- * @file     hci.h 
+ * @file     hci.h
  *
- * @brief    for TLSR chips
+ * @brief    This is the header file for BLE SDK
  *
- * @author	 BLE Group
- * @date     Sep. 18, 2015
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
- * @par      Copyright (c) Telink Semiconductor (Shanghai) Co., Ltd.
- *           All rights reserved.
- *           
- *			 The information contained herein is confidential and proprietary property of Telink 
- * 		     Semiconductor (Shanghai) Co., Ltd. and is available under the terms 
- *			 of Commercial License Agreement between Telink Semiconductor (Shanghai) 
- *			 Co., Ltd. and the licensee in separate contract or the terms described here-in. 
- *           This heading MUST NOT be removed from this file.
+ * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
- * 			 Licensees are granted free, non-transferable use of the information in this 
- *			 file under Mutual Non-Disclosure Agreement. NO WARRENTY of ANY KIND is provided. 
- *           
+ *          Licensed under the Apache License, Version 2.0 (the "License");
+ *          you may not use this file except in compliance with the License.
+ *          You may obtain a copy of the License at
+ *
+ *              http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *          Unless required by applicable law or agreed to in writing, software
+ *          distributed under the License is distributed on an "AS IS" BASIS,
+ *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *          See the License for the specific language governing permissions and
+ *          limitations under the License.
  *******************************************************************************************************/
+
 #pragma once
 
-#include <stack/ble/ble_common.h>
 
-typedef int (*blc_hci_rx_handler_t)(void);
-typedef int (*blc_hci_tx_handler_t)(void);
-typedef int (*blc_hci_handler_t)(unsigned char *p, int n);
-typedef int (*blc_hci_app_handler_t)(unsigned char *p);
-
-extern blc_hci_handler_t blc_master_handler;
 
 #define HCI_FLAG_EVENT_PHYTEST_2_WIRE_UART 	(1 << 23)
 #define HCI_FLAG_EVENT_TLK_MODULE 			(1 << 24)
@@ -36,63 +31,122 @@ extern blc_hci_handler_t blc_master_handler;
 #define HCI_FLAG_EVENT_STACK 				(1 << 26)
 #define HCI_FLAG_ACL_BT_STD 				(1 << 27)
 
-#define TLK_MODULE_EVENT_STATE_CHANGE 		0x0730
-#define TLK_MODULE_EVENT_DATA_RECEIVED 		0x0731
-#define TLK_MODULE_EVENT_DATA_SEND			0x0732
-#define TLK_MODULE_EVENT_BUFF_AVAILABLE 	0x0733
 
-#define HCI_MAX_ACL_DATA_LEN 				27
 
-#define HCI_MAX_DATA_BUFFERS_SALVE 			8
-#define HCI_MAX_DATA_BUFFERS_MASTER 		8
-
-#define HCI_FIRST_NAF_PACKET 				0x00
-#define HCI_CONTINUING_PACKET 				0x01
-#define HCI_FIRST_AF_PACKET 				0x02
-
-/*********************************************************************
- * ENUMS
- */
 
 /**
- *  @brief  Definition for HCI request type
+ *  @brief  Definition for HCI packet type & HCI packet indicator
  */
-typedef enum hci_type_e{
-    HCI_TYPE_CMD 		= 0x01,
-    HCI_TYPE_ACL_DATA 	= 0x02,
-    HCI_TYPE_SCO_DATA 	= 0x03,
-    HCI_TYPE_EVENT 		= 0x04,
+typedef enum{
+	HCI_TYPE_CMD 		= 0x01,
+	HCI_TYPE_ACL_DATA	= 0x02,
+	HCI_TYPE_SCO_DATA	= 0x03,
+	HCI_TYPE_EVENT  	= 0x04,
+	HCI_TYPE_ISO_DATA 	= 0x05,  //core_5.2
 } hci_type_t;
 
-// hci event
-extern u32 hci_eventMask;
-extern u32 hci_le_eventMask;
-extern u32 hci_tlk_module_eventMask;
+/**
+ *  @brief  Definition for HCI ACL Data packets Packet_Boundary_Flag
+ */
+typedef enum{
+	HCI_FIRST_NAF_PACKET          =		0x00,	//LE Host to Controller
+	HCI_CONTINUING_PACKET         =		0x01,	//LE Host to Controller / Controller to Host
+	HCI_FIRST_AF_PACKET           =    	0x02,	//LE 					  Controller to Host
+} acl_pb_flag_t;
 
-ble_sts_t blc_hci_setEventMask_cmd(u32 evtMask);     //eventMask: BT/EDR
-ble_sts_t blc_hci_le_setEventMask_cmd(u32 evtMask);  //eventMask: LE
-ble_sts_t bls_hci_mod_setEventMask_cmd(u32 evtMask); //eventMask: module special
+
+
+
 
 // Controller event handler
+/**
+ * @brief	this function is used to register HCI Event handler Callback function
+ */
 typedef int (*hci_event_handler_t)(u32 h, u8 *para, int n);
 extern hci_event_handler_t blc_hci_event_handler;
 
-void blc_hci_registerControllerEventHandler(hci_event_handler_t handler);
 
-int blc_hci_sendACLData2Host(u16 handle, u8 *p);
 
-int blc_hci_send_data(u32 h, u8 *para, int n);
-void blc_enable_hci_master_handler();
+typedef int (*blc_hci_rx_handler_t)(void);
+typedef int (*blc_hci_tx_handler_t)(void);
 
-int blc_acl_from_btusb();
 
-void blc_register_hci_handler(void *prx, void *ptx);
-int blc_hci_rx_from_usb(void);
-int blc_hci_tx_to_usb(void);
-int blc_hci_tx_to_btusb(void);
 
-int blc_hci_handler(u8 *p, int n);//handle HCI command
-int blm_hci_handler(u8 *p, int n);
-int blc_hci_send_event(u32 h, u8 *para, int n);
+/**
+ * @brief      this function is used to set HCI EVENT mask
+ * @param[in]  evtMask  -  HCI EVENT mask
+ * @return     0
+ */
+ble_sts_t	blc_hci_setEventMask_cmd(u32 evtMask);      //eventMask: BT/EDR
 
-int blc_hci_proc(void);
+
+/**
+ * @brief      this function is used to set HCI LE EVENT mask
+ * @param[in]  evtMask  -  HCI LE EVENT mask(BIT<0-31>)
+ * @return     0
+ */
+ble_sts_t	blc_hci_le_setEventMask_cmd(u32 evtMask);   //eventMask: LE event  0~31
+
+
+
+
+
+
+/**
+ * @brief      used to set telink defined event mask for BLE module only.
+ * @param[in]  evtMask - event mask
+ * @return     status, 0x00:  succeed
+ * 			           other: failed
+ */
+ble_sts_t 	bls_hci_mod_setEventMask_cmd(u32 evtMask); //eventMask: module special
+
+
+
+/**
+ * @brief      this function is used to register HCI event handler callback function
+ * @param[in]  handler - hci_event_handler_t
+ * @return     none.
+ */
+void 		blc_hci_registerControllerEventHandler(hci_event_handler_t handler);
+
+
+
+/**
+ * @brief      this function is used to register HCI TX or RX handler callback function
+ * @param[in]  *prx - blc_hci_rx_handler
+ * @param[in]  *ptx - blc_hci_tx_handler
+ * @return     none.
+ */
+void 		blc_register_hci_handler (void *prx, void *ptx);
+
+/**
+ * @brief      this function is used to send ACL data to HOST
+ * @param[in]  handle - connect handle
+ * @param[in]  *p - the pointer of l2cap data
+ * @return     0
+ */
+int 		blc_hci_sendACLData2Host (u16 handle, u8 *p);
+
+
+/**
+ * @brief      this function is used to send data
+ * @param[in]  h - HCI Event type
+ * @param[in]  *para - data pointer of event
+ * @param[in]  n - data length of event
+ * @return     0,-1
+ */
+int 		blc_hci_send_data (u32 h, u8 *para, int n);
+
+
+
+
+/**
+ * @brief      this function is used to process HCI data
+ * @param[in]  *p - the pointer of HCI data
+ * @param[in]  n - the length of HCI data
+ * @return     0
+ */
+int 		blc_hci_handler (u8 *p, int n);
+
+
+

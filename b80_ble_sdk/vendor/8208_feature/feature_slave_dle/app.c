@@ -86,8 +86,8 @@ _attribute_data_retention_ u32 latest_user_event_tick;
 
 
 
-	#define		MTU_RX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
-	#define		MTU_TX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
+	#define		MTU_RX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(MTU_SIZE_SETTING)
+	#define		MTU_TX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(MTU_SIZE_SETTING)
 
 	_attribute_data_retention_ u8 mtu_rx_fifo[MTU_RX_BUFF_SIZE_MAX];
 	_attribute_data_retention_ u8 mtu_tx_fifo[MTU_TX_BUFF_SIZE_MAX];
@@ -309,9 +309,9 @@ void user_init_normal(void)
 		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
 		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is SMP_BONDING_DEVICE_MAX_NUM, can not bigger that this value
 													    //and this func must call before bls_smp_enableParing
-		bls_smp_enableParing (SMP_PARING_CONN_TRRIGER );
+		bls_smp_enableParing (SMP_PAIRING_CONN_TRRIGER );
 	#else
-		bls_smp_enableParing (SMP_PARING_DISABLE_TRRIGER );
+		bls_smp_enableParing (SMP_PAIRING_DISABLE_TRRIGER );
 	#endif
 
 	//////////// Host Initialization  End /////////////////////////
@@ -566,7 +566,7 @@ void feature_sdle_test_mainloop(void)
 	}
 
 	if(dle_started_flg && clock_time_exceed(app_test_data_tick, 3330000)){
-		if(BLE_SUCCESS == blc_gatt_pushHandleValueNotify (SPP_SERVER_TO_CLIENT_DP_H, &app_test_data[0], blc_att_getEffectiveMtuSize()-3))
+		if(BLE_SUCCESS == blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE, SPP_SERVER_TO_CLIENT_DP_H, &app_test_data[0], blc_att_getEffectiveMtuSize()-3))
 		{
 			app_test_data_tick = clock_time() | 1;
 			app_test_data[0]++;

@@ -58,7 +58,7 @@
 #define FLASH_SIZE_OPTION							FLASH_SIZE_OPTION_512K //very important, user need confirm !!!
 #define BLE_APP_PM_ENABLE							1
 #define PM_DEEPSLEEP_RETENTION_ENABLE            	0 //Todo SunWei
-#define APP_SECURITY_ENABLE      					0
+#define APP_SECURITY_ENABLE      					1
 
 
 

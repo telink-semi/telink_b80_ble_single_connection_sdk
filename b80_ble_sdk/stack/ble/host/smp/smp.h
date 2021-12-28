@@ -1,24 +1,26 @@
 /********************************************************************************************************
- * @file     ble_smp.h 
+ * @file     smp.h
  *
- * @brief    for TLSR chips
+ * @brief    This is the header file for BLE SDK
  *
- * @author	 BLE Group
- * @date     Sep. 18, 2015
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
- * @par      Copyright (c) Telink Semiconductor (Shanghai) Co., Ltd.
- *           All rights reserved.
- *           
- *			 The information contained herein is confidential and proprietary property of Telink 
- * 		     Semiconductor (Shanghai) Co., Ltd. and is available under the terms 
- *			 of Commercial License Agreement between Telink Semiconductor (Shanghai) 
- *			 Co., Ltd. and the licensee in separate contract or the terms described here-in. 
- *           This heading MUST NOT be removed from this file.
+ * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
- * 			 Licensees are granted free, non-transferable use of the information in this 
- *			 file under Mutual Non-Disclosure Agreement. NO WARRENTY of ANY KIND is provided. 
- *           
+ *          Licensed under the Apache License, Version 2.0 (the "License");
+ *          you may not use this file except in compliance with the License.
+ *          You may obtain a copy of the License at
+ *
+ *              http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *          Unless required by applicable law or agreed to in writing, software
+ *          distributed under the License is distributed on an "AS IS" BASIS,
+ *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *          See the License for the specific language governing permissions and
+ *          limitations under the License.
  *******************************************************************************************************/
+
 /*
  * ble_smp.h
  *
@@ -405,30 +407,30 @@ extern smp_sc_key_t smp_sc_key;
 #define PASSKEY_TYPE_CLEARED			0x03
 #define PASSKEY_TYPE_ENTRY_COMPLETED	0x04
 
-#define PARING_FAIL_REASON_PASSKEY_ENTRY			0x01
-#define PARING_FAIL_REASON_OOB_NOT_AVAILABLE		0x02
-#define PARING_FAIL_REASON_AUTH_REQUIRE				0x03
-#define PARING_FAIL_REASON_CONFIRM_FAILED			0x04
-#define PARING_FAIL_REASON_PARING_NOT_SUPPORTED		0x05
-#define PARING_FAIL_REASON_ENCRYPT_KEY_SIZE			0x06
+#define PAIRING_FAIL_REASON_PASSKEY_ENTRY			0x01
+#define PAIRING_FAIL_REASON_OOB_NOT_AVAILABLE		0x02
+#define PAIRING_FAIL_REASON_AUTH_REQUIRE				0x03
+#define PAIRING_FAIL_REASON_CONFIRM_FAILED			0x04
+#define PAIRING_FAIL_REASON_PAIRING_NOT_SUPPORTED		0x05
+#define PAIRING_FAIL_REASON_ENCRYPT_KEY_SIZE			0x06
 //-- core 4.2
-#define PARING_FAIL_REASON_CMD_NOT_SUPPORT			0x07
-#define PARING_FAIL_REASON_UNSPECIFIED_REASON		0x08
-#define PARING_FAIL_REASON_REPEATED_ATTEMPT			0x09
-#define PARING_FAIL_REASON_INVAILD_PARAMETER		0x0a
+#define PAIRING_FAIL_REASON_CMD_NOT_SUPPORT			0x07
+#define PAIRING_FAIL_REASON_UNSPECIFIED_REASON		0x08
+#define PAIRING_FAIL_REASON_REPEATED_ATTEMPT			0x09
+#define PAIRING_FAIL_REASON_INVAILD_PARAMETER		0x0a
 #define PAIRING_FAIL_REASON_DHKEY_CHECK_FAIL			0x0b
-#define PARING_FAIL_REASON_NUMUERIC_FAILED			0x0c
-#define PARING_FAIL_REASON_BREDR_PARING				0x0d
-#define PARING_FAIL_REASON_CROSS_TRANSKEY_NOT_ALLOW		0x0e
+#define PAIRING_FAIL_REASON_NUMUERIC_FAILED			0x0c
+#define PAIRING_FAIL_REASON_BREDR_PAIRING				0x0d
+#define PAIRING_FAIL_REASON_CROSS_TRANSKEY_NOT_ALLOW		0x0e
 
 #define	ENCRYPRION_KEY_SIZE_MAXINUM				16
 #define	ENCRYPRION_KEY_SIZE_MINIMUN				7
 
 typedef enum{
-	SMP_PARING_DISABLE_TRRIGER = 0,
-	SMP_PARING_CONN_TRRIGER ,
-	SMP_PARING_PEER_TRRIGER,
-}smp_paringTrriger_t;
+	SMP_PAIRING_DISABLE_TRRIGER = 0,
+	SMP_PAIRING_CONN_TRRIGER ,
+	SMP_PAIRING_PEER_TRRIGER,
+}smp_pairingTrriger_t;
 
 
 
@@ -452,12 +454,12 @@ typedef enum{
 
 
 /**************************************************
- * API used for slave enable the device paring.
- * encrypt_en	SMP_PARING_DISABLE_TRRIGER   -  not allow encryption
- * 				SMP_PARING_CONN_TRRIGER      -  paring process start once connect.
- * 				SMP_PARING_PEER_TRRIGER      -  paring process start once peer device start.
+ * API used for slave enable the device pairing.
+ * encrypt_en	SMP_PAIRING_DISABLE_TRRIGER   -  not allow encryption
+ * 				SMP_PAIRING_CONN_TRRIGER      -  pairing process start once connect.
+ * 				SMP_PAIRING_PEER_TRRIGER      -  pairing process start once peer device start.
  */
-int 		bls_smp_enableParing (smp_paringTrriger_t encrypt_en);
+int 		bls_smp_enableParing (smp_pairingTrriger_t encrypt_en);
 
 
 

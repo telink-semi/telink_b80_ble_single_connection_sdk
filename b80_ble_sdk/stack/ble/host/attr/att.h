@@ -1,23 +1,24 @@
 /********************************************************************************************************
- * @file     att.h 
+ * @file     att.h
  *
- * @brief    for TLSR chips
+ * @brief    This is the header file for BLE SDK
  *
- * @author	 BLE Group
- * @date     Sep. 18, 2015
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
- * @par      Copyright (c) Telink Semiconductor (Shanghai) Co., Ltd.
- *           All rights reserved.
- *           
- *			 The information contained herein is confidential and proprietary property of Telink 
- * 		     Semiconductor (Shanghai) Co., Ltd. and is available under the terms 
- *			 of Commercial License Agreement between Telink Semiconductor (Shanghai) 
- *			 Co., Ltd. and the licensee in separate contract or the terms described here-in. 
- *           This heading MUST NOT be removed from this file.
+ * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
- * 			 Licensees are granted free, non-transferable use of the information in this 
- *			 file under Mutual Non-Disclosure Agreement. NO WARRENTY of ANY KIND is provided. 
- *           
+ *          Licensed under the Apache License, Version 2.0 (the "License");
+ *          you may not use this file except in compliance with the License.
+ *          You may obtain a copy of the License at
+ *
+ *              http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *          Unless required by applicable law or agreed to in writing, software
+ *          distributed under the License is distributed on an "AS IS" BASIS,
+ *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *          See the License for the specific language governing permissions and
+ *          limitations under the License.
  *******************************************************************************************************/
 
 #pragma once
@@ -89,12 +90,31 @@ typedef struct attribute
 
 /******************************* User Interface  ************************************/
 //GATT server table
+/**
+ * @brief	This function is used to set ATT table
+ * @param	*p - the pointer of attribute table
+ * @return	none.
+ */
 void bls_att_setAttributeTable(u8 *p);
 
 void bls_att_registerHandleValueConfirmCb(att_handleValueConfirm_callback_t cb);
 
 //MTU size
+/**
+ * @brief	This function is used to set RX MTU size
+ * @param	mtu_size - ATT MTU size
+ * @return	0: success
+ * 			other: fail
+ */
 ble_sts_t blc_att_setRxMtuSize(u16 mtu_size);
+/**
+ * @brief	This function is used to request MTU size exchange
+ * @param	connHandle - connect handle
+ * @param	mtu_size - ATT MTU size
+ * @return	0: success
+ * 			other: fail
+ */
+//Attention: this API hide in stack, user no need use !!!
 ble_sts_t blc_att_requestMtuSizeExchange(u16 connHandle, u16 mtu_size);
 void blc_att_registerMtuSizeExchangeCb(attRxMtuSizeExchangeCommpleteCb cb);
 void blt_att_resetMtuSizeToDefault(void);
@@ -107,5 +127,4 @@ void blt_att_resetMtuSizeToDefault(void);
 u16  blc_att_getEffectiveMtuSize(void);
 
 
-ble_sts_t bls_att_setDeviceName(u8* pName,u8 len);  //only module/mesh/hci use
 int l2cap_att_client_handler (u16 conn, u8 *p);

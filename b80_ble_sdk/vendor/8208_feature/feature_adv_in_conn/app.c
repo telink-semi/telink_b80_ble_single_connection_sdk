@@ -264,9 +264,9 @@ void user_init_normal(void)
 		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
 		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is SMP_BONDING_DEVICE_MAX_NUM, can not bigger that this value
 													    //and this func must call before bls_smp_enableParing
-		bls_smp_enableParing (SMP_PARING_CONN_TRRIGER );
+		bls_smp_enableParing (SMP_PAIRING_CONN_TRRIGER );
 	#else
-		bls_smp_enableParing (SMP_PARING_DISABLE_TRRIGER );
+		bls_smp_enableParing (SMP_PAIRING_DISABLE_TRRIGER );
 	#endif
 
 	//////////// Host Initialization  End /////////////////////////

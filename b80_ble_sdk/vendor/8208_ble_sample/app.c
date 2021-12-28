@@ -76,12 +76,6 @@ _attribute_data_retention_ u32	advertise_begin_tick;
 _attribute_data_retention_ own_addr_type_t app_own_address_type = OWN_ADDRESS_PUBLIC;
 
 
-	#define		MTU_RX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
-	#define		MTU_TX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
-
-	_attribute_data_retention_ u8 mtu_rx_fifo[MTU_RX_BUFF_SIZE_MAX];
-	_attribute_data_retention_ u8 mtu_tx_fifo[MTU_TX_BUFF_SIZE_MAX];
-
 
 /**
  * @brief	BLE Advertising data
@@ -137,7 +131,7 @@ void app_switch_to_indirect_adv(u8 e, u8 *p, int n)
 void task_connect(u8 e, u8 *p, int n)
 {
 
-	bls_l2cap_requestConnParamUpdate (CONN_INTERVAL_10MS, CONN_INTERVAL_10MS, 99, CONN_TIMEOUT_8S);  // 1 S
+	bls_l2cap_requestConnParamUpdate (CONN_INTERVAL_10MS, CONN_INTERVAL_10MS, 99, CONN_TIMEOUT_4S);  // 1 S
 
 	latest_user_event_tick = clock_time();
 	device_in_connection_state = 1;
@@ -201,43 +195,6 @@ _attribute_ram_code_ void user_set_rf_power (u8 e, u8 *p, int n)
 }
 
 
-/*----------------------------------------------------------------------------*/
-/*------------- OTA  Function                                 ----------------*/
-/*----------------------------------------------------------------------------*/
-#if (BLE_REMOTE_OTA_ENABLE)
-u8 	ota_is_working = 0;
-
-void entry_ota_mode(void)
-{
-#if(UI_LED_ENABLE)
-	gpio_write(GPIO_LED_BLUE, 1);
-	gpio_write(GPIO_LED_GREEN, 1);
-#endif
-	ota_is_working = 1;
-	bls_ota_setTimeout(30 * 1000 * 1000); //set OTA timeout  15 seconds
-}
-
-void show_ota_result(int result)
-{
-#if(UI_LED_ENABLE)
-	if(result == OTA_SUCCESS){  //OTA success
-		gpio_write(GPIO_LED_BLUE, 0);
-		sleep_us(1000000);  //led off for 1 second
-		gpio_write(GPIO_LED_BLUE, 1);
-		sleep_us(1000000);  //led on for 1 second
-	}
-	else{  //OTA fail
-		while(1)
-		{
-			gpio_toggle(GPIO_LED_BLUE);
-			sleep_us(1000000);  //led on for 1 second
-		}
-
-	}
-#endif
-}
-
-#endif
 
 
 /**
@@ -251,7 +208,7 @@ void blt_pm_proc(void)
 		#if (UI_KEYBOARD_ENABLE)
 			bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
 
-		#if (BLE_REMOTE_OTA_ENABLE)
+		#if (BLE_OTA_SERVER_ENABLE)
 			if(ota_is_working || scan_pin_need || key_not_released )
 			{
 				bls_pm_setSuspendMask(SUSPEND_DISABLE);
@@ -349,12 +306,6 @@ void user_init_normal(void)
 
 	//////////// Controller Initialization  End /////////////////////////
 
-#if(BLE_REMOTE_OTA_ENABLE)
-	bls_ota_clearNewFwDataArea(); //must
-	bls_ota_registerStartCmdCb(entry_ota_mode);
-	bls_ota_registerResultIndicateCb(show_ota_result);
-#endif
-
 
 
 	//////////// Host Initialization  Begin /////////////////////////
@@ -364,7 +315,7 @@ void user_init_normal(void)
 	/* L2CAP Initialization */
 	blc_l2cap_register_handler(blc_l2cap_packet_receive);
 
-	blc_l2cap_initMtuBuffer(mtu_rx_fifo, MTU_RX_BUFF_SIZE_MAX, mtu_tx_fifo, MTU_TX_BUFF_SIZE_MAX);
+	blc_l2cap_initDataBuffer(app_l2cap_rx_fifo, L2CAP_RX_BUFF_SIZE, app_l2cap_tx_fifo, L2CAP_TX_BUFF_SIZE);
 
 
 	/* SMP Initialization */
@@ -375,9 +326,9 @@ void user_init_normal(void)
 		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
 		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is SMP_BONDING_DEVICE_MAX_NUM, can not bigger that this value
 													    //and this func must call before bls_smp_enableParing
-		bls_smp_enableParing (SMP_PARING_CONN_TRRIGER );
+		bls_smp_enableParing (SMP_PAIRING_CONN_TRRIGER );
 	#else
-		bls_smp_enableParing (SMP_PARING_DISABLE_TRRIGER );
+		bls_smp_enableParing (SMP_PAIRING_DISABLE_TRRIGER );
 	#endif
 
 	//////////// Host Initialization  End /////////////////////////
@@ -390,6 +341,8 @@ void user_init_normal(void)
 
 //////////////////////////// User Configuration for BLE application ////////////////////////////
 	#if(APP_SECURITY_ENABLE)
+		HID_service_on_android7p0_init();
+
 		u8 bond_number = blc_smp_param_getCurrentBondingDeviceNumber(); 		//get bonded device number
 		smp_param_save_t  bondInfo;
 		if(bond_number)   //at least 1 bonding device exist
@@ -441,6 +394,16 @@ void user_init_normal(void)
 
 
 
+	#if(BLE_OTA_SERVER_ENABLE)
+		/* OTA module initialization must be called after "blc_ota_setNewFirmwwareStorageAddress"(if used), and before any other OTA API.*/
+		blc_ota_initOtaServer_module();
+
+		blc_ota_registerOtaStartCmdCb(app_enter_ota_mode);
+		blc_ota_registerOtaResultIndicationCb(app_ota_result);
+	#endif
+
+
+
 	///////////////////// Power Management initialization///////////////////
 	#if(BLE_APP_PM_ENABLE)
 		blc_ll_initPowerManagement_module();        //pm module:      	 optional
@@ -481,7 +444,7 @@ void main_loop (void)
 	////////////////////////////////////// BLE entry /////////////////////////////////
 	blc_sdk_main_loop();
 #if(UI_LED_ENABLE)
-	gpio_write(GPIO_LED_GREEN,1);
+	gpio_write(GPIO_LED_WHITE,1);
 #endif
 	////////////////////////////////////// UI entry /////////////////////////////////
 	#if (UI_KEYBOARD_ENABLE)

@@ -146,8 +146,4 @@ ble_sts_t blc_ll_setAdvParamInConnSlaveRole( u8 *adv_data, u8 advData_len, u8 *s
 											 u8 advType,   u8 ownAddrType, u8 adv_channelMap, u8 advFilterPolicy);
 
 
-
-void 	  blt_enable_adv_after_scan_req(u8 en);
-
-
 #endif /* LL_ADV_H_ */

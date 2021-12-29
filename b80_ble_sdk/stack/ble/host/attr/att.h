@@ -85,11 +85,6 @@ typedef struct attribute
 
 
 
-
-
-
-/******************************* User Interface  ************************************/
-//GATT server table
 /**
  * @brief	This function is used to set ATT table
  * @param	*p - the pointer of attribute table
@@ -97,9 +92,10 @@ typedef struct attribute
  */
 void bls_att_setAttributeTable(u8 *p);
 
-void bls_att_registerHandleValueConfirmCb(att_handleValueConfirm_callback_t cb);
 
-//MTU size
+
+
+
 /**
  * @brief	This function is used to set RX MTU size
  * @param	mtu_size - ATT MTU size
@@ -107,6 +103,9 @@ void bls_att_registerHandleValueConfirmCb(att_handleValueConfirm_callback_t cb);
  * 			other: fail
  */
 ble_sts_t blc_att_setRxMtuSize(u16 mtu_size);
+
+
+
 /**
  * @brief	This function is used to request MTU size exchange
  * @param	connHandle - connect handle
@@ -116,8 +115,8 @@ ble_sts_t blc_att_setRxMtuSize(u16 mtu_size);
  */
 //Attention: this API hide in stack, user no need use !!!
 ble_sts_t blc_att_requestMtuSizeExchange(u16 connHandle, u16 mtu_size);
-void blc_att_registerMtuSizeExchangeCb(attRxMtuSizeExchangeCommpleteCb cb);
-void blt_att_resetMtuSizeToDefault(void);
+
+
 
 /**
  * @brief   This function is used to get effective MTU size.
@@ -127,4 +126,19 @@ void blt_att_resetMtuSizeToDefault(void);
 u16  blc_att_getEffectiveMtuSize(void);
 
 
+
+
+
+
+void blc_att_registerMtuSizeExchangeCb(attRxMtuSizeExchangeCommpleteCb cb);
+
+
+
+void bls_att_registerHandleValueConfirmCb(att_handleValueConfirm_callback_t cb);
+
+
+
 int l2cap_att_client_handler (u16 conn, u8 *p);
+
+
+

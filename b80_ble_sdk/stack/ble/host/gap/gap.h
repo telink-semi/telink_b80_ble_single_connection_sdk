@@ -26,3 +26,11 @@
 
 
 #define GAP_APPEARE_UNKNOWN                     0x0000 //!< Unknown
+
+
+/**
+ * @brief      this  function is used to initialize GAP Peripheral
+ * @param	   none
+ * @return     none
+ */
+void 		blc_gap_peripheral_init(void);

@@ -31,7 +31,7 @@
 #define  DEBUG_IO		1
 #define  DEBUG_USB		2
 
-#define  DEBUG_BUS  	1
+#define  DEBUG_BUS  	0
 
 #if(DEBUG_BUS==DEBUG_IO)
 #define PRINT_BAUD_RATE             		115200   	//1M baud rate,should Not bigger than 1Mb/s

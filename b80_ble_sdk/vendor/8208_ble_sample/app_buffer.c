@@ -40,7 +40,7 @@ _attribute_data_retention_ u8	app_acl_txfifo[ACL_TX_FIFO_SIZE * ACL_TX_FIFO_NUM]
 
 /***************** ACL connection L2CAP layer MTU TX & RX data FIFO allocation, Begin ********************************/
 _attribute_data_retention_ u8 app_l2cap_rx_fifo[L2CAP_RX_BUFF_SIZE];
-_attribute_data_retention_ u8 app_l2cap_tx_fifo[L2CAP_TX_BUFF_SIZE];
+
 /***************** ACL connection L2CAP layer MTU TX & RX data FIFO allocation, End **********************************/
 
 

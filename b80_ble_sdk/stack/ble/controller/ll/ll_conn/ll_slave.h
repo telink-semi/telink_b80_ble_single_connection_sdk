@@ -77,43 +77,33 @@ u16			bls_ll_getConnectionTimeout(void);
 
 
 
-
-
-
-
-
-
-
-bool		bls_ll_isConnectState (void);
-
-u32         bls_ll_getConnectionCreateTime(void);
-
-	/**
-	 * @brief      register to disable brx event for flash operation.
-	 * @param	   none
-	 * @return     maximum time of disable brx event
-	 */
+/**
+* @brief      register to disable brx event for flash operation.
+* @param	   none
+* @return     maximum time of disable brx event
+*/
 int			bls_ll_requestConnBrxEventDisable(void);
 
-	/**
-	 * @brief      diasble brx event.
-	 * @param	   none
-	 * @return     none
-	 */
+/**
+* @brief      diasble brx event.
+* @param	   none
+* @return     none
+*/
 void		bls_ll_disableConnBrxEvent(void);
 
-	/**
-	 * @brief      recover brx event.
-	 * @param	   none
-	 * @return     none
-	 */
+/**
+* @brief      recover brx event.
+* @param	   none
+* @return     none
+ */
 void		bls_ll_restoreConnBrxEvent(void);
 
+/**
+ * @brief      for user to set short tolerance time of connection
+ * @param[in]  short_tor_us - short tolerance time of connection
+*  @return     none
+ */
 void 		blc_ll_setShortTolerance(int short_tor_us);
-
-
-//ble module event
-ble_sts_t 	bls_hci_mod_setEventMask_cmd(u32 evtMask);  //eventMask: module special
 
 /**
  * @brief      get remote support feature by HCI in slave role .

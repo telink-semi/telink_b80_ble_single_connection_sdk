@@ -129,13 +129,13 @@
 #define PA0_FUNC	AS_GPIO
 #endif
 #ifndef PA1_FUNC
-#define PA1_FUNC	AS_DM
+#define PA1_FUNC	DM
 #endif
 #ifndef PA2_FUNC
-#define PA2_FUNC	AS_DP
+#define PA2_FUNC	DP
 #endif
 #ifndef PA3_FUNC
-#define PA3_FUNC	AS_SWS
+#define PA3_FUNC	SWS
 #endif
 #ifndef PA4_FUNC
 #define PA4_FUNC	AS_GPIO
@@ -281,7 +281,7 @@
 #define PB2_FUNC	AS_GPIO
 #endif
 #ifndef PB3_FUNC
-#define PB3_FUNC	AS_SPI_WP_IO2
+#define PB3_FUNC	SPI_WP_IO2
 #endif
 #ifndef PB4_FUNC
 #define PB4_FUNC	AS_GPIO
@@ -576,7 +576,7 @@
 #define PD3_FUNC	AS_GPIO
 #endif
 #ifndef PD4_FUNC
-#define PD4_FUNC	AS_SPI_HOLD_IO3
+#define PD4_FUNC	SPI_HOLD_IO3
 #endif
 #ifndef PD5_FUNC
 #define PD5_FUNC	AS_GPIO
@@ -665,16 +665,16 @@
 #endif
 
 #ifndef PE0_FUNC
-#define PE0_FUNC	AS_MSPI_MOSI
+#define PE0_FUNC	MSPI_MOSI
 #endif
 #ifndef PE1_FUNC
-#define PE1_FUNC	AS_MSPI_MCLK
+#define PE1_FUNC	MSPI_MCLK
 #endif
 #ifndef PE2_FUNC
-#define PE2_FUNC	AS_MSPI_MSCN
+#define PE2_FUNC	MSPI_MSCN
 #endif
 #ifndef PE3_FUNC
-#define PE3_FUNC	AS_MSPI_MISO
+#define PE3_FUNC	MSPI_MISO
 #endif
 
 #ifndef PF0_OUTPUT_ENABLE

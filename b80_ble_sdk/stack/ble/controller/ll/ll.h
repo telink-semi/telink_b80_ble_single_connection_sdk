@@ -192,7 +192,7 @@ ble_sts_t	blc_controller_check_appBufferInitialization(void);
 bool		blc_ll_isControllerEventPending(void);
 
 
-ble_sts_t 	blc_ll_exchangeDataLength (u8 opcode, u16 maxTxOct);   ///core4.2 data extension
+
 
 
 

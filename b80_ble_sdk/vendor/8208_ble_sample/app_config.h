@@ -28,7 +28,7 @@
 /**
  *  @brief  Feature select in BLE Sample project
  */
-#define FLASH_SIZE_OPTION							FLASH_SIZE_OPTION_128K //very important, user need confirm !!!
+#define FLASH_SIZE_OPTION							FLASH_SIZE_OPTION_512K //very important, user need confirm !!!
 #define APP_SECURITY_ENABLE      					1
 #define	BLE_OTA_SERVER_ENABLE						1
 
@@ -38,7 +38,7 @@
 /* Power Management */
 #define BLE_APP_PM_ENABLE							1
 #define PM_DEEPSLEEP_RETENTION_ENABLE            	0 //Todo SunWei
-#define PM_DEEPSLEEP_ENABLE            				0 //Todo SunWei
+#define PM_DEEPSLEEP_ENABLE            				1 //Todo SunWei
 
 
 

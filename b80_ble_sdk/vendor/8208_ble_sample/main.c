@@ -66,11 +66,6 @@ int main(void)
 
 	gpio_init(1);
 
-	#if 0 //TODO: check how many Flash & SRAM size used for this, decide if this function added (SiHui)
-		/* Check MCU flash size */
-		blc_readFlashSize_autoConfigCustomFlashSector();
-	#endif
-
 	/* load customized freq_offset CAP value and TP value. */
 	blc_app_loadCustomizedParameters();
 

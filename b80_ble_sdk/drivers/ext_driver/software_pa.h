@@ -52,7 +52,11 @@ typedef void (*rf_pa_callback_t)(int type);
 extern rf_pa_callback_t  blc_rf_pa_cb;
 
 
-
+/**
+ * @brief   	This function serves to set RF PA initialization .
+ * @param[in]   none.
+ * @return  	none.
+ */
 void rf_pa_init(void);
 
 

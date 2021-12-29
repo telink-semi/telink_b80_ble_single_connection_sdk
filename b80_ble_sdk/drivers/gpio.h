@@ -142,6 +142,16 @@ typedef enum{
 typedef enum{
 	    AS_GPIO 	   =	0xff,
 
+		DM 			   = 	0,
+		DP 			   = 	0,
+		SWS 		   = 	0,
+		SPI_WP_IO2 	   = 	0,
+		SPI_HOLD_IO3   = 	0,
+		MSPI_MOSI	   = 	0,
+		MSPI_MCLK 	   = 	0,
+		MSPI_MSCN 	   = 	0,
+		MSPI_MISO	   = 	0,
+
         KSCAN          =	1,
 		DBG            =	2,
 
@@ -187,23 +197,7 @@ typedef enum{
 		BLE_ACTIVITY   =	33,
 		BLE_STATUS     =	34,
 		WIFI_DENY_I    =	35,
-
 }gpio_func_e;
-
-/**
- *  @brief  Define GPIO mux func
- */
-typedef enum{
-		AS_DM,
-		AS_DP,
-		AS_SWS,
-		AS_SPI_WP_IO2,
-		AS_SPI_HOLD_IO3,
-		AS_MSPI_MOSI,
-		AS_MSPI_MCLK,
-		AS_MSPI_MSCN,
-		AS_MSPI_MISO,
-}gpio_fuc_e;
 
 typedef enum{
 	Level_Low=0,

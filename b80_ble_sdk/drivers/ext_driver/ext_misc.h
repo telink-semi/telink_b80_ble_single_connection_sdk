@@ -50,8 +50,6 @@ enum{
  * @return     the result of a serial of random number..
  */
 void generateRandomNum(int len, unsigned char *data);
-
-unsigned short myrand(void);
 /******************************* random_end ********************************************************************/
 
 
@@ -67,7 +65,11 @@ unsigned short myrand(void);
 #define			FLD_RF_IRQ_CRC					FLD_RF_IRQ_RX_CRC_2
 #define			RF_1M_500K_PACKET_CRC_OK		RF_BLE_PACKET_CRC_OK
 #define			rf_ble_set_crc					rf_set_ble_crc
-
+/**
+ * @brief   	This function serves to set RF  ble 1m Register initialization .
+ * @param[in]   none.
+ * @return  	none.
+ */
 void rf_ble_1m_param_init(void);
 /******************************* RF_end ********************************************************************/
 
@@ -93,19 +95,6 @@ void rf_ble_1m_param_init(void);
 
 /******************************* dma_end ******************************************************************/
 
-
-/******************************* CLOCK_start ******************************************************************/
-// check if the current time_tick is exceed span from ref time
-//static inline u32 clock_time_exceed_tick(u32 ref, u32 span){
-//	return ((u32)(clock_time() - ref) > span);
-//}
-static inline unsigned int clock_time_exceed_tick(unsigned int ref, unsigned int span){
-	return ((unsigned int)(clock_time() - ref) > span);
-}
-/******************************* CLOCK_end ********************************************************************/
-
-
-
 /******************************* stimer_start ******************************************************************/
 enum {
 	FLD_SYSTEM_TICK_IRQ_EN  = 		BIT(2),
@@ -120,13 +109,14 @@ enum{
 
 /**
  * @brief    This function serves to set system timer capture tick.
+ * @param[in]  sys_timer_tick- the system timer capture tick
  * @return  none
  */
 void systimer_set_irq_capture(unsigned int sys_timer_tick);
 
 /**
  * @brief    This function serves to get system timer capture tick.
- * @return  none
+ * @return  system timer capture tick
  */
 static inline unsigned int systimer_get_irq_capture(void)
 {
@@ -171,13 +161,19 @@ static inline void systimer_clr_irq_status(void)
 
 /**
  * @brief    This function serves to get system timer interrupt status.
- * @return  none
+ * @return  system timer interrupt status
  */
 static inline unsigned int systimer_get_irq_status(void)
 {
 	return reg_irq_src & FLD_IRQ_SYSTEM_TIMER;
 }
 
+/**
+ * @brief    This function serves to determine whether tick1 exceeds tick2.
+ * @param[in]  tick1- the tick1
+ * @param[in]  tick2- the tick2
+ * @return  The comparison of tick1 and tick2.
+ */
 static inline int tick1_exceed_tick2(unsigned int tick1, unsigned int tick2)
 {
 	return (unsigned int)(tick1 - tick2) < BIT(30);

@@ -78,7 +78,7 @@ void		blc_l2cap_register_handler (void *p);
  * @return	0
  */
 int 		blc_l2cap_packet_receive (u16 connHandle, u8 * p);
-int 		blc_l2cap_send_data (u16 cid, u8 *p, int n);
+
 
 /**
  * @brief	This function is used to register the function to process L2CAP SIG CHANNEL packet
@@ -94,12 +94,9 @@ void 		blc_l2cap_reg_att_sig_hander(void *p);//signaling pkt proc
  * @brief		This function is used to initialize l2cap buffer to reassembly link lay PDU to SDU
  * @param[in]	pL2cap_rx_buff - the pointer of rx buffer
  * @param[in]	l2cap_rx_size   - the size of of rx buffer
- * @param[in]	pL2cap_tx_buff - the pointer of tx buffer
- * @param[in]	l2cap_tx_size   - the size of of tx buffer
  * @return		none.
  */
-void 		blc_l2cap_initDataBuffer(u8 *pL2cap_rx_buff, u16 l2cap_rx_size, u8 *pL2cap_tx_buff, u16 l2cap_tx_size);
-
+void blc_l2cap_initDataBuffer(u8 *pL2cap_rx_buff, u16 l2cap_rx_size);
 
 
 #endif

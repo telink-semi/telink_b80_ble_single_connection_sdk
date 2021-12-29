@@ -111,9 +111,8 @@ extern	u8	app_acl_txfifo[];
 #define	L2CAP_TX_BUFF_SIZE					CAL_L2CAP_BUFF_SIZE(CLIENT_RX_MTU)
 
 
+	extern	u8 app_l2cap_rx_fifo[];
 
-extern	u8 app_l2cap_rx_fifo[];
-extern	u8 app_l2cap_tx_fifo[];
 /***************** ACL connection L2CAP layer TX & RX data FIFO allocation, End **********************************/
 
 

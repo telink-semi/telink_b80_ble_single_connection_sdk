@@ -130,15 +130,3 @@ u16  blc_att_getEffectiveMtuSize(void);
 
 
 
-void blc_att_registerMtuSizeExchangeCb(attRxMtuSizeExchangeCommpleteCb cb);
-
-
-
-void bls_att_registerHandleValueConfirmCb(att_handleValueConfirm_callback_t cb);
-
-
-
-int l2cap_att_client_handler (u16 conn, u8 *p);
-
-
-

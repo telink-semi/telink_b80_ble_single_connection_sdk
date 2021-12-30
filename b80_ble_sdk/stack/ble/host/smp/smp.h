@@ -91,39 +91,62 @@ typedef enum{
 
 
 
-
-/**************************************************
- * API used for slave enable the device pairing.
- * encrypt_en	SMP_PAIRING_DISABLE_TRRIGER   -  not allow encryption
- * 				SMP_PAIRING_CONN_TRRIGER      -  pairing process start once connect.
- * 				SMP_PAIRING_PEER_TRRIGER      -  pairing process start once peer device start.
+/**
+ * @brief		This function is used for slave enable the device pairing.
+ * @param[in]	SMP_PAIRING_DISABLE_TRRIGER   -  not allow encryption
+ * @param[in]	SMP_PAIRING_CONN_TRRIGER      -  pairing process start once connect.
+ * @param[in]	SMP_PAIRING_PEER_TRRIGER      -  pairing process start once peer device start.
+ * @param[in]	l2cap_rx_size   - the size of of rx buffer
+ * @return		none.
  */
 int 		bls_smp_enableParing (smp_pairingTrriger_t encrypt_en);
 
 
-
+/**
+ * @brief		This function is used to set Pairing message storage address.
+ * @param[in]	addr - Pairing message storage address
+ * @return		none.
+ */
 void 		blc_smp_configPairingSecurityInfoStorageAddress (int addr);
 
 
-
-
+/**
+ * @brief		This function is used to set maximum bonding device number.
+ * @param[in]	device_num - maximum bonding device number.
+ * @return		none.
+ */
 ble_sts_t  	blc_smp_param_setBondingDeviceMaxNumber ( int device_num);
 
 
-
+/**
+ * @brief		This function is used to get current bonding device number.
+ * @return		bonding message number.
+ */
 u8			blc_smp_param_getCurrentBondingDeviceNumber(void);
 
-
+/**
+ * @brief		This function is used to load smp message.
+ * @param[in]	index - load by index .
+ * @param[in]	smp_param_load - load buffer.
+ * @return		bonding message address.
+ */
 u32 		blc_smp_param_loadByIndex(u8 index, smp_param_save_t* smp_param_load);
 
 
-
-
+/**
+ * @brief		This function is used to load smp message.
+ * @param[in]	addr_type - address type.
+ * @param[in]	addr - address
+ * @param[in]		smp_param_load - message load address.
+ * @return		bonding message address.
+ */
 u32			blc_smp_param_loadByAddr(u8 addr_type, u8* addr, smp_param_save_t* smp_param_load);
 
 
 
-
+/**
+ * @brief		This function is used to delete all smp message.
+ */
 
 void 		blc_smp_param_delete_all(void);
 

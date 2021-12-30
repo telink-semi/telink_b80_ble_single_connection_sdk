@@ -233,7 +233,7 @@ void user_init_normal(void)
 	 *   should re_stored) , so it must be done after battery check */
 	#if (APP_SECURITY_ENABLE)
 		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
-		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is SMP_BONDING_DEVICE_MAX_NUM, can not bigger that this value
+		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is 4, can not bigger than this value
 													    //and this func must call before bls_smp_enableParing
 		bls_smp_enableParing (SMP_PAIRING_CONN_TRRIGER );
 	#else
@@ -469,7 +469,6 @@ void main_loop (void)
 	#if (UI_KEYBOARD_ENABLE)
 		proc_keyboard (0, 0, 0);
 	#endif
-
 
 
 	////////////////////////////////////// PM Process /////////////////////////////////

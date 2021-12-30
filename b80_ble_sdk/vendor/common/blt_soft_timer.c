@@ -95,11 +95,11 @@ int blt_soft_timer_add(blt_timer_callback_t func, u32 interval_us)
  * when delete one soft timer, move forward the post soft timer.
  * thus, we not need to re-sort.
  */
-int  blt_soft_timer_delete_by_index(u8 index)
+void  blt_soft_timer_delete_by_index(u8 index)
 {
 	if(index >= blt_timer.currentNum){
 		write_reg32(0x8000, 0x11111121); while(1); //debug ERR
-		return 0;
+		return;
 	}
 
 

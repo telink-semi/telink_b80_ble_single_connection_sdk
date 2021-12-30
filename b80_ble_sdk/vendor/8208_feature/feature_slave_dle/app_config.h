@@ -39,10 +39,6 @@
 #define APP_SECURITY_ENABLE      					0
 
 
-
-#define APP_DEFAULT_HID_BATTERY_OTA_ATTRIBUTE_TABLE			1
-
-
 /**
  *  @brief  UI Configuration
  */

@@ -39,7 +39,7 @@
 #define MY_ADV_INTERVAL_MIN			ADV_INTERVAL_30MS
 #define MY_ADV_INTERVAL_MAX			ADV_INTERVAL_35MS
 
-#define MY_RF_POWER_INDEX			RF_POWER_P6p97dBm
+#define MY_RF_POWER_INDEX			RF_POWER_P2p87dBm
 
 _attribute_data_retention_	u32 connect_event_occurTick = 0;
 _attribute_data_retention_  u32 mtuExchange_check_tick = 0;
@@ -259,7 +259,7 @@ void user_init_normal(void)
 	blc_gap_peripheral_init();    //gap initialization
 
 	/* GATT Initialization */
-	my_att_init();
+	my_gatt_init();
 
 	/* ATT initialization */
 	/*If not set RX MTU size, default is: 23 bytes.  In this situation, if master send MtuSize Request before slave send MTU size request,
@@ -278,7 +278,7 @@ void user_init_normal(void)
 	 *   should re_stored) , so it must be done after battery check */
 	#if (APP_SECURITY_ENABLE)
 		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
-		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is SMP_BONDING_DEVICE_MAX_NUM, can not bigger that this value
+		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is 4, can not bigger than this value
 													    //and this func must call before bls_smp_enableParing
 		bls_smp_enableParing (SMP_PAIRING_CONN_TRRIGER );
 	#else
@@ -485,18 +485,8 @@ int module_onReceiveData(void *para)
 	if(len > 0)
 	{
 		printf("RF_RX len: %d\nc2s:write data: %d\n", p->rf_len, len);
-
 		printf("s2c:notify data: %d\n", len);
-#if 1
 		blc_gatt_pushHandleValueNotify(BLS_CONN_HANDLE,SPP_SERVER_TO_CLIENT_DP_H, &p->value, len);  //this API can auto handle MTU size
-#else
-		if( len + 3 <= final_MTU_size){   //opcode: 1 byte; attHandle: 2 bytes
-			blc_gatt_pushHandleValueNotify(BLS_CONN_HANDLE, 0x11, &p->value, len);
-		}
-		else{
-			//can not send this packet, cause MTU size exceed
-		}
-#endif
 	}
 
 	return 0;
@@ -519,11 +509,7 @@ void feature_sdle_test_mainloop(void)
 			blc_att_requestMtuSizeExchange(BLS_CONN_HANDLE, MTU_SIZE_SETTING);
 			printf("After conn 1.5s, S send  MTU size req to the Master.\n");
 		}
-
-
 	}
-
-
 
 	if(mtuExchange_check_tick && clock_time_exceed(mtuExchange_check_tick, 500000 )){  //2 S after connection established
 		mtuExchange_check_tick = 0;

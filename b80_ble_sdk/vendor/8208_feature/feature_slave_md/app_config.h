@@ -40,7 +40,6 @@
 
 
 
-#define APP_DEFAULT_HID_BATTERY_OTA_ATTRIBUTE_TABLE			1
 
 
 /**

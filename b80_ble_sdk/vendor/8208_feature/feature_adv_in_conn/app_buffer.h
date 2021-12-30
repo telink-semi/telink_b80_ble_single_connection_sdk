@@ -93,8 +93,6 @@ extern	u8	app_acl_txfifo[];
 
 
 
-
-
 /***************** ACL connection L2CAP layer RX data FIFO allocation, Begin ********************************/
 
 /* RX MTU size */
@@ -114,6 +112,8 @@ extern	u8	app_acl_txfifo[];
 
 extern	u8 app_l2cap_rx_fifo[];
 /***************** ACL connection L2CAP layer RX data FIFO allocation, End **********************************/
+
+
 
 
 #endif //end of (FEATURE_TEST_MODE == xxx)

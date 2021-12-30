@@ -39,7 +39,7 @@
 #define MY_ADV_INTERVAL_MIN			ADV_INTERVAL_30MS
 #define MY_ADV_INTERVAL_MAX			ADV_INTERVAL_35MS
 
-#define MY_RF_POWER_INDEX			RF_POWER_P6p97dBm
+#define MY_RF_POWER_INDEX			RF_POWER_P2p87dBm
 
 #define MY_DIRECT_ADV_TMIE			10000000
 
@@ -47,9 +47,11 @@
 
 
 
-_attribute_data_retention_ u8  sendTerminate_before_enterDeep = 0;
 _attribute_data_retention_	int device_in_connection_state;
 _attribute_data_retention_ u32	advertise_begin_tick;
+#if (PM_DEEPSLEEP_ENABLE)
+_attribute_data_retention_ u8  sendTerminate_before_enterDeep = 0;
+#endif
 
 _attribute_data_retention_ own_addr_type_t app_own_address_type = OWN_ADDRESS_PUBLIC;
 
@@ -143,7 +145,7 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 
 	}
 
-	#if (BLE_APP_PM_ENABLE)
+	#if (PM_DEEPSLEEP_ENABLE)
 		 //user has push terminate pkt to ble TX buffer before deepsleep
 		if(sendTerminate_before_enterDeep == 1){
 			sendTerminate_before_enterDeep = 2;
@@ -304,7 +306,7 @@ void user_init_normal(void)
 	 *   should re_stored) , so it must be done after battery check */
 	#if (APP_SECURITY_ENABLE)
 		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
-		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is SMP_BONDING_DEVICE_MAX_NUM, can not bigger that this value
+		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is 4, can not bigger than this value
 													    //and this func must call before bls_smp_enableParing
 		bls_smp_enableParing (SMP_PAIRING_CONN_TRRIGER );
 	#else

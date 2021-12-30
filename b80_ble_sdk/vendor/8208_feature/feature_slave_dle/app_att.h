@@ -24,6 +24,7 @@
 #ifndef APP_ATT_H_
 #define APP_ATT_H_
 
+
 #include "app_config.h"
 
 #if (FEATURE_TEST_MODE == TEST_SDATA_LENGTH_EXTENSION)
@@ -81,7 +82,7 @@ typedef enum
 
 	//boot keyboard output report
 	HID_BOOT_KB_REPORT_OUTPUT_CD_H,			//UUID: 2803, 	VALUE:  			Prop: Read | write| write_without_rsp
-	HID_BOOT_KB_REPORT_OUTPUT_DP_H,		    //UUID: 2A32, 	VALUE: bootKeyOutReport
+	HID_BOOT_KB_REPORT_OUTPUT_DP_H,			//UUID: 2A32, 	VALUE: bootKeyOutReport
 
 	//consume report in
 	HID_CONSUME_REPORT_INPUT_CD_H,			//UUID: 2803, 	VALUE:  			Prop: Read | Notify
@@ -113,6 +114,7 @@ typedef enum
 	HID_CONTROL_POINT_CD_H,					//UUID: 2803, 	VALUE:  			Prop: write_without_rsp
 	HID_CONTROL_POINT_DP_H,					//UUID: 2A4C 	VALUE: controlPoint
 
+
 	//// battery service ////
 	/**********************************************************************************************/
 	BATT_PS_H, 								//UUID: 2800, 	VALUE: uuid 180f
@@ -124,9 +126,8 @@ typedef enum
 	//// Ota ////
 	/**********************************************************************************************/
 	OTA_PS_H, 								//UUID: 2800, 	VALUE: telink ota service uuid
-	OTA_CMD_OUT_CD_H,						//UUID: 2803, 	VALUE:  			Prop: read | write_without_rsp | Notify
+	OTA_CMD_OUT_CD_H,						//UUID: 2803, 	VALUE:  			Prop: read | write_without_rsp
 	OTA_CMD_OUT_DP_H,						//UUID: telink ota uuid,  VALUE: otaData
-	OTA_CMD_INPUT_CCB_H,					//UUID: 2902, 	VALUE: otaDataCCC
 	OTA_CMD_OUT_DESC_H,						//UUID: 2901, 	VALUE: otaName
 
 	//// SPP ////
@@ -149,12 +150,15 @@ typedef enum
 }ATT_HANDLE;
 
 
+
+
 /**
- * @brief      Initialize the attribute table
- * @param[in]  none
- * @return     none
+ * @brief   GATT initialization.
+ *          !!!Note: this function is used to register ATT table to BLE Stack.
+ * @param   none.
+ * @return  none.
  */
-void	my_att_init (void);
+void my_gatt_init (void);
 
 
 

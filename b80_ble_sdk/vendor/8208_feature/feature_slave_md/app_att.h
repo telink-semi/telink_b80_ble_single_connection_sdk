@@ -24,6 +24,7 @@
 #ifndef APP_ATT_H_
 #define APP_ATT_H_
 
+
 #include "app_config.h"
 
 #if (FEATURE_TEST_MODE == TEST_SLAVE_MD)
@@ -58,9 +59,9 @@ typedef enum
 
 	//// device information ////
 	/**********************************************************************************************/
-	DeviceInformation_PS_H,					 //UUID: 2800, 	VALUE: uuid 180A
-	DeviceInformation_pnpID_CD_H,			 //UUID: 2803, 	VALUE:  			Prop: Read
-	DeviceInformation_pnpID_DP_H,			 //UUID: 2A50,	VALUE: PnPtrs
+	DeviceInformation_PS_H,					//UUID: 2800, 	VALUE: uuid 180A
+	DeviceInformation_pnpID_CD_H,			//UUID: 2803, 	VALUE:  			Prop: Read
+	DeviceInformation_pnpID_DP_H,			//UUID: 2A50,	VALUE: PnPtrs
 
 
 	//// HID ////
@@ -81,7 +82,7 @@ typedef enum
 
 	//boot keyboard output report
 	HID_BOOT_KB_REPORT_OUTPUT_CD_H,			//UUID: 2803, 	VALUE:  			Prop: Read | write| write_without_rsp
-	HID_BOOT_KB_REPORT_OUTPUT_DP_H,		    //UUID: 2A32, 	VALUE: bootKeyOutReport
+	HID_BOOT_KB_REPORT_OUTPUT_DP_H,			//UUID: 2A32, 	VALUE: bootKeyOutReport
 
 	//consume report in
 	HID_CONSUME_REPORT_INPUT_CD_H,			//UUID: 2803, 	VALUE:  			Prop: Read | Notify
@@ -142,12 +143,15 @@ typedef enum
 }ATT_HANDLE;
 
 
+
+
 /**
- * @brief      Initialize the attribute table
- * @param[in]  none
- * @return     none
+ * @brief   GATT initialization.
+ *          !!!Note: this function is used to register ATT table to BLE Stack.
+ * @param   none.
+ * @return  none.
  */
-void	my_att_init (void);
+void my_gatt_init (void);
 
 
 

@@ -39,7 +39,7 @@
 #define MY_ADV_INTERVAL_MIN			ADV_INTERVAL_30MS
 #define MY_ADV_INTERVAL_MAX			ADV_INTERVAL_35MS
 
-#define MY_RF_POWER_INDEX			RF_POWER_P6p97dBm
+#define MY_RF_POWER_INDEX			RF_POWER_P2p87dBm
 
 #define TEST_DATA_LEN		20
 
@@ -47,7 +47,10 @@
 
 _attribute_data_retention_ u32	advertise_begin_tick;
 _attribute_data_retention_ u32 latest_user_event_tick;
+_attribute_data_retention_ int write_data_test_tick = 0;
 
+_attribute_data_retention_	u8	app_test_data[TEST_DATA_LEN]={0x00,0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,
+															  0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,0x11,0x11,0x11};
 
 
 /**
@@ -84,6 +87,7 @@ const u8	tbl_scanRsp [] = {
  */
 void task_connect(u8 e, u8 *p, int n)
 {
+
 	bls_l2cap_requestConnParamUpdate (CONN_INTERVAL_10MS, CONN_INTERVAL_10MS, 99, CONN_TIMEOUT_4S);  // 1 S
 
 	write_data_test_tick = clock_time();
@@ -237,7 +241,7 @@ void user_init_normal(void)
 	blc_gap_peripheral_init();    //gap initialization
 
 	/* GATT Initialization */
-	my_att_init();
+	my_gatt_init();
 
 
 	/* L2CAP Initialization */
@@ -250,7 +254,7 @@ void user_init_normal(void)
 	 *   should re_stored) , so it must be done after battery check */
 	#if (APP_SECURITY_ENABLE)
 		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
-		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is SMP_BONDING_DEVICE_MAX_NUM, can not bigger that this value
+		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is 4, can not bigger than this value
 													    //and this func must call before bls_smp_enableParing
 		bls_smp_enableParing (SMP_PAIRING_CONN_TRRIGER );
 	#else
@@ -266,40 +270,13 @@ void user_init_normal(void)
 
 
 //////////////////////////// User Configuration for BLE application ////////////////////////////
-	#if(APP_SECURITY_ENABLE)
-		u8 bond_number = blc_smp_param_getCurrentBondingDeviceNumber(); 		//get bonded device number
-		smp_param_save_t  bondInfo;
-		if(bond_number)   //at least 1 bonding device exist
-		{
-			//get the latest bonding device (index: bond_number-1 )
-			blc_smp_param_loadByIndex( bond_number - 1, &bondInfo);
-		}
+	u8 status = bls_ll_setAdvParam(  MY_ADV_INTERVAL_MIN, MY_ADV_INTERVAL_MAX,
+									 ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+									 0,  NULL,
+									 MY_APP_ADV_CHANNEL,
+									 ADV_FP_NONE);
+	if(status != BLE_SUCCESS) { 	while(1); }
 
-		if(bond_number)//set direct adv
-		{
-			//set direct adv
-			u8 status = bls_ll_setAdvParam( MY_ADV_INTERVAL_MIN, MY_ADV_INTERVAL_MAX,
-											ADV_TYPE_CONNECTABLE_DIRECTED_LOW_DUTY, OWN_ADDRESS_PUBLIC,
-											bondInfo.peer_addr_type,  bondInfo.peer_addr,
-											MY_APP_ADV_CHANNEL,
-											ADV_FP_NONE);
-			//debug: ADV setting err
-			if(status != BLE_SUCCESS) { while(1); }
-
-			//it is recommended that direct adv only last for several seconds, then switch to indirect adv
-			bls_ll_setAdvDuration(60000000, 1);
-			bls_app_registerEventCallback (BLT_EV_FLAG_ADV_DURATION_TIMEOUT, &app_switch_to_indirect_adv);
-		}
-		else//set indirect ADV
-	#endif
-		{
-			u8 status = bls_ll_setAdvParam(  MY_ADV_INTERVAL_MIN, MY_ADV_INTERVAL_MAX,
-											 ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
-											 0,  NULL,
-											 MY_APP_ADV_CHANNEL,
-											 ADV_FP_NONE);
-			if(status != BLE_SUCCESS) { 	while(1); }
-		}
 
 
 	bls_ll_setAdvData( (u8 *)tbl_advData, sizeof(tbl_advData) );
@@ -501,7 +478,6 @@ void main_loop (void)
 
 		if(blc_ll_getCurrentState() == BLS_LINK_STATE_CONN)
 		{
-			DBG_CHN10_TOGGLE;
 			if( BLE_SUCCESS == blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,SPP_SERVER_TO_CLIENT_DP_H, app_test_data, 20)){
 				app_test_data[0] ++;
 			}

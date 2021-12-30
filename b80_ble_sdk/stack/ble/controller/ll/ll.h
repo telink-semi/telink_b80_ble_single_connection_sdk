@@ -177,10 +177,14 @@ void		bls_app_registerEventCallback (u8 e, blt_event_callback_t p);
 ble_sts_t	blc_controller_check_appBufferInitialization(void);
 
 
-
-
-
-
+/**
+ * @brief      this function is used to exchange data length.
+ * @param[in]	opcode - LL Control PDU Opcode
+ * @param[in]	maxTxOct - max TX octets of ACL_CONN
+ * @return     status, 0x00:  succeed
+ * 					   other: error code
+ */
+ble_sts_t 	blc_ll_exchangeDataLength (u8 opcode, u16 maxTxOct);
 
 
 /**

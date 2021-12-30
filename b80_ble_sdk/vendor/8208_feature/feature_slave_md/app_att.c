@@ -22,7 +22,6 @@
  *******************************************************************************************************/
 
 #include "tl_common.h"
-#include "drivers.h"
 #include "stack/ble/ble.h"
 
 #include "app_att.h"
@@ -30,8 +29,8 @@
 #include "app_config.h"
 
 
-#if (FEATURE_TEST_MODE == TEST_SLAVE_MD)
 
+#if (FEATURE_TEST_MODE == TEST_SLAVE_MD)
 /**
  *  @brief  connect parameters structure for ATT
  */
@@ -52,6 +51,8 @@ static const u16 clientCharacterCfgUUID = GATT_UUID_CLIENT_CHAR_CFG;
 static const u16 extReportRefUUID = GATT_UUID_EXT_REPORT_REF;
 
 static const u16 reportRefUUID = GATT_UUID_REPORT_REF;
+
+static const u16 characterPresentFormatUUID = GATT_UUID_CHAR_PRESENT_FORMAT;
 
 static const u16 userdesc_UUID	= GATT_UUID_CHAR_USER_DESC;
 
@@ -77,25 +78,27 @@ static const u16 my_appearance = GAP_APPEARE_UNKNOWN;
 
 static const u16 my_gattServiceUUID = SERVICE_UUID_GENERIC_ATTRIBUTE;
 
-static const gap_periConnectParams_t my_periConnParameters = {8, 11, 0, 1000};
+static const gap_periConnectParams_t my_periConnParameters = {20, 40, 0, 1000};
 
-_attribute_data_retention_	static u16 serviceChangeVal[2] = {0};
+static u16 serviceChangeVal[2] = {0};
 
-_attribute_data_retention_	static u8 serviceChangeCCC[2] = {0,0};
+static u8 serviceChangeCCC[2] = {0,0};
 
-static const u8 my_devName[] = {'f', 'e', 'a', 't', 'u', 'r', 'e'};
+static const u8 my_devName[] = {'f','e','a','t','u','r','e'};
+
 static const u8 my_PnPtrs [] = {0x02, 0x8a, 0x24, 0x66, 0x82, 0x01, 0x00};
 
 //////////////////////// Battery /////////////////////////////////////////////////
 static const u16 my_batServiceUUID        = SERVICE_UUID_BATTERY;
 static const u16 my_batCharUUID       	  = CHARACTERISTIC_UUID_BATTERY_LEVEL;
-_attribute_data_retention_	static u8 batteryValueInCCC[2] = {0,0};
-_attribute_data_retention_	static u8 my_batVal[1] 	= {99};
+static u8 batteryValueInCCC[2];
+static u8 my_batVal[1] 	= {99};
 
 //////////////////////// HID /////////////////////////////////////////////////////
 
 static const u16 my_hidServiceUUID        = SERVICE_UUID_HUMAN_INTERFACE_DEVICE;
 
+static const u16 hidServiceUUID           = SERVICE_UUID_HUMAN_INTERFACE_DEVICE;
 static const u16 hidProtocolModeUUID      = CHARACTERISTIC_UUID_HID_PROTOCOL_MODE;
 static const u16 hidReportUUID            = CHARACTERISTIC_UUID_HID_REPORT;
 static const u16 hidReportMapUUID         = CHARACTERISTIC_UUID_HID_REPORT_MAP;
@@ -105,32 +108,32 @@ static const u16 hidinformationUUID       = CHARACTERISTIC_UUID_HID_INFORMATION;
 static const u16 hidCtrlPointUUID         = CHARACTERISTIC_UUID_HID_CONTROL_POINT;
 static const u16 hidIncludeUUID           = GATT_UUID_INCLUDE;
 
-_attribute_data_retention_	static u8 protocolMode 			  = DFLT_HID_PROTOCOL_MODE;
+static const u8 protocolMode 			  = DFLT_HID_PROTOCOL_MODE;
 
 // Key in Report characteristic variables
-_attribute_data_retention_	static u8 reportKeyIn[8];
-_attribute_data_retention_	static u8 reportKeyInCCC[2] = {0,0};
+static u8 reportKeyIn[8];
+static u8 reportKeyInCCC[2];
 // HID Report Reference characteristic descriptor, key input
-_attribute_data_retention_	static u8 reportRefKeyIn[2] =
+static const u8 reportRefKeyIn[2] =
              { HID_REPORT_ID_KEYBOARD_INPUT, HID_REPORT_TYPE_INPUT };
 
 // Key out Report characteristic variables
-_attribute_data_retention_	static u8 reportKeyOut[1];
-_attribute_data_retention_	static u8 reportRefKeyOut[2] =
+static u8 reportKeyOut[1];
+static const u8 reportRefKeyOut[2] =
              { HID_REPORT_ID_KEYBOARD_INPUT, HID_REPORT_TYPE_OUTPUT };
 
 // Consumer Control input Report
-_attribute_data_retention_	static u8 reportConsumerControlIn[2];
-_attribute_data_retention_	static u8 reportConsumerControlInCCC[2] = {0,0};
-_attribute_data_retention_	static u8 reportRefConsumerControlIn[2] =
+static u8 reportConsumerControlIn[2];
+static u8 reportConsumerControlInCCC[2];
+static const u8 reportRefConsumerControlIn[2] =
 			 { HID_REPORT_ID_CONSUME_CONTROL_INPUT, HID_REPORT_TYPE_INPUT };
 
 // Boot Keyboard Input Report
-_attribute_data_retention_	static u8 bootKeyInReport;
-_attribute_data_retention_	static u8 bootKeyInReportCCC[2] = {0,0};
+static u8 bootKeyInReport;
+static u8 bootKeyInReportCCC[2];
 
 // Boot Keyboard Output Report
-_attribute_data_retention_	static u8 bootKeyOutReport;
+static u8 bootKeyOutReport;
 
 // HID Information characteristic
 static const u8 hidInformation[] =
@@ -141,7 +144,7 @@ static const u8 hidInformation[] =
 };
 
 // HID Control Point characteristic
-_attribute_data_retention_	static u8 controlPoint;
+static u8 controlPoint;
 
 // HID Report Map characteristic
 // Keyboard report descriptor (using format for Boot interface descriptor)
@@ -212,7 +215,7 @@ static const u8 reportMap[] =
 };
 
 // HID External Report Reference Descriptor for report map
-_attribute_data_retention_	static u16 extServiceUUID;
+static u16 extServiceUUID;
 
 
 ////////////////////// SPP ////////////////////////////////////
@@ -430,29 +433,28 @@ static const attribute_t my_Attributes[] = {
 
 
 	////////////////////////////////////// SPP /////////////////////////////////////////////////////
-	// 003a - 0041 SPP
+    // 002e - 0035 SPP
 	{8,ATT_PERMISSIONS_READ,2,16,(u8*)(&my_primaryServiceUUID), 	(u8*)(&TelinkSppServiceUUID), 0},
-	// server to client TX
+    // server to client TX
 	{0,ATT_PERMISSIONS_READ,2,sizeof(TelinkSppDataServer2ClientCharVal),(u8*)(&my_characterUUID), 		(u8*)(TelinkSppDataServer2ClientCharVal), 0},				//prop
-	{0,ATT_PERMISSIONS_READ,16,sizeof(SppDataServer2ClientData),(u8*)(&TelinkSppDataServer2ClientUUID), (u8*)(SppDataServer2ClientData), 0},	//value
+	{0,ATT_PERMISSIONS_READ,16,sizeof(SppDataServer2ClientData),(u8*)(&TelinkSppDataServer2ClientUUID),  (u8*)(SppDataServer2ClientData), 0},	//value
 	{0,ATT_PERMISSIONS_RDWR,2,2,(u8*)&clientCharacterCfgUUID,(u8*)(&SppDataServer2ClientDataCCC)},
 	{0,ATT_PERMISSIONS_READ,2,sizeof(TelinkSPPS2CDescriptor),(u8*)&userdesc_UUID,(u8*)(&TelinkSPPS2CDescriptor)},
 	// client to server RX
 	{0,ATT_PERMISSIONS_READ,2,sizeof(TelinkSppDataClient2ServerCharVal),(u8*)(&my_characterUUID), 		(u8*)(TelinkSppDataClient2ServerCharVal), 0},				//prop
 	{0,ATT_PERMISSIONS_RDWR,16,sizeof(SppDataClient2ServerData),(u8*)(&TelinkSppDataClient2ServerUUID), (u8*)(SppDataClient2ServerData), (att_readwrite_callback_t)&myC2SWrite},	//value
 	{0,ATT_PERMISSIONS_READ,2,sizeof(TelinkSPPC2SDescriptor),(u8*)&userdesc_UUID,(u8*)(&TelinkSPPC2SDescriptor)},
-
 };
-
 
 /**
  * @brief      Initialize the attribute table
  * @param[in]  none
  * @return     none
  */
-void	my_att_init (void)
+void	my_gatt_init (void)
 {
 	bls_att_setAttributeTable ((u8 *)my_Attributes);
 }
+
 
 #endif  //end of FEATURE_TEST_MODE

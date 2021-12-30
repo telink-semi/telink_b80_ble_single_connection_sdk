@@ -56,8 +56,9 @@ int main(void)
 		blc_pm_select_internal_32k_crystal();
 	#endif
 
-
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
+
+	rf_ble_1m_param_init();
 
 	clock_init(SYS_CLK_TYPE);
 
@@ -65,8 +66,6 @@ int main(void)
 
 	/* load customized freq_offset CAP value and TP value. */
 	blc_app_loadCustomizedParameters();
-
-	rf_ble_1m_param_init();
 
 	user_init_normal ();
 

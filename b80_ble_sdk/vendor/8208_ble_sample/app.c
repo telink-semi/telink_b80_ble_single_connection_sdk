@@ -421,9 +421,9 @@ void main_loop (void)
 
 	////////////////////////////////////// BLE entry /////////////////////////////////
 	blc_sdk_main_loop();
-
+#if (UI_LED_ENABLE)
 	gpio_write(GPIO_LED_GREEN,1);
-
+#endif
 	////////////////////////////////////// UI entry /////////////////////////////////
 	#if (UI_KEYBOARD_ENABLE)
 		proc_keyboard (0, 0, 0);

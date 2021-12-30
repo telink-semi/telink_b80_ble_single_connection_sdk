@@ -198,7 +198,7 @@ void app_enter_ota_mode(void)
  */
 void app_ota_result(int result)
 {
-
+#if (UI_LED_ENABLE)
 	if(result == OTA_SUCCESS){  //OTA success
 		gpio_write(GPIO_LED_BLUE, 0);
 		sleep_us(1000000);  //led off for 1 second
@@ -213,7 +213,7 @@ void app_ota_result(int result)
 		}
 
 	}
-
+#endif
 }
 
 #endif

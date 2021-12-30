@@ -1,0 +1,117 @@
+stages:
+  - genLicense
+  - checkLicense
+  - build
+  - clean_build
+  - plainPW_check
+  - cov
+  - fossid
+
+genLicense:
+  variables:
+    CODE_COMPILE_ARCH: 'TC32'
+    COV_PF_CATALOG: 'BLE'
+  stage: genLicense
+  before_script:
+  script:
+    - date
+    - generat_license_list
+    - date
+  artifacts:
+    paths:
+    - "license_list_gen.txt"
+    - "no_license_list_gen.txt"
+    - "mismatch_license_file_gen.txt"
+  when: manual
+  
+checkLicense:
+  variables:
+    CODE_COMPILE_ARCH: 'TC32'
+    COV_PF_CATALOG: 'BLE'
+  stage: checkLicense
+  allow_failure: yes
+  before_script:
+  script:
+    - date
+    - check_license
+    #- generat_license_list # For no license files
+    - date
+  artifacts:
+    when: always
+    paths:
+    - "mismatch_license.txt"
+    - "no_license*.txt"
+    - "unknow_type_file.txt"
+
+build:
+  stage: build
+  tags:
+    - LINUX
+    - TC32
+  before_script:
+  script:
+    - which tc32-elf-gcc
+    - chmod +x b80_ble_sdk/*.sh
+    - date
+    - $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import ./b80_ble_sdk/  -cleanBuild $ECLIPSE_PROJECT/$ECLIPSE_BUILD_TARGET
+    - date
+
+  artifacts:
+    paths:
+    - "b80_ble_sdk/8208_ble_sample/*.bin"
+    - "b80_ble_sdk/8208_ble_sample/*.lst"
+    - "b80_ble_sdk/8208_ble_sample/*.elf"
+
+clean_build:
+  stage: clean_build
+  tags:
+    - LINUX
+    - TC32
+  script:
+    - ls -a
+    - rm -r * .git*
+    - ls -a
+  when: always
+  
+plainPW_check:
+  stage: plainPW_check 
+  script:
+    - echo "Enter Plain Password checking stage"
+    - check_plain_weak_password | tee result.txt
+    - ls -l result.txt
+    - echo "Error List:"
+    - cat result.txt
+  artifacts:
+    paths:
+    - result.txt
+  when: manual
+
+# The cov job definition
+cov:
+  variables:
+    CODE_COMPILE_ARCH: 'TC32'
+    COV_PF_CATALOG: 'BLE'
+  stage: cov
+  tags:
+    - COV    
+    - LINUX    
+    - TC32
+  before_script:
+  script:
+    - chmod +x b80_ble_sdk/*.sh
+    - $COV_B COV_$CI_PROJECT_NAME $COV_B_TEMPLATE/$CODE_COMPILE_ARCH $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import ./b80_ble_sdk -cleanBuild b80_ble_sdk/8208_ble_sample
+    - $COV_A COV_$CI_PROJECT_NAME 
+    - cov_add_commit_steam_project_2_platform.sh
+  when: manual
+
+fossid:
+  tags:
+    - FOSSID
+  stage: fossid
+  script:
+    - fossid_check.sh
+  artifacts:
+    paths:
+    - fossid*.txt
+  when: manual
+

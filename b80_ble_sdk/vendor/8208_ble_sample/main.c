@@ -62,14 +62,14 @@ int main(void)
 
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
 
+	rf_ble_1m_param_init();
+
 	clock_init(SYS_CLK_TYPE);
 
 	gpio_init(1);
 
 	/* load customized freq_offset CAP value and TP value. */
 	blc_app_loadCustomizedParameters();
-
-	rf_ble_1m_param_init();
 
 	#if FIRMWARES_SIGNATURE_ENABLE
 		blt_firmware_signature_check();

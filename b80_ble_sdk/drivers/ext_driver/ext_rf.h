@@ -57,7 +57,6 @@ static inline void rf_trigle_codedPhy_accesscode(void)
  * @param[in]   none.
  * @return  	none.
  */
-
 void rf_ble_1m_param_init();
 
 #define		rf_receiving_flag				is_rf_receiving_pkt ///static inline

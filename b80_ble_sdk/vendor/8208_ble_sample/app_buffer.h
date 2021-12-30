@@ -90,30 +90,25 @@ extern	u8	app_acl_txfifo[];
 
 
 
-/***************** ACL connection L2CAP layer TX & RX data FIFO allocation, Begin ********************************/
+/***************** ACL connection L2CAP layer RX data FIFO allocation, Begin ********************************/
 
 /* RX MTU size */
-#define CLIENT_RX_MTU						23
+#define MTU_SIZE_SETTING						23
 
 
 /**
- * @brief	L2CAP RX Buffer size & L2CAP TX Buffer size
+ * @brief	L2CAP RX Buffer size
  * L2CAP RX buffer is used in stack, to hold split l2cap packet data sent by peer device, and will combine
- *                 them to one complete packet when last split packet come, then use for upper layer.
- * L2CAP TX buffer is used to stack, to hold a long l2cap data when it push LinkLayer TX FIFO failed, and
- *                 will try to push later until succeed.
- * usage limitation for L2CAP_RX_BUFF_SIZE & L2CAP_TX_BUFF_SIZE:
- *  1. should be greater than or equal to (CLIENT_RX_MTU + 6)
+ *                 them to one complete packet when last sub_packet come, then use for upper layer.
+ * usage limitation for L2CAP_RX_BUFF_SIZE:
+ *  1. should be greater than or equal to (MTU_SIZE_SETTING + 6)
  *  2. should be be an integer multiple of 4 (4 Byte align)
  */
-#define	L2CAP_RX_BUFF_SIZE					CAL_L2CAP_BUFF_SIZE(CLIENT_RX_MTU)
-
-#define	L2CAP_TX_BUFF_SIZE					CAL_L2CAP_BUFF_SIZE(CLIENT_RX_MTU)
+#define	L2CAP_RX_BUFF_SIZE					CAL_L2CAP_BUFF_SIZE(MTU_SIZE_SETTING)
 
 
-	extern	u8 app_l2cap_rx_fifo[];
-
-/***************** ACL connection L2CAP layer TX & RX data FIFO allocation, End **********************************/
+extern	u8 app_l2cap_rx_fifo[];
+/***************** ACL connection L2CAP layer RX data FIFO allocation, End **********************************/
 
 
 

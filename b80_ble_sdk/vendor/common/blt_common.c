@@ -25,40 +25,6 @@
 #include "drivers.h"
 #include "blt_common.h"
 
-#if 0//Flash size auto check.
-
-u32 flash_sector_mac_address = CFG_ADR_MAC_128K_FLASH;			//default flash is 128k
-u32 flash_sector_calibration = CFG_ADR_CALIBRATION_128K_FLASH;	//default flash is 128k
-
-void blc_readFlashSize_autoConfigCustomFlashSector(void)
-{
-//	u8 temp_buf[4];
-//	flash_read_mid(temp_buf);
-//	u8	flash_cap = temp_buf[2];
-
-	u32 flashMid;
-	u8 flashUid[16];
-	flash_read_mid_uid_with_check(&flashMid, &flashUid[0]);
-	u8	flash_cap = (flashMid>>16);
-
-	if(flash_cap == FLASH_SIZE_128K){
-		flash_sector_mac_address = CFG_ADR_MAC_128K_FLASH;
-		flash_sector_calibration = CFG_ADR_CALIBRATION_128K_FLASH;
-	}
-	else if(flash_cap == FLASH_SIZE_512K){
-		flash_sector_mac_address = CFG_ADR_MAC_512K_FLASH;
-		flash_sector_calibration = CFG_ADR_CALIBRATION_512K_FLASH;
-	}
-	else{
-		//This SDK do not support flash size other than 512K/1M
-		//If code stop here, please check your Flash
-		while(1);
-	}
-
-
-//	flash_set_capacity(flash_cap);
-}
-#endif
 
 /*
  * VVWWXX38C1A4YYZZ

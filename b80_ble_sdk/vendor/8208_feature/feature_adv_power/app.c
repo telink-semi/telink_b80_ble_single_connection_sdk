@@ -48,15 +48,7 @@
 _attribute_data_retention_ u32	advertise_begin_tick;
 _attribute_data_retention_ u32 latest_user_event_tick;
 
-#if CHANGE_NEW_CODE
 
-	#define		MTU_RX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
-	#define		MTU_TX_BUFF_SIZE_MAX			ATT_ALLIGN4_DMA_BUFF(23)
-
-	_attribute_data_retention_ u8 mtu_rx_fifo[MTU_RX_BUFF_SIZE_MAX];
-	_attribute_data_retention_ u8 mtu_tx_fifo[MTU_TX_BUFF_SIZE_MAX];
-
-#endif
 
 
 
@@ -350,15 +342,16 @@ void user_init_normal(void)
 
 
 	//////////// Host Initialization  Begin /////////////////////////
+	/* GAP initialization must be done before any other host feature initialization !!! */
+	blc_gap_peripheral_init();    //gap initialization
+
 	/* GATT Initialization */
 	my_gatt_init();
 
 
 	/* L2CAP Initialization */
 	blc_l2cap_register_handler(blc_l2cap_packet_receive);
-#if CHANGE_NEW_CODE
-	blc_l2cap_initMtuBuffer(mtu_rx_fifo, MTU_RX_BUFF_SIZE_MAX, mtu_tx_fifo, MTU_TX_BUFF_SIZE_MAX);
-#endif
+	blc_l2cap_initRxDataBuffer(app_l2cap_rx_fifo, L2CAP_RX_BUFF_SIZE);
 
 	/* SMP Initialization */
 	/* SMP Initialization may involve flash write/erase(when one sector stores too much information,

@@ -92,67 +92,39 @@ typedef enum{
 
 
 
-/**
- * @brief      API used for slave enable the device pairing.
- * @param[in] encrypt_en - SMP_PAIRING_DISABLE_TRRIGER   -  not allow encryption
+/**************************************************
+ * API used for slave enable the device pairing.
+ * encrypt_en	SMP_PAIRING_DISABLE_TRRIGER   -  not allow encryption
  * 				SMP_PAIRING_CONN_TRRIGER      -  pairing process start once connect.
  * 				SMP_PAIRING_PEER_TRRIGER      -  pairing process start once peer device start.
- * @return     none.
  */
-void 		bls_smp_enableParing (smp_pairingTrriger_t encrypt_en);
+int 		bls_smp_enableParing (smp_pairingTrriger_t encrypt_en);
 
 
-/**
- * @brief      This function is used to configure the bonding storage address.
- * @param[in]  addr - SMP bonding storage start address.
- * @return     none.
- */
+
 void 		blc_smp_configPairingSecurityInfoStorageAddress (int addr);
 
 
 
-/**
- * @brief      This function is used to set the maximum number of devices that can be bound.
- * @param[in]  device_num - Set the maximum number of devices that can be bound.
- * @return     none.
- */
+
 ble_sts_t  	blc_smp_param_setBondingDeviceMaxNumber ( int device_num);
 
 
-/**
- * @brief      This function is used to get the number of currently bound devices.
- * @param[in]  none.
- * @return     The number of currently bound devices.
- */
+
 u8			blc_smp_param_getCurrentBondingDeviceNumber(void);
 
-/**
- * @brief      This function is used to obtain device binding information based on Index.
- * @param[in]  index - Device bonding index number.
- * @param[out] smp_param_load - The value can refer to the structure 'smp_param_save_t'.
- * @return     0: Failed to load binding information;
- *             others: FLASH address of the information area.
- */
+
 u32 		blc_smp_param_loadByIndex(u8 index, smp_param_save_t* smp_param_load);
 
 
 
-/**
- * @brief      This function is used to obtain binding information according to the master address and address type.
- * @param[in]  device_num - Set the maximum number of devices that can be bound.
- * @param[in]  adr_type - Address type.
- * @param[in]  addr - Address.
- * @param[out] smp_param_load - The value can refer to the structure 'smp_param_save_t'.
- * @return     0: Failed to load binding information;
- *             others: FLASH address of the information area.
- */
+
 u32			blc_smp_param_loadByAddr(u8 addr_type, u8* addr, smp_param_save_t* smp_param_load);
 
-/**
- * @brief      This function is used for the slave device to clear all binding information stored in the local FLASH.
- * @param[in]  none.
- * @return     none.
- */
+
+
+
+
 void 		blc_smp_param_delete_all(void);
 
 
@@ -160,38 +132,33 @@ void 		blc_smp_param_delete_all(void);
 
 
 
-/**
+/*************************************************
  * 	@brief 		used for enable authentication MITM
- * 	@param[in]  en - 0: Disable authentication MITM;
- *                       1: Enable authentication MITM.
- * 							pinCodeInput - TK's value, input range [000000, 999999].
  * 	@return  	0 - setting success
- * 				others - pin code not in ranged.[000000, 999999]
+ * 				others - pin code not in ranged.(0 ~ 999,999)
  */
 int blc_smp_enableAuthMITM (int en, u32 pinCodeInput);
 
-/**
+/*************************************************
  * 	@brief 		used for set MITM protect input pinCode
- * 	@param[in]  pinCodeInput - TK's value, input range [000000, 999999].
  * 	@return  	0 - setting failure
- * 				others - pin code in ranged.[000000, 999999]
+ * 				others - pin code in ranged.(0 ~ 999,999)
  */
 int blc_smp_set_pinCode(u32 pinCodeInput);
 
-/**
+/*************************************************
  * 	@brief 		used for enable authentication bonding flag.
- * @param[in]  en - 0: Disable authentication bonding;
- *                       1: Enable authentication bonding.
- * 	@return  	  none
  */
-void blc_smp_enableBonding (int en);
+int blc_smp_enableBonding (int en);
 
-/**
- * @brief      This function is used to set device's IO capability.
- * @param[in]  ioCapablility - The IO capability's value can refer to the structure 'io_capability_t'.
- * @return     none.
- */
+/*************************************************
+ * 	used for set IO capability
+ * */
 void blc_smp_setIoCapability (u8 ioCapablility);
+
+
+
+void HID_service_on_android7p0_init(void);
 
 
 

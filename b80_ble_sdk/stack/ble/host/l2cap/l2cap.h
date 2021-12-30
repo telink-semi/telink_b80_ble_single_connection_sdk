@@ -96,7 +96,7 @@ void 		blc_l2cap_reg_att_sig_hander(void *p);//signaling pkt proc
  * @param[in]	l2cap_rx_size   - the size of of rx buffer
  * @return		none.
  */
-void blc_l2cap_initDataBuffer(u8 *pL2cap_rx_buff, u16 l2cap_rx_size);
+void blc_l2cap_initRxDataBuffer(u8 *pL2cap_rx_buff, u16 l2cap_rx_size);
 
 
 #endif

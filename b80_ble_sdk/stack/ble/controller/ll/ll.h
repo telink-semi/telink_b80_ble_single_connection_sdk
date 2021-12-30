@@ -29,7 +29,6 @@
 
 
 
-
 /**
  * @brief	BLE link layer state
  */

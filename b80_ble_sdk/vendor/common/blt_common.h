@@ -167,11 +167,6 @@ static inline void blc_app_loadCustomizedParameters(void)
 
 
 
-//void blc_readFlashSize_autoConfigCustomFlashSector(void);
-
-
-
-
 void blc_initMacAddress(int flash_addr, u8 *mac_public, u8 *mac_random_static);
 
 

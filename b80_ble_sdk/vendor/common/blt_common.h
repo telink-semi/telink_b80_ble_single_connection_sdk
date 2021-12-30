@@ -129,38 +129,26 @@
 
 static inline void blc_app_loadCustomizedParameters(void)
 {
-//	 if(!blt_miscParam.ext_cap_en)
-//	 {
-//		 if(flash_sector_calibration)
-//		 {
-//			 u32 capInfoAddr = flash_sector_calibration + CALIB_OFFSET_CAP_INFO;
-//
-//			 //customize freq_offset adjust cap value, if not customized, default ana_81 is 0xd0
-//			 if( (*(unsigned char*)capInfoAddr) != 0xff ){
-//				 //ana_81<4:0> is cap value(0x00 - 0x1f)
-//				 analog_write(0x81, (analog_read(0x81)&0xe0) | ((*(unsigned char*)capInfoAddr)&0x1f) );
-//			 }
-//		 }
-//	 }
-//	 else{//use external 24M cap
-//		analog_write(0x80, analog_read(0x80)&0xbf);//an_80<6> = 0, disable internal cap
-//		analog_write(0x81, analog_read(0x81)&0xe0);//an_81<4:0> = 0, clear internal cap value
-//	 }
+	if(!blt_miscParam.ext_cap_en)
+	 {
+		#if (FLASH_SIZE_OPTION == FLASH_SIZE_OPTION_128K)
+			 u32 capInfoAddr = CFG_ADR_CALIBRATION_128K_FLASH + CALIB_OFFSET_CAP_INFO;
+		#else
+			 u32 capInfoAddr = CFG_ADR_CALIBRATION_512K_FLASH + CALIB_OFFSET_CAP_INFO;
+		#endif
+			 //customize freq_offset adjust cap value, if not customized, default ana_8a is 0xd0
+		 if( (*(unsigned char*)capInfoAddr) != 0xff ){
+			 //ana_8a<5:0> is cap value(0x00 - 0x3f)
+			 unsigned char val = ((*(unsigned char*)capInfoAddr)&0x3f);
+			 analog_write(0x8a,analog_read(0x8a)&0x7f);			//turn on cap cali,an_8a<7> = 0
+			 analog_write(0x8a,(analog_read(0x8a)&0xc0)|val);	//update value
+		 }
+	 }
+	 else{//use external 24M cap
+		analog_write(0x8a,analog_read(0x8a)|0x80);//close internal cap; an_8a<7> = 1, disable internal cap
+		analog_write(0x8a,(analog_read(0x8a)&0xc0));//an_8a<5:0> = 0, clear internal cap value
+	 }
 
-	 //TODO yy
-//	 if(flash_sector_calibration)
-//	 {
-//		 u32 tpInfoAddr = flash_sector_calibration + CALIB_OFFSET_TP_INFO;
-//
-//		 // customize TP0/TP1 1M
-//		 if( ((*(unsigned char*)(tpInfoAddr)) != 0xff) && ((*(unsigned char*) (tpInfoAddr+1)) != 0xff) ){
-//			 rf_update_tp_value(*(unsigned char*) (tpInfoAddr), *(unsigned char*) (tpInfoAddr+1));
-//		 }
-//
-//		 if ( ((*(unsigned char*) (tpInfoAddr+2)) != 0xff) && ((*(unsigned char*) (tpInfoAddr+3)) != 0xff) ){
-//			 rf_load_2m_tp_value(*(unsigned char*) (tpInfoAddr+2), *(unsigned char*) (tpInfoAddr+3));
-//		 }
-//	 }
 }
 
 

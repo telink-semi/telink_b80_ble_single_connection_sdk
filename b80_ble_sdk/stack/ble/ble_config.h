@@ -58,32 +58,6 @@ static inline void blc_app_setExternalCrystalCapEnable(u8  en)
 }
 
 
-#if 0
-static inline void blc_app_loadCustomizedParameters(void)
-{
-	 if(!blt_miscParam.ext_cap_en)
-	 {
-		 //customize freq_offset adjust cap value, if not customized, default ana_81 is 0xd0
-		 if( (*(unsigned char*) CUST_CAP_INFO_ADDR) != 0xff ){
-			 //ana_81<4:0> is cap value(0x00 - 0x1f)
-			 analog_write(0x81, (analog_read(0x81)&0xe0) | ((*(unsigned char*) CUST_CAP_INFO_ADDR)&0x1f) );
-		 }
-	 }
-	 else{//use external 24M cap
-		analog_write(0x80, analog_read(0x80)&0xbf);//an_80<6> = 0, disable internal cap
-		analog_write(0x81, analog_read(0x81)&0xe0);//an_81<4:0> = 0, clear internal cap value
-	 }
-
-	 // customize TP0/TP1 1M
-	 if( ((*(unsigned char*) (CUST_TP_INFO_ADDR)) != 0xff) && ((*(unsigned char*) (CUST_TP_INFO_ADDR+1)) != 0xff) ){
-		 rf_update_tp_value(*(unsigned char*) (CUST_TP_INFO_ADDR), *(unsigned char*) (CUST_TP_INFO_ADDR+1));
-	 }
-
-	 if ( ((*(unsigned char*) (CUST_TP_INFO_ADDR+2)) != 0xff) && ((*(unsigned char*) (CUST_TP_INFO_ADDR+3)) != 0xff) ){
-		 rf_load_2m_tp_value(*(unsigned char*) (CUST_TP_INFO_ADDR+2), *(unsigned char*) (CUST_TP_INFO_ADDR+3));
-	 }
-}
-#endif
 
 
 

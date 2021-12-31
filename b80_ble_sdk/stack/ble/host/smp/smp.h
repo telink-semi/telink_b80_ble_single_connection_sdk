@@ -156,8 +156,12 @@ u32			blc_smp_param_loadByAddr(u8 addr_type, u8* addr, smp_param_save_t* smp_par
 void 		blc_smp_param_delete_all(void);
 
 
-
-
+/**
+ * @brief      This function is used to solve Android7.0 issue .
+ * @param[in]  none.
+ * @return     none.
+ */
+void HID_service_on_android7p0_init(void);
 
 
 /*

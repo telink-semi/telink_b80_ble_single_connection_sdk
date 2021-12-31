@@ -312,6 +312,8 @@ void user_init_normal(void)
 		bls_smp_enableParing (SMP_PAIRING_DISABLE_TRRIGER );
 	#endif
 
+	//HID_service_on_android7p0_init();  //HID device on Android 7.0/7.1
+
 	//////////// Host Initialization  End /////////////////////////
 
 //////////////////////////// BLE stack Initialization  End //////////////////////////////////

@@ -29,13 +29,16 @@
 
 #if (FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_TIMER)
 
+extern int 	key_not_released;
+extern u32 latest_user_event_tick;
+
 /**
  * @brief		user initialization when MCU power on or wake_up from deepSleep mode
  * @param[in]	none
  * @return      none
  */
-
 void user_init_normal(void);
+
 
 /**
  * @brief		user initialization when MCU wake_up from deepSleep_retention mode
@@ -45,25 +48,12 @@ void user_init_normal(void);
 void user_init_deepRetn(void);
 
 
-
 /**
  * @brief     BLE main loop
  * @param[in]  none.
  * @return     none.
  */
 void main_loop (void);
-
-
-
-
-
-
-
-
-
-extern u32 latest_user_event_tick;
-
-extern int 	key_not_released;
 
 
 /**
@@ -76,7 +66,6 @@ extern int 	key_not_released;
 void proc_keyboard (u8 e, u8 *p, int n);
 
 
-
 /**
  * @brief      callback function of LinkLayer Event "BLT_EV_FLAG_SUSPEND_ENTER"
  * @param[in]  e - LinkLayer Event type
@@ -85,9 +74,6 @@ void proc_keyboard (u8 e, u8 *p, int n);
  * @return     none
  */
 void app_set_kb_wakeup(u8 e, u8 *p, int n);
-
-
-
 
 
 

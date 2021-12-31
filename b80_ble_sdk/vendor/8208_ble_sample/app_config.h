@@ -37,8 +37,9 @@
 
 /* Power Management */
 #define BLE_APP_PM_ENABLE							1
-#define PM_DEEPSLEEP_RETENTION_ENABLE            	0 //Todo SunWei
-#define PM_DEEPSLEEP_ENABLE            				1 //Todo SunWei
+#define PM_DEEPSLEEP_ENABLE            				1
+#define PM_DEEPSLEEP_RETENTION_ENABLE            	0 //Todo SunWei, not supported now
+
 
 
 
@@ -54,11 +55,6 @@
  *  @brief  DEBUG  Configuration
  */
 #define DEBUG_GPIO_ENABLE							0
-
-/////////////////// DEEP SAVE FLG //////////////////////////////////
-#define USED_DEEP_ANA_REG                   DEEP_ANA_REG0 //u8,can save 8 bit info when deep
-#define CONN_DEEP_FLG	                    BIT(0) //if 1: conn deep, 0: adv deep
-
 
 
 
@@ -88,7 +84,7 @@ enum{
 
 
 /**
- *  @brief  watchdog enable and tiemout setting
+ *  @brief  watchdog enable and timeout setting
  */
 #define MODULE_WATCHDOG_ENABLE						0
 #define WATCHDOG_INIT_TIMEOUT						500  //Unit:ms

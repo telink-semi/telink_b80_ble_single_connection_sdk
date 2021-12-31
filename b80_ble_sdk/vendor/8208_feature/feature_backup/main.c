@@ -67,7 +67,7 @@ int main(void)
 	/* load customized freq_offset CAP value and TP value. */
 	blc_app_loadCustomizedParameters();
 
-	user_init_normal ();
+	user_init_normal();
 
     irq_enable();
 

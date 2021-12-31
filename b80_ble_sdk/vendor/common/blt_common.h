@@ -132,26 +132,26 @@
  */
 static inline void blc_app_loadCustomizedParameters(void)
 {
-	if(!blt_miscParam.ext_cap_en)
-	 {
-		#if (FLASH_SIZE_OPTION == FLASH_SIZE_OPTION_128K)
-			 u32 capInfoAddr = CFG_ADR_CALIBRATION_128K_FLASH + CALIB_OFFSET_CAP_INFO;
-		#else
-			 u32 capInfoAddr = CFG_ADR_CALIBRATION_512K_FLASH + CALIB_OFFSET_CAP_INFO;
-		#endif
-			 //customize freq_offset adjust cap value, if not customized, default ana_8a is 0xd0
-		 if( (*(unsigned char*)capInfoAddr) != 0xff ){
-			 //ana_8a<5:0> is cap value(0x00 - 0x3f)
-			 unsigned char val = ((*(unsigned char*)capInfoAddr)&0x3f);
-			 analog_write(0x8a,analog_read(0x8a)&0x7f);			//turn on cap cali,an_8a<7> = 0
-			 analog_write(0x8a,(analog_read(0x8a)&0xc0)|val);	//update value
-		 }
-	 }
-	 else{//use external 24M cap
-		analog_write(0x8a,analog_read(0x8a)|0x80);//close internal cap; an_8a<7> = 1, disable internal cap
-		analog_write(0x8a,(analog_read(0x8a)&0xc0));//an_8a<5:0> = 0, clear internal cap value
-	 }
+	unsigned char ana_8a = analog_read(0x8a);
+	if(blt_miscParam.ext_cap_en) // 24M XTAL use external cap
+	{
+		ana_8a |= 0x80;  //BIT(7) set 1, turn off internal cap
+		ana_8a &= 0xC0;  //BIT<6:0> clear, internal cap set 0
+		analog_write(0x8a, ana_8a);
+	}
+	else{ //24M XTAL use internal cap
+		unsigned char customed_cap;
+		flash_read_page(CFG_ADR_CALIBRATION + CALIB_OFFSET_CAP_INFO, 1, &customed_cap);
 
+		/* customize freq_offset adjust cap value, if not customized, default ana_8a is 0xd0 */
+		if( customed_cap != 0xFF ){
+			/* ana_8a<5:0> is cap value(0x00 - 0x3f) */
+			unsigned char val = customed_cap & 0x3F;  //BIT<5:0> is valid, do not change BIT<7:6>
+			ana_8a &= 0x40;  //BIT(7) clear, turn on internal cap; BIT<5:0> clear; BIT<6> not change
+			ana_8a |= val;
+			analog_write(0x8a, ana_8a);
+		}
+	}
 }
 
 

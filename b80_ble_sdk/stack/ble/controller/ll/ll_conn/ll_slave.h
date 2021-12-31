@@ -98,20 +98,7 @@ void		bls_ll_disableConnBrxEvent(void);
  */
 void		bls_ll_restoreConnBrxEvent(void);
 
-/**
- * @brief      for user to set short tolerance time of connection
- * @param[in]  short_tor_us - short tolerance time of connection
-*  @return     none
- */
-void 		blc_ll_setShortTolerance(int short_tor_us);
 
-/**
- * @brief      get remote support feature by HCI in slave role .
- * @param[in]  connHandle - connect handle
- * @return     status, 0x00:  succeed
- * 			           other: failed
- */
-ble_sts_t 	bls_hci_le_getRemoteSupportedFeatures(u16 connHandle);
 
 
 

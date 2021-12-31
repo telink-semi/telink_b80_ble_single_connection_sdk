@@ -56,7 +56,7 @@ int main(void)
 		blc_pm_select_internal_32k_crystal();
 	#endif
 
-	#if (FLASH_SIZE_OPTION == FLASH_SIZE_OPTION_128K)
+	#if (BLE_OTA_SERVER_ENABLE && (FLASH_SIZE_OPTION == FLASH_SIZE_OPTION_128K))
 		blc_ota_setFirmwareSizeAndBootAddress(48, MULTI_BOOT_ADDR_0x10000);
 	#endif
 
@@ -75,7 +75,7 @@ int main(void)
 		blt_firmware_signature_check();
 	#endif
 
-	user_init_normal ();
+	user_init_normal();
 
     irq_enable();
 

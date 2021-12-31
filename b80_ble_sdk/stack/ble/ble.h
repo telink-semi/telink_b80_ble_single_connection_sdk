@@ -21,13 +21,6 @@
  *          limitations under the License.
  *******************************************************************************************************/
 
-/*
- * ble.h
- *
- *  Created on: 2018-5-25
- *      Author: Administrator
- */
-
 #ifndef BLE_H_
 #define BLE_H_
 

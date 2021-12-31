@@ -198,30 +198,28 @@ void app_enter_ota_mode(void)
  */
 void app_ota_result(int result)
 {
-#if (UI_LED_ENABLE)
-	if(result == OTA_SUCCESS){  //OTA success
-		gpio_write(GPIO_LED_BLUE, 0);
-		sleep_us(1000000);  //led off for 1 second
-		gpio_write(GPIO_LED_BLUE, 1);
-		sleep_us(1000000);  //led on for 1 second
-	}
-	else{  //OTA fail
-		while(1)
-		{
-			gpio_toggle(GPIO_LED_BLUE);
+	#if (0)  //this is only for debug, should disable in mass production code
+		if(result == OTA_SUCCESS){  //OTA success
+			gpio_write(GPIO_LED_BLUE, 0);
+			sleep_us(1000000);  //led off for 1 second
+			gpio_write(GPIO_LED_BLUE, 1);
 			sleep_us(1000000);  //led on for 1 second
 		}
+		else{  //OTA fail
 
-	}
-#endif
+			#if 0 //this is only for debug, can not use this in application code
+				irq_disable();
+
+				while(1)
+				{
+					gpio_toggle(GPIO_LED_BLUE);
+					sleep_us(1000000);  //led on for 1 second
+				}
+			#endif
+
+		}
+	#endif
 }
 
+
 #endif
-
-
-
-
-
-
-
-

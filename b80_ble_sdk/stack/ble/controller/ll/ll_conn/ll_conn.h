@@ -25,10 +25,10 @@
 #define LL_CONN_H_
 
 /**
- * @brief	LE connection handle for slave & master role
+ * @brief	LE connection handle for slave role
+ * controller now use 0x0040 in this SDK, never change, so user can use this value directly
  */
-#define BLM_CONN_HANDLE 	BIT(7)
-#define BLS_CONN_HANDLE 	BIT(6)
+#define BLS_CONN_HANDLE 	0x0040
 
 /**
  * @brief      for user to initialize LinkLayer TX FIFO.
@@ -62,5 +62,7 @@ ble_sts_t	blc_ll_initAclConnRxFifo(u8 *pRxbuf, int size, int number);
  * 					   other: failed
  */
 ble_sts_t	blc_ll_setAclConnMaxOctetsNumber(u8 maxRxOct, u8 maxTxOct);
+
+
 
 #endif /* LL_CONN_H_ */

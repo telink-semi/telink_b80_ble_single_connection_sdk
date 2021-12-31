@@ -203,7 +203,6 @@ void blt_pm_proc(void)
 
 #if (PM_DEEPSLEEP_ENABLE)   //test connection power, should disable deepSleep
 		if(sendTerminate_before_enterDeep == 2){  //Terminate OK
-			analog_write(USED_DEEP_ANA_REG, analog_read(USED_DEEP_ANA_REG) | CONN_DEEP_FLG);
 			cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_PAD, 0);  //deepSleep
 		}
 

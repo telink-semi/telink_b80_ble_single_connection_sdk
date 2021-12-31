@@ -33,7 +33,7 @@
 #define BLT_SOFTWARE_TIMER_ENABLE					1
 
 /**
- *  @brief  Feature select in bLE Sample project
+ *  @brief  Feature select in BLE Sample project
  */
 #define FLASH_SIZE_OPTION							FLASH_SIZE_OPTION_512K //very important, user need confirm !!!
 #define BLE_APP_PM_ENABLE							1

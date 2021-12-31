@@ -90,6 +90,9 @@ extern	u8	app_acl_txfifo[];
 
 
 
+
+
+
 /***************** ACL connection L2CAP layer RX data FIFO allocation, Begin ********************************/
 
 /* RX MTU size */

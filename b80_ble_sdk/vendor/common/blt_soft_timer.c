@@ -34,8 +34,12 @@
 
 blt_soft_timer_t	blt_timer;
 
-/***
- * ort timers by timing order, so that timers can be triggered sequentially
+/**
+ * @brief		This function is used to Sort the timers according
+ * 				to the time of the timed task, so as to trigger the
+ * 				timers in turn
+ * @param[in]	none
+ * @return      none
  */
 int  blt_soft_timer_sort(void)
 {
@@ -66,9 +70,13 @@ int  blt_soft_timer_sort(void)
 	return 1;
 }
 
-
-
-//user add timer
+/**
+ * @brief		This function is used to add new software timer task
+ * @param[in]	func - callback function for software timer task
+ * @param[in]	interval_us - the interval for software timer task
+ * @return      0 - timer task is full, add fail
+ * 				1 - create successfully
+ */
 int blt_soft_timer_add(blt_timer_callback_t func, u32 interval_us)
 {
 	u32 now = clock_time();
@@ -90,10 +98,13 @@ int blt_soft_timer_add(blt_timer_callback_t func, u32 interval_us)
 	}
 }
 
-
 /**
- * when delete one soft timer, move forward the post soft timer.
- * thus, we not need to re-sort.
+ * @brief		Timer tasks are originally ordered. When deleting, it will
+ * 				be overwritten forward, so the order will not be destroyed
+ * 				and there is no need to reorder
+ * @param[in]	index - the index for some software timer task
+ * @return      0 - delete fail
+ * 				other - delete successfully
  */
 void  blt_soft_timer_delete_by_index(u8 index)
 {
@@ -110,7 +121,12 @@ void  blt_soft_timer_delete_by_index(u8 index)
 	blt_timer.currentNum --;
 }
 
-
+/**
+ * @brief		This function is used to delete timer tasks
+ * @param[in]	func - callback function for software timer task
+ * @return      0 - delete fail
+ * 				1 - delete successfully
+ */
 int 	blt_soft_timer_delete(blt_timer_callback_t func)
 {
 
@@ -137,8 +153,11 @@ int 	blt_soft_timer_delete(blt_timer_callback_t func)
 	return 0;
 }
 
-
-
+/**
+ * @brief		This function is used to manage software timer tasks
+ * @param[in]	type - the type for trigger
+ * @return      none
+ */
 void  	blt_soft_timer_process(int type)
 {
 	if(type == CALLBACK_ENTRY){ //callback trigger
@@ -202,7 +221,11 @@ void  	blt_soft_timer_process(int type)
 
 }
 
-
+/**
+ * @brief		This function is used to register the call back for pm_appWakeupLowPowerCb
+ * @param[in]	none
+ * @return      none
+ */
 void 	blt_soft_timer_init(void)
 {
 	bls_pm_registerAppWakeupLowPowerCb(blt_soft_timer_process);

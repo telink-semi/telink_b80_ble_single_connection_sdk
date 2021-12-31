@@ -125,8 +125,11 @@
 
 
 
-
-
+/**
+ * @brief		This function is used to load customized parameters from flash sector for application
+ * @param[in]	none
+ * @return      none
+ */
 static inline void blc_app_loadCustomizedParameters(void)
 {
 	if(!blt_miscParam.ext_cap_en)
@@ -154,7 +157,13 @@ static inline void blc_app_loadCustomizedParameters(void)
 
 
 
-
+/**
+ * @brief		This function is used to initialize the MAC address
+ * @param[in]	flash_addr - flash address for MAC address
+ * @param[in]	mac_public - public address
+ * @param[in]	mac_random_static - random static MAC address
+ * @return      none
+ */
 void blc_initMacAddress(int flash_addr, u8 *mac_public, u8 *mac_random_static);
 
 

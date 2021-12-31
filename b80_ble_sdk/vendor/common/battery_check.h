@@ -25,7 +25,7 @@
 #define BATTERY_CHECK_H_
 
 #include "drivers.h"
-#if (__PROJECT_5317_BLE_REMOTE__)
+#if (0)
 
 #define BATTERY_CHECK_PIN     GPIO_PB2
 #define BATTERY_CHECK_ADC_CHN B2P
@@ -37,13 +37,26 @@
 
 #define ADC_SAMPLE_NUM       8
 
-
-u8 TL_IsNeedInitAdcForBattCheck(void);
-void TL_ClearBatteryCheckConfig(u8 clear);
 void TL_BatteryCheckInit(void);
+/**
+ * @brief		This is battery check function
+ * @param[in]	alram_vol_mv - input battery calue
+ * @return      0 fail 1 success
+ */
 void TL_BattteryCheckProc(int minVol_mV);//
 
+/**
+ * @brief		set lowBattery detect enable
+ * @param[in]	en - lowBattDet_enable value
+ * @return      none
+ */
 void battery_set_detect_enable (int en);
+
+/**
+ * @brief		get the value of lowBattDet_enable
+ * @param[in]	none
+ * @return      the value of lowBattDet_enable
+ */
 int  battery_get_detect_enable (void);
 
 #endif ////ending of (__PROJECT_5317_BLE_REMOTE__)

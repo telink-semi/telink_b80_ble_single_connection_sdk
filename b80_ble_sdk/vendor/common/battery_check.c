@@ -26,14 +26,18 @@
 #include "drivers.h"
 #include <stack/ble/ble.h>
 
-#if (__PROJECT_5317_BLE_REMOTE__)
+#if (0)
 
 #if BATT_CHECK_ENABLE
 
 int lowBattDet_enable = 1;
 int adc_hw_initialized = 0;
 
-
+/**
+ * @brief      This function enable battery detect
+ * @param[in]  en - 1: enable;  0: disable.
+ * @return     none.
+ */
 void battery_set_detect_enable (int en)
 {
 	lowBattDet_enable = en;
@@ -43,12 +47,21 @@ void battery_set_detect_enable (int en)
 	}
 
 }
-
+/**
+ * @brief      This function get enable state of battery detect
+ * @param[in]  none.
+ * @return     0: Battery detect is disable 	 1:Battery detect is enable.
+ */
 int battery_get_detect_enable (void)
 {
 	return lowBattDet_enable;
 }
 
+/**
+ * @brief		Initialization of vbat detect
+ * @param[in]	none
+ * @return      none
+ */
 void TL_BatteryCheckInit(void)
 {
 	/****** sar adc Reset ********/
@@ -64,7 +77,7 @@ void TL_BatteryCheckInit(void)
 	/******set adc clk as 4MHz******/
 	adc_set_sample_clk(5);
 
-	/**** ŻADC¶ ******************/
+	/**** ADC ******************/
 	adc_set_atb(ADC_SEL_ATB_1);
 	adc_set_left_gain_bias(GAIN_STAGE_BIAS_PER100);
 	adc_set_right_gain_bias(GAIN_STAGE_BIAS_PER100);
@@ -111,10 +124,10 @@ void TL_BatteryCheckInit(void)
 }
 
 /**
- * @Brief:  Bubble sort.
- * @Param:  pData -> pointer point to data
- * @Param:  len -> lenght of data
- * @Return: None.
+ * @brief:  Bubble sort.
+ * @param[in]:  pData -> pointer point to data
+ * @param[in]:  len -> lenght of data
+ * @return: None.
  */
 void BubbleSort(unsigned short *pData, unsigned int len)
 {
@@ -132,13 +145,13 @@ void BubbleSort(unsigned short *pData, unsigned int len)
 	}
 }
 
-/**
- * @Brief:  Battery check.
- * @Param:  None.
- * @Return: None.
- */
 volatile short int adcValue[ADC_SAMPLE_NUM];
 u16 A_Vol = 0;
+/**
+ * @brief		This is battery check function
+ * @param[in]	alram_vol_mv - input battery calue
+ * @return      0 fail 1 success
+ */
 void TL_BattteryCheckProc(int minVol_mV)
 {
 

@@ -28,7 +28,11 @@
 #include "proj_lib/firmware_encrypt.h"
 
 #if FIRMWARES_SIGNATURE_ENABLE
-
+/**
+ * @brief		This function is used to check digital signature of firmware
+ * @param[in]	none
+ * @return      none
+ */
 void blt_firmware_signature_check(void)
 {
 		unsigned int flash_mid;

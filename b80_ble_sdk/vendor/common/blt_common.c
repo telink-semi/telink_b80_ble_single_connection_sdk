@@ -31,7 +31,13 @@
  * public_mac: 		  VVWWXX 38C1A4
  * random_static_mac: VVWWXXYYZZ C0
  */
-
+/**
+ * @brief		This function is used to initialize the MAC address
+ * @param[in]	flash_addr - flash address for MAC address
+ * @param[in]	mac_public - public address
+ * @param[in]	mac_random_static - random static MAC address
+ * @return      none
+ */
 void blc_initMacAddress(int flash_addr, u8 *mac_public, u8 *mac_random_static)
 {
 //	u8  mac_public[6] 		 = {0x00, 0x00, 0x00, 0x38, 0xC1, 0xA4};  //company id: 0xA4C138

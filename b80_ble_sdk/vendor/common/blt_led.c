@@ -27,7 +27,11 @@
 
 device_led_t device_led;
 
-
+/**
+ * @brief		This function is used to control device led on or off
+ * @param[in]	on - the status of led
+ * @return      none
+ */
 void device_led_on_off(u8 on)
 {
 	gpio_write( device_led.gpio_led, on^device_led.polar );
@@ -35,6 +39,12 @@ void device_led_on_off(u8 on)
 	device_led.isOn = on;
 }
 
+/**
+ * @brief		This function is used to create new led task
+ * @param[in]	led_cfg - Configure the parameters for led event
+ * @return      0 - new led event priority not higher than the not ongoing one
+ * 				1 - new led event created successfully
+ */
 void device_led_init(u32 gpio,u8 polarity){  //polarity: 1 for high led on, 0 for low led on
 	device_led.gpio_led = gpio;
 	device_led.polar = !polarity;
@@ -45,6 +55,12 @@ void device_led_init(u32 gpio,u8 polarity){  //polarity: 1 for high led on, 0 fo
     device_led_on_off(0);
 }
 
+/**
+ * @brief		This function is used to create new led task
+ * @param[in]	led_cfg - Configure the parameters for led event
+ * @return      0 - new led event priority not higher than the not ongoing one
+ * 				1 - new led event created successfully
+ */
 int device_led_setup(led_cfg_t led_cfg)
 {
 	if( device_led.repeatCount &&  device_led.priority >= led_cfg.priority){
@@ -77,6 +93,11 @@ int device_led_setup(led_cfg_t led_cfg)
 	}
 }
 
+/**
+ * @brief		This function is used to manage led tasks
+ * @param[in]	none
+ * @return      none
+ */
 void led_proc(void)
 {
 	if(device_led.isOn){

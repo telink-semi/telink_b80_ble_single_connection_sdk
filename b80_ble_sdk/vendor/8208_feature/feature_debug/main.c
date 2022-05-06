@@ -1,0 +1,106 @@
+/********************************************************************************************************
+ * @file     main.c
+ *
+ * @brief    This is the source file for BLE SDK
+ *
+ * @author	 BLE GROUP
+ * @date         12,2021
+ *
+ * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ *
+ *          Licensed under the Apache License, Version 2.0 (the "License");
+ *          you may not use this file except in compliance with the License.
+ *          You may obtain a copy of the License at
+ *
+ *              http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *          Unless required by applicable law or agreed to in writing, software
+ *          distributed under the License is distributed on an "AS IS" BASIS,
+ *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *          See the License for the specific language governing permissions and
+ *          limitations under the License.
+ *******************************************************************************************************/
+
+#include "tl_common.h"
+#include "drivers.h"
+#include "stack/ble/ble.h"
+
+#include "app.h"
+
+
+#if (FEATURE_TEST_MODE == TEST_FEATURE_DEBUG)
+
+
+/**
+ * @brief   IRQ handler
+ * @param   none.
+ * @return  none.
+ */
+_attribute_ram_code_ void irq_handler(void)
+{
+	blc_sdk_irq_handler();
+#if	(BLE_DEBUG_MODE==BLE_DEBUG_UART)
+	if(reg_uart_status1 & FLD_UART_TX_DONE)
+	{
+		extern volatile unsigned char uart_dma_send_flag;
+		uart_dma_send_flag=1;
+		uart_clr_tx_done();
+	}
+	if(dma_chn_irq_status_get() & FLD_DMA_CHN_UART_RX)
+	{
+		dma_chn_irq_status_clr(FLD_DMA_CHN_UART_RX);
+	}
+
+	if(uart_is_parity_error())//when stop bit error or parity error.
+	{
+		uart_clear_parity_error();
+	}
+#endif
+}
+
+
+/**
+ * @brief		This is main function
+ * @param[in]	none
+ * @return      none
+ */
+int main(void)
+{
+	#if (BLE_APP_PM_ENABLE)
+		blc_pm_select_internal_32k_crystal();
+	#endif
+
+	cpu_wakeup_init(EXTERNAL_XTAL_24M);
+#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+	int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup();  //MCU deep retention wakeUp
+#endif
+	rf_ble_1m_param_init();
+
+	clock_init(SYS_CLK_TYPE);
+
+#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+	gpio_init( !deepRetWakeUp );  //analog resistance will keep available in deepSleep mode, so no need initialize again
+#else
+	gpio_init(1);
+#endif
+	/* load customized freq_offset CAP value and TP value. */
+	blc_app_loadCustomizedParameters();
+
+#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+		if( deepRetWakeUp ){
+			user_init_deepRetn ();
+		}
+		else{
+			user_init_normal ();
+		}
+#else
+	user_init_normal();
+#endif
+    irq_enable();
+
+	while (1) {
+		main_loop ();
+	}
+}
+
+#endif  //end of (FEATURE_TEST_MODE == xxx)

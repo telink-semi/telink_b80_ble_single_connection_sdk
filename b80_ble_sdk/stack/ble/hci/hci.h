@@ -148,5 +148,27 @@ int 		blc_hci_send_data (u32 h, u8 *para, int n);
  */
 int 		blc_hci_handler (u8 *p, int n);
 
+#if PHY_TEST
+/**
+ * @brief      this function is used to process HCI data
+ * @param[in]  rx_chn - the rx channel
+ * @return     0
+ */
+ble_sts_t blc_phy_setReceiverTest (u8 rx_chn);
+/**
+ * @brief      this function is used to process HCI data
+ * @param[in]  *pkt_num - the pointer of HCI data
+ * @return     0
+ */
+ble_sts_t blc_phy_setPhyTestEnd (u8 *pkt_num);
+/**
+ * @brief      this function is used to process HCI data
+ * @param[in]  tx_chn - the pointer of HCI data
+ * @param[in]  length - the length of HCI data
+ * @param[in]  pkt_type - the type of HCI data
+ * @return     0
+ */
+ble_sts_t blc_phy_setTransmitterTest (u8 tx_chn, u8 length, u8 pkt_type);
 
 
+#endif

@@ -26,6 +26,7 @@
 
 
 
+#if (ECC_METHOD_SELECTION == ECC_SW_IMPLEMEMTATION)
 
 /* Platform selection options.
 If uECC_PLATFORM is not defined, the code will try to guess it based on compiler macros.
@@ -321,3 +322,5 @@ int uECC_curve(void);
 #endif
 
 #endif /* SW_ECC_H_ */
+
+#endif

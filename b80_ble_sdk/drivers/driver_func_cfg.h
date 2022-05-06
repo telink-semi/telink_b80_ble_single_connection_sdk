@@ -57,6 +57,11 @@
 #ifndef PM_RETENTION_FUNCTION_EN
 #define PM_RETENTION_FUNCTION_EN			1/**< 0:only Support sleep modes:suspend/deep */
 											 /**< 1:support all sleep modes:suspend/deep/deep retention */
+#if(PM_RETENTION_FUNCTION_EN)
+#define PM_TIM_RECOVER_MODE                  1
+#else
+#define PM_TIM_RECOVER_MODE                  0
+#endif
 #endif
 
 #ifndef OTP_ALL_FUNCTION_EN

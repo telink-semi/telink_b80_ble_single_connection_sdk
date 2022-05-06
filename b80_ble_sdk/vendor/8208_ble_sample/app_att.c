@@ -102,24 +102,24 @@ static const u16 hidinformationUUID       = CHARACTERISTIC_UUID_HID_INFORMATION;
 static const u16 hidCtrlPointUUID         = CHARACTERISTIC_UUID_HID_CONTROL_POINT;
 static const u16 hidIncludeUUID           = GATT_UUID_INCLUDE;
 
-static const u8 protocolMode 			  = DFLT_HID_PROTOCOL_MODE;
+static u8 protocolMode 			  = DFLT_HID_PROTOCOL_MODE;
 
 // Key in Report characteristic variables
 static u8 reportKeyIn[8];
 static u8 reportKeyInCCC[2];
 // HID Report Reference characteristic descriptor, key input
-static const u8 reportRefKeyIn[2] =
+static u8 reportRefKeyIn[2] =
              { HID_REPORT_ID_KEYBOARD_INPUT, HID_REPORT_TYPE_INPUT };
 
 // Key out Report characteristic variables
 static u8 reportKeyOut[1];
-static const u8 reportRefKeyOut[2] =
+static u8 reportRefKeyOut[2] =
              { HID_REPORT_ID_KEYBOARD_INPUT, HID_REPORT_TYPE_OUTPUT };
 
 // Consumer Control input Report
 static u8 reportConsumerControlIn[2];
 static u8 reportConsumerControlInCCC[2];
-static const u8 reportRefConsumerControlIn[2] =
+static u8 reportRefConsumerControlIn[2] =
 			 { HID_REPORT_ID_CONSUME_CONTROL_INPUT, HID_REPORT_TYPE_INPUT };
 
 // Boot Keyboard Input Report
@@ -211,13 +211,14 @@ static const u8 reportMap[] =
 // HID External Report Reference Descriptor for report map
 static u16 extServiceUUID;
 
-
+#if (BLE_OTA_SERVER_ENABLE)
 /////////////////////////////////////////////////////////
 static const  u8 my_OtaServiceUUID[16]				= WRAPPING_BRACES(TELINK_OTA_UUID_SERVICE);
 static const  u8 my_OtaUUID[16]						= WRAPPING_BRACES(TELINK_SPP_DATA_OTA);
 static u8 my_OtaData 						        = 0x00;
 
 static const u8  my_OtaName[] = {'O', 'T', 'A'};
+#endif
 
 
 // Include attribute (Battery service)
@@ -313,13 +314,14 @@ static const u8 my_batCharVal[5] = {
 	U16_LO(CHARACTERISTIC_UUID_BATTERY_LEVEL), U16_HI(CHARACTERISTIC_UUID_BATTERY_LEVEL)
 };
 
-
+#if (BLE_OTA_SERVER_ENABLE)
 //// OTA attribute values
 static const u8 my_OtaCharVal[19] = {
 	CHAR_PROP_READ | CHAR_PROP_WRITE_WITHOUT_RSP,
 	U16_LO(OTA_CMD_OUT_DP_H), U16_HI(OTA_CMD_OUT_DP_H),
 	TELINK_SPP_DATA_OTA,
 };
+#endif
 
 
 // TM : to modify
@@ -411,13 +413,14 @@ static const attribute_t my_Attributes[] = {
 	{0,ATT_PERMISSIONS_READ,2,sizeof(my_batVal),(u8*)(&my_batCharUUID), 	(u8*)(my_batVal), 0},	//value
 	{0,ATT_PERMISSIONS_RDWR,2,sizeof(batteryValueInCCC),(u8*)(&clientCharacterCfgUUID), 	(u8*)(batteryValueInCCC), 0},	//value
 
+#if (BLE_OTA_SERVER_ENABLE)
 	////////////////////////////////////// OTA /////////////////////////////////////////////////////
 	// 002e - 0031
 	{4,ATT_PERMISSIONS_READ, 2,16,(u8*)(&my_primaryServiceUUID), 	(u8*)(&my_OtaServiceUUID), 0},
 	{0,ATT_PERMISSIONS_READ, 2, sizeof(my_OtaCharVal),(u8*)(&my_characterUUID), (u8*)(my_OtaCharVal), 0},				//prop
 	{0,ATT_PERMISSIONS_RDWR,16,sizeof(my_OtaData),(u8*)(&my_OtaUUID),	(&my_OtaData), &otaWrite, NULL},			//value
 	{0,ATT_PERMISSIONS_READ, 2,sizeof (my_OtaName),(u8*)(&userdesc_UUID), (u8*)(my_OtaName), 0},
-
+#endif
 };
 
 /**

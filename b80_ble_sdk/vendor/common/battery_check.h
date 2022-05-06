@@ -20,30 +20,10 @@
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
  *******************************************************************************************************/
-
 #ifndef BATTERY_CHECK_H_
 #define BATTERY_CHECK_H_
 
-#include "drivers.h"
-#if (0)
-
-#define BATTERY_CHECK_PIN     GPIO_PB2
-#define BATTERY_CHECK_ADC_CHN B2P
-
-#define BATTERY_VOL_OK        0x00
-#define BATTERY_VOL_LOW       0x01
-
-#define BATTERY_VOL_MIN      ((u16)2000)//Unit: mV
-
-#define ADC_SAMPLE_NUM       8
-
-void TL_BatteryCheckInit(void);
-/**
- * @brief		This is battery check function
- * @param[in]	alram_vol_mv - input battery calue
- * @return      0 fail 1 success
- */
-void TL_BattteryCheckProc(int minVol_mV);//
+#if (BATT_CHECK_ENABLE)
 
 /**
  * @brief		set lowBattery detect enable
@@ -59,6 +39,12 @@ void battery_set_detect_enable (int en);
  */
 int  battery_get_detect_enable (void);
 
-#endif ////ending of (__PROJECT_5317_BLE_REMOTE__)
+/**
+ * @brief		This is battery check function
+ * @param[in]	alram_vol_mv - input battery calue
+ * @return      0 fail 1 success
+ */
+int app_battery_power_check(unsigned short alram_vol_mv);
 
+#endif
 #endif /* BATTERY_CHECK_H_ */

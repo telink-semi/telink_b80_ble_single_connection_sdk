@@ -99,6 +99,12 @@ void 		blc_sdk_irq_handler(void);
  */
 int 		blc_sdk_main_loop (void);
 
+/**
+ * @brief   LinkLayer initialization after deepSleep retention wake_up
+ * @param	none
+ * @return	none
+ */
+void 		blc_ll_recoverDeepRetention(void);
 
 
 /**
@@ -157,6 +163,19 @@ u8 			blc_ll_getCurrentState(void);
 u8 			blc_ll_getLatestAvgRSSI(void);
 
 
+/**
+ * @brief      this function is used to get TX FIFO Number of current state
+ * @param[in]  none.
+ * @return     total_fifo_num
+ */
+u8 blc_ll_getTxFifoNumber(void);
+
+/**
+ * @brief      this function is used to get current state of BRX
+ * @param[in]  none.
+ * @return     current state of BRX
+ */
+bool blc_ll_isBrxBusy (void);
 
 /**
  * @brief		this function is used to register LinkLayer Event Callback function

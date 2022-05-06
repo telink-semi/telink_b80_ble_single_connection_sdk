@@ -133,12 +133,6 @@ void 		blc_pm_setDeepsleepRetentionThreshold(u32 adv_thres_ms, u32 conn_thres_ms
  */
 void 		blc_pm_setDeepsleepRetentionEarlyWakeupTiming(u32 earlyWakeup_us);
 
-/**
- * @brief	for user to set the type of deep retention mode
- * @param	sleep_type - the type of deep retention mode
- * @return  none.
- */
-void 		blc_pm_setDeepsleepRetentionType(SleepMode_TypeDef sleep_type);
 
 
 

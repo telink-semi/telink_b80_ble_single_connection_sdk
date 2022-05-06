@@ -36,9 +36,23 @@
 #elif (FEATURE_TEST_MODE == TEST_SLAVE_MD)
 	#include "feature_slave_md/app_config.h"
 #elif (FEATURE_TEST_MODE ==TEST_USER_BLT_SOFT_TIMER)
-	#include "feature_misc/app_config.h"
+	#include "feature_soft_timer/app_config.h"
 #elif (FEATURE_TEST_MODE ==TEST_POWER_ADV)
 	#include "feature_adv_power/app_config.h"
+#elif(FEATURE_TEST_MODE == TEST_FEATURE_BATTERY_CHECK)
+	#include "feature_battery_check/app_config.h"
+#elif(FEATURE_TEST_MODE == TEST_PHY_CONN)
+	#include "feature_phy_conn/app_config.h"
+#elif(FEATURE_TEST_MODE == TEST_BLE_PHY)
+	#include "feature_phy_test/app_config.h"
+#elif(FEATURE_TEST_MODE == TEST_EMI)
+	#include "feature_emi_test/app_config.h"
+#elif(FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_UART)
+	#include "feature_soft_uart/app_config.h"
+#elif(FEATURE_TEST_MODE == TEST_GATT_SECURITY)
+	#include "feature_gatt_security/app_config.h"
+#elif(FEATURE_TEST_MODE == TEST_FEATURE_DEBUG)
+	#include "feature_debug/app_config.h"
 #endif
 
 

@@ -401,8 +401,9 @@ extern 	cpu_pm_handler_t  		 cpu_sleep_wakeup;
 static inline void blc_pm_select_internal_32k_crystal(void)
 {
 	cpu_sleep_wakeup 	 	= cpu_sleep_wakeup_32k_rc;
+#if (BLC_PM_DEEP_RETENTION_MODE_EN)
 	pm_tim_recover  	 	= pm_tim_recover_32k_rc;
-
+#endif
 	blt_miscParam.pm_enter_en 	= 1; // allow enter pm, 32k rc does not need to wait for 32k clk to be stable
 }
 
@@ -417,8 +418,9 @@ static inline void blc_pm_select_external_32k_crystal(void)
 {
 	cpu_sleep_wakeup 	 	= cpu_sleep_wakeup_32k_xtal;
 	pm_check_32k_clk_stable = check_32k_clk_stable;
+#if (BLC_PM_DEEP_RETENTION_MODE_EN)
 	pm_tim_recover		 	= pm_tim_recover_32k_xtal;
-
+#endif
 	blt_miscParam.pad32k_en 	= 1; // set '1': 32k clk src use external 32k crystal
 }
 /**
@@ -434,7 +436,9 @@ extern  unsigned char 		    tl_24mrc_cal;
 extern 	unsigned int 			tick_32k_calib;
 extern  unsigned int 			tick_cur;
 extern  unsigned int 			tick_32k_cur;
+#if(!OPTIMIZE_CODE_SIZE)
 extern  unsigned char       	pm_long_suspend;
+#endif
 
 void sleep_start(void);
 

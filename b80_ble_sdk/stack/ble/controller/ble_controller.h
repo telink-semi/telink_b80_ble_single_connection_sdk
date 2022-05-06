@@ -40,9 +40,9 @@
 #include "stack/ble/controller/ll/ll_pm.h"
 #include "stack/ble/controller/ll/ll_conn/ll_conn.h"
 #include "stack/ble/controller/ll/ll_conn/ll_slave.h"
-#include "stack/ble/controller/ll/ll_conn/ll_conn_phy.h"
 
 
+#include "stack/ble/controller/phy/phy_test.h"
 #include "stack/ble/controller/whitelist/whitelist.h"
 
 #include "algorithm/ecc/ecc_ll.h"

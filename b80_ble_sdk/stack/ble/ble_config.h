@@ -32,11 +32,27 @@
 
 #define BLE_DEBUG     0 //!!! use for debug.  when release SDK, "BLE_DEBUG" must be set to 0.
 
+#define  MAX_DEV_NAME_LEN 				18
+
+#ifndef DEV_NAME
+#define DEV_NAME                        "eModule"
+#endif
 
 
 
 
 
+#define KEYBOARD_MOUSE_APPLICATION                        0
+#if KEYBOARD_MOUSE_APPLICATION
+	#define SECURE_CONNECTION_ENABLE					    0
+	//Link layer feature enable flag default setting
+	//compatibility with wearable
+	//#define BLE_CORE42_DATA_LENGTH_EXTENSION_ENABLE			0
+	//#define BLE_BIG_MTU_ENABLE											0
+	//#define ATT_RSP_BIG_MTU_PROCESS_EN      					BLE_BIG_MTU_ENABLE
+	#define LL_FEATURE_SUPPORT_LE_2M_PHY					0
+	#define BLE_STATE_MACHINE_EXTENSION_EN                  0
+#endif
 
 #define ELECTRONIC_SCALE_APPLICATION                        0
 #if ELECTRONIC_SCALE_APPLICATION
@@ -48,7 +64,6 @@
 #endif
 
 
-#define ATT_RSP_BIG_MTU_PROCESS_EN      1
 
 
 
@@ -60,6 +75,7 @@ static inline void blc_app_setExternalCrystalCapEnable(u8  en)
 
 
 
+#define OPTIMIZE_CODE_SIZE       1
 
 
 
@@ -68,17 +84,25 @@ static inline void blc_app_setExternalCrystalCapEnable(u8  en)
 
 /////////////////// Feature ////////////////////////////
 #ifndef SECURE_CONNECTION_ENABLE
-#define SECURE_CONNECTION_ENABLE					    0
+#define SECURE_CONNECTION_ENABLE					   1
 #endif
 
+#ifndef BLE_BIG_MTU_ENABLE
+#define BLE_BIG_MTU_ENABLE			1
+#endif
+
+#ifndef ATT_RSP_BIG_MTU_PROCESS_EN
+#define ATT_RSP_BIG_MTU_PROCESS_EN			BLE_BIG_MTU_ENABLE
+#endif
 //Link layer feature enable flag default setting
 #ifndef BLE_CORE42_DATA_LENGTH_EXTENSION_ENABLE
 #define BLE_CORE42_DATA_LENGTH_EXTENSION_ENABLE			1
 #endif
 
 #ifndef LL_FEATURE_SUPPORT_LE_2M_PHY
-#define LL_FEATURE_SUPPORT_LE_2M_PHY					0	//TODO yy
+#define LL_FEATURE_SUPPORT_LE_2M_PHY					1	//TODO yy
 #endif
+
 
 #ifndef		BLS_ADV_INTERVAL_CHECK_ENABLE
 #define		BLS_ADV_INTERVAL_CHECK_ENABLE				0 ////1 according to sihui's advise, disable interval check.
@@ -88,8 +112,9 @@ static inline void blc_app_setExternalCrystalCapEnable(u8  en)
 #define BLE_STATE_MACHINE_EXTENSION_EN              	1
 #endif
 
-
-
+#ifndef SOFT_UART_ENABLE
+#define SOFT_UART_ENABLE                 				0
+#endif
 
 
 #if (MCU_CORE_TYPE == MCU_CORE_5317)
@@ -107,14 +132,9 @@ static inline void blc_app_setExternalCrystalCapEnable(u8  en)
 #define BLS_PROC_LONG_SUSPEND_ENABLE					0
 #endif
 
-
-
-/////////////////////HCI UART variables///////////////////////////////////////
-#define UART_DATA_LEN    64      // data max 252
-typedef struct{
-    unsigned int len;        // data max 252
-    unsigned char data[UART_DATA_LEN];
-}uart_data_t;
+#ifndef BLE_ADV_PEAK_CURRENT_OPT
+#define BLE_ADV_PEAK_CURRENT_OPT						0
+#endif
 
 
 

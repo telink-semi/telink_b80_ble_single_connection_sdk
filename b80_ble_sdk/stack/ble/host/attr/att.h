@@ -116,7 +116,19 @@ ble_sts_t blc_att_setRxMtuSize(u16 mtu_size);
 //Attention: this API hide in stack, user no need use !!!
 ble_sts_t blc_att_requestMtuSizeExchange(u16 connHandle, u16 mtu_size);
 
+/**
+ * @brief      This function is used to register MTU size exchange callback
+ * @param[in]  cb - callback function
+ * @return     none
+ */
+void blc_att_registerMtuSizeExchangeCb(attRxMtuSizeExchangeCommpleteCb cb);
 
+/**
+ * @brief      This function is used to register handle value confirm callback
+ * @param[in]  cb - callback function
+ * @return     none
+ */
+void bls_att_registerHandleValueConfirmCb(att_handleValueConfirm_callback_t cb);
 
 /**
  * @brief   This function is used to get effective MTU size.
@@ -125,8 +137,28 @@ ble_sts_t blc_att_requestMtuSizeExchange(u16 connHandle, u16 mtu_size);
  */
 u16  blc_att_getEffectiveMtuSize(void);
 
+/**
+ * @brief      set device name
+ * @param[in]  p - the point of name
+ * @param[in]  len - the length of name
+ * @return     BLE_SUCCESS
+ */
+ble_sts_t 	bls_att_setDeviceName(u8* pName,u8 len);  //only module/mesh/HCI use
 
+/**
+ * @brief      set HID Report Map
+ * @param[in]  p - the point of report map
+ * @param[in]  len - the length of report map
+ * @return     BLE_SUCCESS
+ */
+ble_sts_t bls_att_setHIDReportMap(u8* p,u32 len);
 
+/**
+ * @brief      reset HID Report Map
+ * @param[in]  none
+ * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
+ */
+ble_sts_t bls_att_resetHIDReportMap();
 
 
 

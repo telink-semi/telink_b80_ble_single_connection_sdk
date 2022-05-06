@@ -25,7 +25,7 @@
 
 #include "config.h"
 
-#if (__TL_LIB_5316__ || (MCU_CORE_TYPE == MCU_CORE_8208))
+#if (MCU_CORE_TYPE == MCU_CORE_8208)
 	#include "drivers/driver.h"
 	#include "drivers/ext_driver/driver_ext.h"
 #endif

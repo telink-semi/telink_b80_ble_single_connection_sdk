@@ -108,24 +108,24 @@ static const u16 hidinformationUUID       = CHARACTERISTIC_UUID_HID_INFORMATION;
 static const u16 hidCtrlPointUUID         = CHARACTERISTIC_UUID_HID_CONTROL_POINT;
 static const u16 hidIncludeUUID           = GATT_UUID_INCLUDE;
 
-static const u8 protocolMode 			  = DFLT_HID_PROTOCOL_MODE;
+static u8 protocolMode 			  = DFLT_HID_PROTOCOL_MODE;
 
 // Key in Report characteristic variables
 static u8 reportKeyIn[8];
 static u8 reportKeyInCCC[2];
 // HID Report Reference characteristic descriptor, key input
-static const u8 reportRefKeyIn[2] =
+static u8 reportRefKeyIn[2] =
              { HID_REPORT_ID_KEYBOARD_INPUT, HID_REPORT_TYPE_INPUT };
 
 // Key out Report characteristic variables
 static u8 reportKeyOut[1];
-static const u8 reportRefKeyOut[2] =
+static u8 reportRefKeyOut[2] =
              { HID_REPORT_ID_KEYBOARD_INPUT, HID_REPORT_TYPE_OUTPUT };
 
 // Consumer Control input Report
 static u8 reportConsumerControlIn[2];
 static u8 reportConsumerControlInCCC[2];
-static const u8 reportRefConsumerControlIn[2] =
+static u8 reportRefConsumerControlIn[2] =
 			 { HID_REPORT_ID_CONSUME_CONTROL_INPUT, HID_REPORT_TYPE_INPUT };
 
 // Boot Keyboard Input Report

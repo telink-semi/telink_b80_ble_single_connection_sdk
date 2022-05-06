@@ -30,6 +30,10 @@
 	#include "vendor/8208_feature/app_config.h"
 #elif(__PROJECT_B80_BLE_INTERNAL_TEST__)
 	#include "vendor/8208_ble_internal_test/app_config.h"
+#elif(__PROJECT_B80_HCI__)
+	#include "vendor/8208_hci/app_config.h"
+#elif(__PROJECT_B80_MODULE__)
+	#include "vendor/8208_module/app_config.h"
 #else
 	#include "../common/default_config.h"
 #endif

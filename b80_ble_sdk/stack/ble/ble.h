@@ -44,8 +44,8 @@
 
 #include "algorithm/aes_ccm/aes_ccm.h"
 #include "algorithm/ecc/ecc_ll.h"
-#include "algorithm/ecc/hw_ecc.h"
 #include "algorithm/ecc/sw_ecc.h"
+
 
 
 #endif /* BLE_H_ */

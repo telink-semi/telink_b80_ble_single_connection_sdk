@@ -116,6 +116,13 @@ void blc_ota_registerOtaStartCmdCb(ota_startCb_t cb);
  */
 void blc_ota_registerOtaResultIndicationCb(ota_resIndicateCb_t cb);
 
+/**
+ * @brief      This function is used to register OTA version command callback
+ * 			   when local device receive OTA command  "CMD_OTA_VERSION", trigger this callback.
+ * @param[in]  cb - callback function
+ * @return     none
+ */
+void blc_ota_registerOtaFirmwareVersionReqCb(ota_versionCb_t cb);
 
 
 

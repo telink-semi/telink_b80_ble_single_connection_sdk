@@ -21,8 +21,8 @@
  *          limitations under the License.
  *******************************************************************************************************/
 
-#ifndef VENDOR_B91_BLE_SAMPLE_APP_BUFFER_H_
-#define VENDOR_B91_BLE_SAMPLE_APP_BUFFER_H_
+#ifndef VENDOR_B80_BLE_SAMPLE_APP_BUFFER_H_
+#define VENDOR_B80_BLE_SAMPLE_APP_BUFFER_H_
 
 
 
@@ -36,7 +36,7 @@
  * usage limitation:
  * 1. should be in range of 27 ~ 251
  */
-#define ACL_CONN_MAX_RX_OCTETS			27
+#define ACL_CONN_MAX_RX_OCTETS			251
 
 
 /**
@@ -63,7 +63,7 @@
  * 2. at least 4; recommended value: 8, 16
  */
 #define ACL_RX_FIFO_SIZE				CAL_LL_ACL_RX_FIFO_SIZE(ACL_CONN_MAX_RX_OCTETS)
-#define ACL_RX_FIFO_NUM					8	// must be: 2^n
+#define ACL_RX_FIFO_NUM					4	// must be: 2^n
 
 
 /**
@@ -78,7 +78,7 @@
  * 2. at least 8; recommended value: 8, 16, 32; other value not allowed.
  */
 #define ACL_TX_FIFO_SIZE				CAL_LL_ACL_TX_FIFO_SIZE(ACL_CONN_MAX_TX_OCTETS)
-#define ACL_TX_FIFO_NUM					16
+#define ACL_TX_FIFO_NUM					8
 
 
 
@@ -92,11 +92,10 @@ extern	u8	app_acl_txfifo[];
 
 
 
-
 /***************** ACL connection L2CAP layer RX data FIFO allocation, Begin ********************************/
 
 /* RX MTU size */
-#define MTU_SIZE_SETTING						23
+#define MTU_SIZE_SETTING						247
 
 
 /**
@@ -116,6 +115,8 @@ extern	u8 app_l2cap_rx_fifo[];
 
 
 
+
+
 #endif //end of (FEATURE_TEST_MODE == xxx)
-#endif /* VENDOR_B91_BLE_SAMPLE_APP_BUFFER_H_ */
+#endif /* VENDOR_B80_BLE_SAMPLE_APP_BUFFER_H_ */
 

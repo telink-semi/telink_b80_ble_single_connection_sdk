@@ -118,7 +118,7 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
  * @param[in]  n - data length of event
  * @return     none
  */
-_attribute_ram_code_ void user_set_rf_power (u8 e, u8 *p, int n)
+_attribute_ram_code_ void task_suspend_exit (u8 e, u8 *p, int n)
 {
 	rf_set_power_level_index (MY_RF_POWER_INDEX);
 }
@@ -133,9 +133,13 @@ _attribute_ram_code_ void user_set_rf_power (u8 e, u8 *p, int n)
 void blt_pm_proc(void)
 {
 #if(BLE_APP_PM_ENABLE)
-		#if (UI_KEYBOARD_ENABLE)
+		#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+			bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
+		#else
 			bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
+		#endif
 
+		#if(UI_KEYBOARD_ENABLE)
 			if(scan_pin_need || key_not_released )
 			{
 				bls_pm_setManualLatency(0);
@@ -372,19 +376,25 @@ void user_init_normal(void)
      app_feature_adv_power();
      bls_ll_setAdvEnable(BLC_ADV_ENABLE);  //adv enable
 	/* set rf power index, user must set it after every suspend wakeup, cause relative setting will be reset in suspend */
-	user_set_rf_power(0, 0, 0);
+     rf_set_power_level_index (MY_RF_POWER_INDEX);
 
 
 	bls_app_registerEventCallback (BLT_EV_FLAG_CONNECT, &task_connect);
 	bls_app_registerEventCallback (BLT_EV_FLAG_TERMINATE, &task_terminate);
-	bls_app_registerEventCallback (BLT_EV_FLAG_SUSPEND_EXIT, &user_set_rf_power);
+	bls_app_registerEventCallback (BLT_EV_FLAG_SUSPEND_EXIT, &task_suspend_exit);
 
 
 
 	///////////////////// Power Management initialization///////////////////
 	#if(BLE_APP_PM_ENABLE)
 		blc_ll_initPowerManagement_module();        //pm module:      	 optional
-		bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
+		#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+			bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
+			blc_pm_setDeepsleepRetentionThreshold(95, 95);
+			blc_pm_setDeepsleepRetentionEarlyWakeupTiming(750);
+		#else
+			bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
+		#endif
 		bls_app_registerEventCallback (BLT_EV_FLAG_SUSPEND_ENTER, &app_set_kb_wakeup);
 	#else
 		bls_pm_setSuspendMask (SUSPEND_DISABLE);
@@ -408,6 +418,36 @@ void user_init_normal(void)
 	advertise_begin_tick = clock_time();
 }
 
+/**
+ * @brief		user initialization when MCU wake_up from deepSleep_retention mode
+ * @param[in]	none
+ * @return      none
+ */
+_attribute_ram_code_
+void user_init_deepRetn(void)
+{
+#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+
+	//////////// LinkLayer Initialization  Begin /////////////////////////
+	blc_ll_initBasicMCU();                      //mandatory
+
+//////////////////////////// User Configuration for BLE application ////////////////////////////
+
+	/* set rf power index, user must set it after every suspend wakeup, cause relative setting will be reset in suspend */
+	rf_set_power_level_index (MY_RF_POWER_INDEX);
+	blc_ll_recoverDeepRetention();
+
+	#if (UI_KEYBOARD_ENABLE)
+		/////////// keyboard gpio wakeup init ////////
+		u32 pin[] = KB_DRIVE_PINS;
+		for (int i=0; i<(sizeof (pin)/sizeof(*pin)); i++)
+		{
+			cpu_set_gpio_wakeup (pin[i], Level_High,1);  //drive pin pad high wakeup deepsleep
+		}
+	#endif
+////////////////////////////////////////////////////////////////////////////////////////////////
+#endif
+}
 
 
 

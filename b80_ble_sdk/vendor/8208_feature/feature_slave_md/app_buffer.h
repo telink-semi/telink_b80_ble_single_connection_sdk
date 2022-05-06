@@ -21,8 +21,8 @@
  *          limitations under the License.
  *******************************************************************************************************/
 
-#ifndef VENDOR_B91_BLE_SAMPLE_APP_BUFFER_H_
-#define VENDOR_B91_BLE_SAMPLE_APP_BUFFER_H_
+#ifndef VENDOR_B80_BLE_SAMPLE_APP_BUFFER_H_
+#define VENDOR_B80_BLE_SAMPLE_APP_BUFFER_H_
 
 
 
@@ -92,7 +92,6 @@ extern	u8	app_acl_txfifo[];
 
 
 
-
 /***************** ACL connection L2CAP layer RX data FIFO allocation, Begin ********************************/
 
 /* RX MTU size */
@@ -116,6 +115,7 @@ extern	u8 app_l2cap_rx_fifo[];
 
 
 
+
 #endif //end of (FEATURE_TEST_MODE == xxx)
-#endif /* VENDOR_B91_BLE_SAMPLE_APP_BUFFER_H_ */
+#endif /* VENDOR_B80_BLE_SAMPLE_APP_BUFFER_H_ */
 

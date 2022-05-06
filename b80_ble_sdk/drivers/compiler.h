@@ -23,6 +23,7 @@
 
 #pragma once
 #include "driver_func_cfg.h"
+#include "../../common/config/user_config.h"
 
 #ifndef NULL
 #define NULL 	0
@@ -37,7 +38,9 @@
 #define _attribute_no_inline_   			__attribute__((noinline))
 #define _inline_ 							inline
 
-
+#ifndef	BLC_PM_DEEP_RETENTION_MODE_EN
+#define	BLC_PM_DEEP_RETENTION_MODE_EN		1
+#endif
 
 #if (BLC_PM_DEEP_RETENTION_MODE_EN)
 	#define _attribute_data_retention_   	_attribute_session_(".retention_data")

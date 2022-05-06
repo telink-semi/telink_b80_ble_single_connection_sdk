@@ -25,6 +25,9 @@
 #define BLT_SOFT_TIMER_H_
 
 
+
+#include "vendor/common/user_config.h"
+
 //user define
 #ifndef 	BLT_SOFTWARE_TIMER_ENABLE
 #define		BLT_SOFTWARE_TIMER_ENABLE				0   //enable or disable
@@ -48,7 +51,7 @@
 
 
 #define		BLT_TIMER_SAFE_MARGIN_PRE	  (CLOCK_16M_SYS_TIMER_CLK_1US<<7)  //128 us
-#define		BLT_TIMER_SAFE_MARGIN_POST	  (CLOCK_16M_SYS_TIMER_CLK_1S<<3)   // 8S
+#define		BLT_TIMER_SAFE_MARGIN_POST	  (CLOCK_16M_SYS_TIMER_CLK_1S<<2)   // 4S
 
 /**
  * @brief		This function is used to check the current time is what the timer expects or not

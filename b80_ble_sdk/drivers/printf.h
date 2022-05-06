@@ -20,18 +20,22 @@
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
  *******************************************************************************************************/
-
+#include "../../common/config/user_config.h"
 #include "gpio.h"
 #pragma once
 
+#if (BLE_DEBUG_MODE==BLE_DEBUG_IO_UART||BLE_DEBUG_MODE==BLE_DEBUG_USB)
 #define DEBUG_MODE 1
+#else
+#define DEBUG_MODE 0
+#endif
 
 #if(DEBUG_MODE==1)
 
-#define  DEBUG_IO		1
-#define  DEBUG_USB		2
+#define  DEBUG_IO				1
+#define  DEBUG_USB			2
 
-#define  DEBUG_BUS  	0
+#define  DEBUG_BUS  	BLE_DEBUG_MODE
 
 #if(DEBUG_BUS==DEBUG_IO)
 #define PRINT_BAUD_RATE             		115200   	//1M baud rate,should Not bigger than 1Mb/s

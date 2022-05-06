@@ -20,23 +20,54 @@
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
  *******************************************************************************************************/
-
-#include "battery_check.h"
 #include "tl_common.h"
 #include "drivers.h"
 #include <stack/ble/ble.h>
+#include "../../common/config/user_config.h"
+#include "battery_check.h"
+#if (BATT_CHECK_ENABLE)
 
-#if (0)
+_attribute_data_retention_	u8 		lowBattDet_enable = 1;
+							u8      adc_hw_initialized = 0;   //note: can not be retention variable
+_attribute_data_retention_  u16     batt_vol_mv;
 
-#if BATT_CHECK_ENABLE
 
-int lowBattDet_enable = 1;
-int adc_hw_initialized = 0;
+
+
+
+
+#define ADC_SAMPLE_NUM		8
+
+
+
+_attribute_data_retention_	volatile unsigned int adc_dat_buf[ADC_SAMPLE_NUM];  //size must 16 byte aligned(16/32/64...)
+
+
+
+
+
 
 /**
- * @brief      This function enable battery detect
- * @param[in]  en - 1: enable;  0: disable.
- * @return     none.
+ * @brief		callback function of adjust whether allow enter to pm or not
+ * @param[in]	none
+ * @return      0 forbidden enter cpu_sleep_wakeup, 1 allow enter cpu_sleep_wakeup
+ */
+int app_suspend_enter_low_battery (void)
+{
+	if (!gpio_read(GPIO_WAKEUP_FEATURE)) //gpio low level
+	{
+		analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)|LOW_BATT_FLG);  //mark
+		return 1;//allow enter cpu_sleep_wakeup
+	}
+
+	analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)&(~LOW_BATT_FLG));  //clr
+	return 0; //forbidden enter cpu_sleep_wakeup
+}
+
+/**
+ * @brief		set lowBattery detect enable
+ * @param[in]	en - lowBattDet_enable value
+ * @return      none
  */
 void battery_set_detect_enable (int en)
 {
@@ -47,199 +78,228 @@ void battery_set_detect_enable (int en)
 	}
 
 }
+
 /**
- * @brief      This function get enable state of battery detect
- * @param[in]  none.
- * @return     0: Battery detect is disable 	 1:Battery detect is enable.
+ * @brief		get the value of lowBattDet_enable
+ * @param[in]	none
+ * @return      the value of lowBattDet_enable
  */
 int battery_get_detect_enable (void)
 {
 	return lowBattDet_enable;
 }
 
+
 /**
- * @brief		Initialization of vbat detect
+ * @brief		vbat detect init
  * @param[in]	none
  * @return      none
  */
-void TL_BatteryCheckInit(void)
+//_attribute_ram_code_ 
+void adc_vbat_detect_init(void)
 {
-	/****** sar adc Reset ********/
-	//reset whole digital adc module
-	adc_reset_adc_module();
-
-	/******power on sar adc********/
+	/******power off sar adc********/
 	adc_power_on_sar_adc(0);
 
-	/******enable signal of 24M clock to sar adc********/
-	adc_enable_clk_24m_to_sar_adc(1);
+#if	1
+	gpio_set_output_en(GPIO_VBAT_DETECT, 1);
+	gpio_write(GPIO_VBAT_DETECT, 1);
+#endif
 
-	/******set adc clk as 4MHz******/
-	adc_set_sample_clk(5);
+	/******set adc sample clk as 4MHz******/
+	adc_set_sample_clk(5); //adc sample clk= 24M/(1+5)=4M
 
-	/**** ADC ******************/
-	adc_set_atb(ADC_SEL_ATB_1);
-	adc_set_left_gain_bias(GAIN_STAGE_BIAS_PER100);
-	adc_set_right_gain_bias(GAIN_STAGE_BIAS_PER100);
+	//set misc channel en,  and adc state machine state cnt 2( "set" stage and "capture" state for misc channel)
+	adc_set_chn_enable_and_max_state_cnt(ADC_MISC_CHN, 2);  	//set total length for sampling state machine and channel
 
-	//set R_max_mc,R_max_c,R_max_s
-	adc_set_length_capture_state_for_chn_misc_rns(0xf0);//max_mc  //sample rate: 96K
-	adc_set_length_set_state(0x0a);	//max_s
+	//set "capture state" length for misc channel: 240
+	//set "set state" length for misc channel: 10
+	//adc state machine  period  = 24M/250 = 96K, T = 10.4 uS
+	adc_set_state_length(240, 10);  	//set R_max_mc,R_max_c,R_max_s
 
-	//set channel Vref
-	adc_set_ref_voltage(ADC_MISC_CHN, ADC_VREF_1P2V);
-	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_OFF);
 
-	//set Vbat divider select,
-	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_OFF);
+#if 1  //optimize, for saving time
+	//set misc channel use differential_mode,
+	//set misc channel resolution 14 bit,  misc channel differential mode
+	//notice that: in differential_mode MSB is sign bit, rest are data,  here BIT(13) is sign bit
+	analog_write (anareg_adc_res_m, RES14 | FLD_ADC_EN_DIFF_CHN_M);
+	adc_set_ain_chn_misc(ADC_INPUT_PCHN, GND);
+#else
+////set misc channel use differential_mode,
+	adc_set_ain_channel_differential_mode(ADC_INPUT_PCHN, GND);
 
-	//must
-	gpio_set_output_en(BATTERY_CHECK_PIN,1);
-	gpio_write(BATTERY_CHECK_PIN,1);
+	//set misc channel resolution 14 bit
+	//notice that: in differential_mode MSB is sign bit, rest are data,  here BIT(13) is sign bit
+	adc_set_resolution(RES14);
+#endif
 
-	//set channel mode and channel
-	adc_set_input_mode(ADC_MISC_CHN, DIFFERENTIAL_MODE);
-	adc_set_ain_channel_differential_mode(ADC_MISC_CHN, BATTERY_CHECK_ADC_CHN, GND);
 
-	//set resolution for MISC
-	adc_set_resolution(ADC_MISC_CHN, RES14);
+	//set misc channel vref 1.2V
+	adc_set_ref_voltage(ADC_VREF_1P2V);
 
-	//Number of ADC clock cycles in sampling phase
-	adc_set_tsample_cycle(ADC_MISC_CHN, SAMPLING_CYCLES_6);
 
-	//set Analog input pre-scaling and
+	//set misc t_sample 6 cycle of adc clock:  6 * 1/4M
+#if 1   //optimize, for saving time
+	adc_set_tsample_cycle_chn_misc(SAMPLING_CYCLES_6);  	//Number of ADC clock cycles in sampling phase
+#else
+	adc_set_tsample_cycle(SAMPLING_CYCLES_6);   	//Number of ADC clock cycles in sampling phase
+#endif
+
+	//set Analog input pre-scal.ing 1/8
 	adc_set_ain_pre_scaler(ADC_PRESCALER_1F8);
 
-	//set RNG mode
-	adc_set_mode(NORMAL_MODE);//MUST
 
-	//set total length for sampling state machine and channel
-	adc_set_max_state_cnt(0x02);
-	adc_set_chn_enable(ADC_MISC_CHN);
+	/******power on sar adc********/
+	//note: this setting must be set after all other settings
+	adc_power_on_sar_adc(1);
 
-	//adc_config_misc_channel_buf((s16*)adcValue, sizeof(adcValue));
-	reg_dfifo_mode &= ~DFIFO_Mode_FIFO2_Input;
 
-//	adc_power_on_sar_adc(1);
+	//set Analog input pre-scal.ing 1/8
+	adc_set_ain_pre_scaler(ADC_PRESCALER_1F8);
+
+
+	/******power on sar adc********/
+	//note: this setting must be set after all other settings
+	adc_power_on_sar_adc(1);
 }
 
-/**
- * @brief:  Bubble sort.
- * @param[in]:  pData -> pointer point to data
- * @param[in]:  len -> lenght of data
- * @return: None.
- */
-void BubbleSort(unsigned short *pData, unsigned int len)
-{
-	for(volatile int i = 0; i< len-1; i++)
-	{
-		for(volatile int j = 0; j<len-1 - i; j++)
-		{
-			if(pData[j] > pData[j+1])
-			{
-				unsigned short temp = pData[j];
-				pData[j] = pData[j+1];
-				pData[j+1] = temp;
-			}
-		}
-	}
-}
-
-volatile short int adcValue[ADC_SAMPLE_NUM];
-u16 A_Vol = 0;
 /**
  * @brief		This is battery check function
  * @param[in]	alram_vol_mv - input battery calue
  * @return      0 fail 1 success
  */
-void TL_BattteryCheckProc(int minVol_mV)
+//_attribute_ram_code_ 
+int app_battery_power_check(u16 alram_vol_mv)
 {
+	u16 temp;
+	int i,j;
 
+	//when MCU powered up or wakeup from deep/deep with retention, adc need be initialized
 	if(!adc_hw_initialized){
 		adc_hw_initialized = 1;
-		TL_BatteryCheckInit();
+		adc_vbat_detect_init();
 	}
+
 
 
 	adc_reset_adc_module();
-	adc_power_on_sar_adc(1);
+	u32 t0 = clock_time();
 
-	//clear adcValue buffer
-	for(volatile int i=0; i<ADC_SAMPLE_NUM; i++){
-		adcValue[i] = 0;
+
+	u16 adc_sample[ADC_SAMPLE_NUM] = {0};
+	u32 adc_result;
+
+	for(i=0;i<ADC_SAMPLE_NUM;i++){   	//dfifo data clear
+		adc_dat_buf[i] = 0;
 	}
+	while(!clock_time_exceed(t0, 25));  //wait at least 2 sample cycle(f = 96K, T = 10.4us)
+
+	//dfifo setting will lose in suspend/deep, so we need config it every time
+	adc_config_misc_channel_buf((u16 *)adc_dat_buf, ADC_SAMPLE_NUM<<2);  //size: ADC_SAMPLE_NUM*4
+	dfifo_enable_dfifo2();
 
 
 
-	sleep_us(25);//must wait 2 adc cycle;
 
-	adc_config_misc_channel_buf((s16*)adcValue, sizeof(adcValue));
-	reg_dfifo_mode |= DFIFO_Mode_FIFO2_Input;
 
-	/* Get ADC value. */
-	u16 adcTempBuf[ADC_SAMPLE_NUM] = {0};
+//////////////// get adc sample data and sort these data ////////////////
+	for(i=0;i<ADC_SAMPLE_NUM;i++){
+		while(!adc_dat_buf[i]);
 
-	for(volatile int i = 0; i<ADC_SAMPLE_NUM; i++)
-	{
-		while(!adcValue[i]);
 
-		if(adcValue[i] & BIT(13)){//negative voltage
-			adcTempBuf[i] = 0;
-		}else{
-			adcTempBuf[i] = adcValue[i] & 0x1fff;
+		if(adc_dat_buf[i] & BIT(13)){  //14 bit resolution, BIT(13) is sign bit, 1 means negative voltage in differential_mode
+			adc_sample[i] = 0;
+		}
+		else{
+			adc_sample[i] = ((u16)adc_dat_buf[i] & 0x1FFF);  //BIT(12..0) is valid adc result
+		}
+
+
+
+		//insert sort
+		if(i){
+			if(adc_sample[i] < adc_sample[i-1]){
+				temp = adc_sample[i];
+				adc_sample[i] = adc_sample[i-1];
+				for(j=i-1;j>=0 && adc_sample[j] > temp;j--){
+					adc_sample[j+1] = adc_sample[j];
+				}
+				adc_sample[j+1] = temp;
+			}
 		}
 	}
+//////////////////////////////////////////////////////////////////////////////
 
-	//Power off ADC and DFIFO2 for saving power
-	adc_power_on_sar_adc(0);
-	reg_dfifo_mode &= ~DFIFO_Mode_FIFO2_Input;
 
-	BubbleSort(adcTempBuf, ADC_SAMPLE_NUM);
 
-	u16 adcValueEx = (adcTempBuf[2] + adcTempBuf[3] + adcTempBuf[4] + adcTempBuf[5]) >> 2;
 
-	u16 vol = (adcValueEx * 1180 * 8)>>13;//Unit:mV; ڲοѹ׼ʵʵĲοѹΪ1.18V(Vref = 1.2V)
+	dfifo_disable_dfifo2();   //misc channel data dfifo disable
 
-	//Debug
-	A_Vol = vol;
-//	REG_ADDR16(0x8000) = A_Vol;
 
-	/* Low voltage processing. Enter deep sleep. */
-	if(vol < minVol_mV){
 
-		#if (1 && BLT_APP_LED_ENABLE)  //led indicate
-			gpio_set_output_en(GPIO_LED, 1);  //output enable
-			for(int k=0;k<3;k++){
-				gpio_write(GPIO_LED, 1);
-				sleep_us(200000);
-				gpio_write(GPIO_LED, 0);
-				sleep_us(200000);
-			}
-			gpio_set_output_en(GPIO_LED, 0);
-		#endif
 
-		analog_write(DEEP_ANA_REG2, BATTERY_VOL_LOW);
-		cpu_sleep_wakeup(PM_SLeepMode_Deep, PM_WAKEUP_PAD, 0);
+
+///// get average value from raw data(abandon some small and big data ), then filter with history data //////
+#if (ADC_SAMPLE_NUM == 4)  	//use middle 2 data (index: 1,2)
+	u32 adc_average = (adc_sample[1] + adc_sample[2])/2;
+#elif(ADC_SAMPLE_NUM == 8) 	//use middle 4 data (index: 2,3,4,5)
+	u32 adc_average = (adc_sample[2] + adc_sample[3] + adc_sample[4] + adc_sample[5])/4;
+#endif
+
+
+
+
+#if 1
+	adc_result = adc_average;
+#else  	//history data filter
+	if(adc_first_flg){
+		adc_result = adc_average;
+		adc_first_flg = 0;
 	}
-
-
-#if 0  //debug
-	u8	tbl_advData[20 ] = {0};
-
-	u32 avg_convert_oct =   (vol/1000)<<12 | ((vol/100)%10)<<8 | ((vol%100)/10)<<4  | (vol%10);
-	tbl_advData[0] = avg_convert_oct>>8;
-	tbl_advData[1] = avg_convert_oct&0xff;
-
-
-	if(blc_ll_getCurrentState() == BLS_LINK_STATE_ADV){
-		bls_ll_setAdvData( (u8 *)tbl_advData, sizeof(tbl_advData) );
-	}
-	else if(blc_ll_getCurrentState() == BLS_LINK_STATE_CONN){
-		blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,BATT_LEVEL_INPUT_DP_H, tbl_advData, 20);
+	else{
+		adc_result = ( (adc_result*3) + adc_average + 2 )>>2;  //filter
 	}
 #endif
+
+
+
+
+//////////////// adc sample data convert to voltage(mv) ////////////////
+	//                          (Vref, 1/8 scaler)   (BIT<12~0> valid data)
+	//			 =  adc_result * Vref * 8 / 0x2000
+	//           =  adc_result * Vref >>10
+	batt_vol_mv  = (adc_result * adc_vref_cfg.adc_vref)>>10;
+
+
+	if(batt_vol_mv < alram_vol_mv){
+
+		#if (1 && UI_LED_ENABLE)  //led indicate
+			gpio_set_output_en(GPIO_LED_BLUE, 1);  //output enable
+			for(int k=0;k<3;k++){
+				gpio_write(GPIO_LED_BLUE, LED_ON_LEVAL);
+				sleep_us(200000);
+				gpio_write(GPIO_LED_BLUE, !LED_ON_LEVAL);
+				sleep_us(200000);
+			}
+		#endif
+
+
+		GPIO_WAKEUP_FEATURE_LOW;
+		bls_pm_registerFuncBeforeSuspend( &app_suspend_enter_low_battery );
+//		bls_pm_registerFuncBeforeSuspend( NULL );
+
+		cpu_set_gpio_wakeup (GPIO_WAKEUP_FEATURE, Level_High, 1);  //drive pin pad high wakeup deepsleep
+
+		cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_PAD, 0);  //deepsleep
+//		cpu_sleep_wakeup(DEEPSLEEP_MODE, 0, 0);  //deepsleep
+
+		return 1;
+	}
+	else{ // batt level > alarm level
+		analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)&(~LOW_BATT_FLG));  //clr
+
+		return 0;
+	}
 }
 
 #endif
-
-#endif ////ending of (__PROJECT_5317_BLE_REMOTE__)

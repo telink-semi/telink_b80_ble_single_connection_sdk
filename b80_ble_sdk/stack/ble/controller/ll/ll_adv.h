@@ -110,6 +110,13 @@ void 		blc_ll_setAdvCustomedChannel (u8 chn0, u8 chn1, u8 chn2);
 
 
 
+/**
+ * @brief      This function is used to set direct advertising initial address type.
+ * @param[in]  cmdPara - command parameter
+ * @return     Status - 0x00:  success;
+ * 						other: fail
+ */
+u8 			blt_set_adv_direct_init_addrtype(u8* cmdPara);
 
 
 
@@ -145,5 +152,29 @@ ble_sts_t blc_ll_removeAdvertisingFromConnSLaveRole(void);
 ble_sts_t blc_ll_setAdvParamInConnSlaveRole( u8 *adv_data, u8 advData_len, u8 *scanRsp_data, u8 scanRspData_len,
 											 u8 advType,   u8 ownAddrType, u8 adv_channelMap, u8 advFilterPolicy);
 
+/**
+ * @brief      This function is used to set ADV interval in slave role.
+ * @param[in]  intervalMin - minimuim adv interval
+ * @param[in]  intervalMin - maximum adv interval
+ * @return     Status - 0x00:  success;
+ * 						other: fail
+ */
+ble_sts_t 	bls_ll_setAdvInterval(u16 intervalMin, u16 intervalMax);
+
+/**
+ * @brief      This function is used to set ADV aaachannel used in slave role.
+ * @param[in]  cmdPara - command parameter
+ * @return     Status - 0x00:  success;
+ * 						other: fail
+ */
+ble_sts_t 	bls_ll_setAdvFilterPolicy(adv_fp_type_t advFilterPolicy);
+
+/**
+ * @brief      This function is used to set ADV aaachannel used in slave role.
+ * @param[in]  adv_channelMap - channel map
+ * @return     Status - 0x00:  success;
+ * 						other: fail
+ */
+ble_sts_t bls_ll_setAdvChannelMap(u8 adv_channelMap);
 
 #endif /* LL_ADV_H_ */

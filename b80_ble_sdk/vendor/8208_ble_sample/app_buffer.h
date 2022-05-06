@@ -21,8 +21,8 @@
  *          limitations under the License.
  *******************************************************************************************************/
 
-#ifndef VENDOR_B91_BLE_SAMPLE_APP_BUFFER_H_
-#define VENDOR_B91_BLE_SAMPLE_APP_BUFFER_H_
+#ifndef VENDOR_B80_BLE_SAMPLE_APP_BUFFER_H_
+#define VENDOR_B80_BLE_SAMPLE_APP_BUFFER_H_
 
 
 
@@ -60,7 +60,7 @@
  * 2. at least 4; recommended value: 8, 16
  */
 #define ACL_RX_FIFO_SIZE				CAL_LL_ACL_RX_FIFO_SIZE(ACL_CONN_MAX_RX_OCTETS)
-#define ACL_RX_FIFO_NUM					8	// must be: 2^n
+#define ACL_RX_FIFO_NUM					4	// must be: 2^n
 
 
 /**
@@ -75,7 +75,7 @@
  * 2. at least 8; recommended value: 8, 16, 32; other value not allowed.
  */
 #define ACL_TX_FIFO_SIZE				CAL_LL_ACL_TX_FIFO_SIZE(ACL_CONN_MAX_TX_OCTETS)
-#define ACL_TX_FIFO_NUM					16
+#define ACL_TX_FIFO_NUM					8
 
 
 
@@ -113,4 +113,4 @@ extern	u8 app_l2cap_rx_fifo[];
 
 
 
-#endif /* VENDOR_B91_BLE_SAMPLE_APP_BUFFER_H_ */
+#endif /* VENDOR_B80_BLE_SAMPLE_APP_BUFFER_H_ */

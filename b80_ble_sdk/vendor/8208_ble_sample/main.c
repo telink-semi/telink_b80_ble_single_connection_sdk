@@ -40,6 +40,7 @@ _attribute_ram_code_ void irq_handler(void)
 {
 	blc_sdk_irq_handler();
 #if (SOFT_UART_ENABLE)
+	extern void soft_uart_irq_handler();
 	soft_uart_irq_handler();
 #endif
 }

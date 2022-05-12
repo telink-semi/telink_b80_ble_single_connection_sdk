@@ -37,11 +37,6 @@ unsigned char stuckKeyPress[ARRAY_SIZE(drive_pins)];
 #endif
 
 kb_data_t	kb_event;
-#if(!OPTIMIZE_CODE_SIZE)
-kb_data_t	kb_event_cache;
-unsigned char  deepback_key_state;
-u32 deepback_key_tick;
-#endif
 
 #ifndef		SCAN_PIN_50K_PULLUP_ENABLE
 #define		SCAN_PIN_50K_PULLUP_ENABLE		0

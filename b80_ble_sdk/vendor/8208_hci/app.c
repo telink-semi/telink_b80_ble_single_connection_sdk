@@ -28,9 +28,6 @@
 #include "app.h"
 #include "app_buffer.h"
 
-#if (PM_DEEPSLEEP_ENABLE)
-_attribute_data_retention_ u8 sendTerminate_before_enterDeep = 0;
-#endif
 
 
 //_attribute_data_retention_
@@ -72,12 +69,12 @@ int module_task_busy;
  */
 void app_set_kb_wakeup(u8 e, u8 *p, int n)
 {
-#if (BLE_APP_PM_ENABLE)
-	if( blc_ll_getCurrentState() == BLS_LINK_STATE_CONN
-		&& ((u32)(bls_pm_getSystemWakeupTick() - clock_time())) > 80 *CLOCK_16M_SYS_TIMER_CLK_1MS ){  //suspend time > 30ms.add gpio wakeup
-		bls_pm_setWakeupSource(PM_WAKEUP_PAD);  //gpio CORE wakeup suspend
-	}
-#endif
+	#if (BLE_APP_PM_ENABLE)
+		if( blc_ll_getCurrentState() == BLS_LINK_STATE_CONN
+			&& ((u32)(bls_pm_getSystemWakeupTick() - clock_time())) > 80 *CLOCK_16M_SYS_TIMER_CLK_1MS ){  //suspend time > 30ms.add gpio wakeup
+			bls_pm_setWakeupSource(PM_WAKEUP_PAD);  //gpio CORE wakeup suspend
+		}
+	#endif
 }
 
 /**
@@ -128,26 +125,22 @@ int app_suspend_enter ()
  */
 void app_power_management ()
 {
-#if (BLE_APP_PM_ENABLE)
+	#if (BLE_APP_PM_ENABLE)
 
-	if (!app_module_busy() && !tick_wakeup)
-	{
-		#if (PM_DEEPSLEEP_RETENTION_ENABLE)
-			bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
-		#else
+		if (!app_module_busy() && !tick_wakeup)
+		{
 			bls_pm_setSuspendMask(SUSPEND_ADV | SUSPEND_CONN);
-		#endif
 
-		bls_pm_setWakeupSource(PM_WAKEUP_PAD);  // GPIO_WAKEUP_MODULE needs to be wakened
-	}
+			bls_pm_setWakeupSource(PM_WAKEUP_PAD);  // GPIO_WAKEUP_MODULE needs to be wakened
+		}
 
-	if (tick_wakeup && clock_time_exceed (tick_wakeup, 500))
-	{
-		GPIO_WAKEUP_MODULE_LOW;
-		tick_wakeup = 0;
-	}
+		if (tick_wakeup && clock_time_exceed (tick_wakeup, 500))
+		{
+			GPIO_WAKEUP_MODULE_LOW;
+			tick_wakeup = 0;
+		}
 
-#endif
+	#endif
 }
 
 /**
@@ -306,32 +299,21 @@ void user_init_normal(void) {
 	//////////////////////////// BLE stack Initialization  End //////////////////////////////////
 
 	///////////////////// Power Management initialization///////////////////
-#if (BLE_APP_PM_ENABLE)
-	blc_ll_initPowerManagement_module();        //pm module:      	 optional
+	#if (BLE_APP_PM_ENABLE)
+		blc_ll_initPowerManagement_module();        //pm module:      	 optional
 
 
-	bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
+		bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
 
-	//mcu can wake up module from suspend or deepsleep by pulling up GPIO_WAKEUP_MODULE
-	cpu_set_gpio_wakeup (GPIO_WAKEUP_MODULE, Level_High, 1);  // pad high wakeup deepsleep
+		//mcu can wake up module from suspend or deepsleep by pulling up GPIO_WAKEUP_MODULE
+		cpu_set_gpio_wakeup (GPIO_WAKEUP_MODULE, Level_High, 1);  // pad high wakeup deepsleep
 
-	GPIO_WAKEUP_MODULE_LOW;
+		GPIO_WAKEUP_MODULE_LOW;
 
-	bls_app_registerEventCallback (BLT_EV_FLAG_SUSPEND_ENTER, &app_set_kb_wakeup);
-#else
-	bls_pm_setSuspendMask (SUSPEND_DISABLE);
-#endif
-}
-
-/**
- * @brief		user initialization when MCU wake_up from deepSleep_retention mode
- * @param[in]	none
- * @return      none
- */
-_attribute_ram_code_
-void user_init_deepRetn(void)
-{
-
+		bls_app_registerEventCallback (BLT_EV_FLAG_SUSPEND_ENTER, &app_set_kb_wakeup);
+	#else
+		bls_pm_setSuspendMask (SUSPEND_DISABLE);
+	#endif
 }
 
 /**
@@ -345,13 +327,14 @@ void main_loop(void) {
 	blc_sdk_main_loop();
 
 	app_power_management ();
-#if (UI_LED_ENABLE)
-	static u32 tickLoop = 1;
-	if(tickLoop && clock_time_exceed(tickLoop, 500000)){
-		tickLoop = clock_time();
-		gpio_toggle(GPIO_LED_BLUE);
-	}
-#endif
+	////////////////////////////////////// UI entry /////////////////////////////////
+	#if (UI_LED_ENABLE)
+		static u32 tickLoop = 1;
+		if(tickLoop && clock_time_exceed(tickLoop, 500000)){
+			tickLoop = clock_time();
+			gpio_toggle(GPIO_LED_BLUE);
+		}
+	#endif
 
 }
 

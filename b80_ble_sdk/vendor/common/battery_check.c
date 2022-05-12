@@ -101,10 +101,10 @@ void adc_vbat_detect_init(void)
 	/******power off sar adc********/
 	adc_power_on_sar_adc(0);
 
-#if	1
-	gpio_set_output_en(GPIO_VBAT_DETECT, 1);
-	gpio_write(GPIO_VBAT_DETECT, 1);
-#endif
+	#if	1
+		gpio_set_output_en(GPIO_VBAT_DETECT, 1);
+		gpio_write(GPIO_VBAT_DETECT, 1);
+	#endif
 
 	/******set adc sample clk as 4MHz******/
 	adc_set_sample_clk(5); //adc sample clk= 24M/(1+5)=4M
@@ -118,20 +118,20 @@ void adc_vbat_detect_init(void)
 	adc_set_state_length(240, 10);  	//set R_max_mc,R_max_c,R_max_s
 
 
-#if 1  //optimize, for saving time
-	//set misc channel use differential_mode,
-	//set misc channel resolution 14 bit,  misc channel differential mode
-	//notice that: in differential_mode MSB is sign bit, rest are data,  here BIT(13) is sign bit
-	analog_write (anareg_adc_res_m, RES14 | FLD_ADC_EN_DIFF_CHN_M);
-	adc_set_ain_chn_misc(ADC_INPUT_PCHN, GND);
-#else
-////set misc channel use differential_mode,
-	adc_set_ain_channel_differential_mode(ADC_INPUT_PCHN, GND);
+	#if 1  //optimize, for saving time
+		//set misc channel use differential_mode,
+		//set misc channel resolution 14 bit,  misc channel differential mode
+		//notice that: in differential_mode MSB is sign bit, rest are data,  here BIT(13) is sign bit
+		analog_write (anareg_adc_res_m, RES14 | FLD_ADC_EN_DIFF_CHN_M);
+		adc_set_ain_chn_misc(ADC_INPUT_PCHN, GND);
+	#else
+	////set misc channel use differential_mode,
+		adc_set_ain_channel_differential_mode(ADC_INPUT_PCHN, GND);
 
-	//set misc channel resolution 14 bit
-	//notice that: in differential_mode MSB is sign bit, rest are data,  here BIT(13) is sign bit
-	adc_set_resolution(RES14);
-#endif
+		//set misc channel resolution 14 bit
+		//notice that: in differential_mode MSB is sign bit, rest are data,  here BIT(13) is sign bit
+		adc_set_resolution(RES14);
+	#endif
 
 
 	//set misc channel vref 1.2V
@@ -139,11 +139,11 @@ void adc_vbat_detect_init(void)
 
 
 	//set misc t_sample 6 cycle of adc clock:  6 * 1/4M
-#if 1   //optimize, for saving time
-	adc_set_tsample_cycle_chn_misc(SAMPLING_CYCLES_6);  	//Number of ADC clock cycles in sampling phase
-#else
-	adc_set_tsample_cycle(SAMPLING_CYCLES_6);   	//Number of ADC clock cycles in sampling phase
-#endif
+	#if 1   //optimize, for saving time
+		adc_set_tsample_cycle_chn_misc(SAMPLING_CYCLES_6);  	//Number of ADC clock cycles in sampling phase
+	#else
+		adc_set_tsample_cycle(SAMPLING_CYCLES_6);   	//Number of ADC clock cycles in sampling phase
+	#endif
 
 	//set Analog input pre-scal.ing 1/8
 	adc_set_ain_pre_scaler(ADC_PRESCALER_1F8);
@@ -239,27 +239,27 @@ int app_battery_power_check(u16 alram_vol_mv)
 
 
 
-///// get average value from raw data(abandon some small and big data ), then filter with history data //////
-#if (ADC_SAMPLE_NUM == 4)  	//use middle 2 data (index: 1,2)
-	u32 adc_average = (adc_sample[1] + adc_sample[2])/2;
-#elif(ADC_SAMPLE_NUM == 8) 	//use middle 4 data (index: 2,3,4,5)
-	u32 adc_average = (adc_sample[2] + adc_sample[3] + adc_sample[4] + adc_sample[5])/4;
-#endif
+	///// get average value from raw data(abandon some small and big data ), then filter with history data //////
+	#if (ADC_SAMPLE_NUM == 4)  	//use middle 2 data (index: 1,2)
+		u32 adc_average = (adc_sample[1] + adc_sample[2])/2;
+	#elif(ADC_SAMPLE_NUM == 8) 	//use middle 4 data (index: 2,3,4,5)
+		u32 adc_average = (adc_sample[2] + adc_sample[3] + adc_sample[4] + adc_sample[5])/4;
+	#endif
 
 
 
 
-#if 1
-	adc_result = adc_average;
-#else  	//history data filter
-	if(adc_first_flg){
+	#if 1
 		adc_result = adc_average;
-		adc_first_flg = 0;
-	}
-	else{
-		adc_result = ( (adc_result*3) + adc_average + 2 )>>2;  //filter
-	}
-#endif
+	#else  	//history data filter
+		if(adc_first_flg){
+			adc_result = adc_average;
+			adc_first_flg = 0;
+		}
+		else{
+			adc_result = ( (adc_result*3) + adc_average + 2 )>>2;  //filter
+		}
+	#endif
 
 
 

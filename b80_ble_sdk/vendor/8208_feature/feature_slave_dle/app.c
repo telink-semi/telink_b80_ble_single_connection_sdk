@@ -60,7 +60,6 @@ _attribute_data_retention_	u32 app_test_data_tick = 0;
 
 
 _attribute_data_retention_ u32	advertise_begin_tick;
-_attribute_data_retention_ u32 latest_user_event_tick;
 
 
 
@@ -101,8 +100,6 @@ void task_connect(u8 e, u8 *p, int n)
 	connect_event_occurTick = clock_time()|1;
 
 	bls_l2cap_requestConnParamUpdate (CONN_INTERVAL_10MS, CONN_INTERVAL_10MS, 99, CONN_TIMEOUT_4S);  // 1 S
-
-	latest_user_event_tick = clock_time();
 
 	#if (UI_LED_ENABLE)
 		gpio_write(GPIO_LED_RED, LED_ON_LEVAL);
@@ -182,12 +179,12 @@ _attribute_ram_code_ void task_suspend_exit (u8 e, u8 *p, int n)
 
 /**
  * @brief      power management code for application
- * @param	   none
+ * @param[in]  none
  * @return     none
  */
 void blt_pm_proc(void)
 {
-#if(BLE_APP_PM_ENABLE)
+	#if(BLE_APP_PM_ENABLE)
 		#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 			bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
 		#else
@@ -200,7 +197,7 @@ void blt_pm_proc(void)
 				bls_pm_setManualLatency(0);
 			}
 		#endif
-#endif//END of  BLE_APP_PM_ENABLE
+	#endif//END of  BLE_APP_PM_ENABLE
 }
 
 
@@ -350,13 +347,14 @@ void user_init_normal(void)
 		bls_app_registerEventCallback (BLT_EV_FLAG_GPIO_EARLY_WAKEUP, &proc_keyboard);
 	#endif
 
-////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
 	advertise_begin_tick = clock_time();
 }
 
+#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 /**
  * @brief		user initialization when MCU wake_up from deepSleep_retention mode
  * @param[in]	none
@@ -365,7 +363,7 @@ void user_init_normal(void)
 _attribute_ram_code_
 void user_init_deepRetn(void)
 {
-#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+
 
 	//////////// LinkLayer Initialization  Begin /////////////////////////
 	blc_ll_initBasicMCU();                      //mandatory
@@ -385,9 +383,8 @@ void user_init_deepRetn(void)
 		}
 	#endif
 ////////////////////////////////////////////////////////////////////////////////////////////////
-#endif
 }
-
+#endif
 
 
 
@@ -412,7 +409,6 @@ extern u32	scan_pin_need;
  */
 void key_change_proc(void)
 {
-	latest_user_event_tick = clock_time();  //record latest key change time
 
 	u8 key0 = kb_event.keycode[0];
 	u8 key_buf[8] = {0,0,0,0,0,0,0,0};

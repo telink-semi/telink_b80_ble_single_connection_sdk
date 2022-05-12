@@ -25,7 +25,6 @@
 #define APP_UI_H_
 
 
-extern u32 latest_user_event_tick;
 
 extern int 	key_not_released;
 

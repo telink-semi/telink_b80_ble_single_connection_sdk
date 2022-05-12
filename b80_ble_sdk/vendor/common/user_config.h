@@ -28,8 +28,6 @@
 	#include "vendor/8208_ble_sample/app_config.h"
 #elif(__PROJECT_B80_BLE_FEATURE__)
 	#include "vendor/8208_feature/app_config.h"
-#elif(__PROJECT_B80_BLE_INTERNAL_TEST__)
-	#include "vendor/8208_ble_internal_test/app_config.h"
 #elif(__PROJECT_B80_HCI__)
 	#include "vendor/8208_hci/app_config.h"
 #elif(__PROJECT_B80_MODULE__)

@@ -47,7 +47,7 @@
 
 
 _attribute_data_retention_ u32	advertise_begin_tick;
-_attribute_data_retention_ u32 latest_user_event_tick;
+
 
 
 
@@ -85,16 +85,17 @@ const u8	tbl_scanRsp [] = {
  */
 void task_connect(u8 e, u8 *p, int n)
 {
-#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
-	uart_printf("task connect\n",13);
-#endif
-	printf("task connect\n");
-	bls_l2cap_requestConnParamUpdate (CONN_INTERVAL_10MS, CONN_INTERVAL_10MS, 99, CONN_TIMEOUT_4S);  // 1 S
 
-	latest_user_event_tick = clock_time();
+	bls_l2cap_requestConnParamUpdate (CONN_INTERVAL_10MS, CONN_INTERVAL_10MS, 99, CONN_TIMEOUT_4S);  // 1 S
 
 	#if (UI_LED_ENABLE)
 		gpio_write(GPIO_LED_RED, LED_ON_LEVAL);
+	#endif
+
+	#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
+		uart_tx_printf("task connect,tick:%d\n",clock_time());
+	#else
+		printf("task connect\n");
 	#endif
 }
 
@@ -109,10 +110,11 @@ void task_connect(u8 e, u8 *p, int n)
  */
 void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 {
-#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
-	uart_printf("task terminate\n",15);
-#endif
-	printf("task terminate\n");
+	#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
+		uart_tx_printf("task terminate,adv start,tick:%d\n",clock_time());
+	#else
+		printf("task terminate\n");
+	#endif
 	if(*p == HCI_ERR_CONN_TIMEOUT){
 
 	}
@@ -134,6 +136,23 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 	advertise_begin_tick = clock_time();
 }
 
+#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
+/**
+ * @brief		enter suspend mode
+ * @param[in]	none
+ * @return      0 - forbidden enter suspend mode
+ *              1 - allow enter suspend mode
+ */
+int app_suspend_enter ()
+{
+	if (uart_tx_fifo.rptr != uart_tx_fifo.wptr || !uart_dma_send_flag || uart_rx_fifo.rptr != uart_rx_fifo.wptr)
+	{
+		bls_pm_setSuspendMask(SUSPEND_DISABLE);
+		return 0;
+	}
+	return 1;
+}
+#endif
 
 
 /**
@@ -143,33 +162,44 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
  * @param[in]  n - data length of event
  * @return     none
  */
-_attribute_ram_code_ void user_set_rf_power (u8 e, u8 *p, int n)
+_attribute_ram_code_ void task_suspend_exit (u8 e, u8 *p, int n)
 {
 	rf_set_power_level_index (MY_RF_POWER_INDEX);
+	if(((u32*)p)[0]&WAKEUP_STATUS_TIMER){
+		#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
+			uart_tx_printf("timer wakeup,tick:%d\n",clock_time());
+		#else
+			printf("task suspend exit\n");
+		#endif
+	}
 }
 
 
 
 /**
  * @brief      power management code for application
- * @param	   none
+ * @param[in]  none
  * @return     none
  */
 void blt_pm_proc(void)
 {
 #if(BLE_APP_PM_ENABLE)
-		#if (PM_DEEPSLEEP_RETENTION_ENABLE)
-			bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
-		#else
-			bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
-		#endif
-
-		#if(UI_KEYBOARD_ENABLE)
-			if(scan_pin_need || key_not_released )
-			{
-				bls_pm_setManualLatency(0);
-			}
-		#endif
+	#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
+	if(uart_tx_fifo.rptr == uart_tx_fifo.wptr &&uart_rx_fifo.rptr == uart_rx_fifo.wptr&& uart_dma_send_flag)
+	#endif
+	{
+	#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+		bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
+	#else
+		bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
+	#endif
+	}
+	#if(UI_KEYBOARD_ENABLE)
+	if(scan_pin_need || key_not_released )
+	{
+		bls_pm_setManualLatency(0);
+	}
+	#endif
 #endif//END of  BLE_APP_PM_ENABLE
 }
 
@@ -278,12 +308,12 @@ void user_init_normal(void)
 
 
 	/* set rf power index, user must set it after every suspend wakeup, cause relative setting will be reset in suspend */
-	user_set_rf_power(0, 0, 0);
+	rf_set_power_level_index (MY_RF_POWER_INDEX);
 
 
 	bls_app_registerEventCallback (BLT_EV_FLAG_CONNECT, &task_connect);
 	bls_app_registerEventCallback (BLT_EV_FLAG_TERMINATE, &task_terminate);
-	bls_app_registerEventCallback (BLT_EV_FLAG_SUSPEND_EXIT, &user_set_rf_power);
+	bls_app_registerEventCallback (BLT_EV_FLAG_SUSPEND_EXIT, &task_suspend_exit);
 
 
 
@@ -298,6 +328,9 @@ void user_init_normal(void)
 			bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
 		#endif
 		bls_app_registerEventCallback (BLT_EV_FLAG_SUSPEND_ENTER, &app_set_kb_wakeup);
+		#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
+			bls_pm_registerFuncBeforeSuspend( &app_suspend_enter );
+		#endif
 	#else
 		bls_pm_setSuspendMask (SUSPEND_DISABLE);
 	#endif
@@ -313,14 +346,15 @@ void user_init_normal(void)
 		bls_app_registerEventCallback (BLT_EV_FLAG_GPIO_EARLY_WAKEUP, &proc_keyboard);
 	#endif
 
-////////////////////////////////////////////////////////////////////////////////////////////////
-#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
 		 user_uart_init();
-#endif
+	#endif
 
 	advertise_begin_tick = clock_time();
 }
 
+#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 /**
  * @brief		user initialization when MCU wake_up from deepSleep_retention mode
  * @param[in]	none
@@ -329,7 +363,7 @@ void user_init_normal(void)
 _attribute_ram_code_
 void user_init_deepRetn(void)
 {
-#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+
 
 	//////////// LinkLayer Initialization  Begin /////////////////////////
 	blc_ll_initBasicMCU();                      //mandatory
@@ -339,7 +373,9 @@ void user_init_deepRetn(void)
 	/* set rf power index, user must set it after every suspend wakeup, cause relative setting will be reset in suspend */
 	rf_set_power_level_index (MY_RF_POWER_INDEX);
 	blc_ll_recoverDeepRetention();
-
+	#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
+	 user_uart_init();
+	#endif
 	#if (UI_KEYBOARD_ENABLE)
 		/////////// keyboard gpio wakeup init ////////
 		u32 pin[] = KB_DRIVE_PINS;
@@ -349,9 +385,8 @@ void user_init_deepRetn(void)
 		}
 	#endif
 ////////////////////////////////////////////////////////////////////////////////////////////////
-#endif
 }
-
+#endif
 
 
 
@@ -376,7 +411,6 @@ extern u32	scan_pin_need;
  */
 void key_change_proc(void)
 {
-	latest_user_event_tick = clock_time();  //record latest key change time
 
 	u8 key0 = kb_event.keycode[0];
 	u8 key_buf[8] = {0,0,0,0,0,0,0,0};
@@ -501,9 +535,9 @@ void main_loop (void)
 	#if (UI_KEYBOARD_ENABLE)
 		proc_keyboard (0, 0, 0);
 	#endif
-#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
-	user_uart_mainloop();
-#endif
+	#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
+		user_uart_loop();
+	#endif
 	////////////////////////////////////// PM Process /////////////////////////////////
 	blt_pm_proc();
 

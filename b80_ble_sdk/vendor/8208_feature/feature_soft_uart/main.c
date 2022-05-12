@@ -39,6 +39,10 @@
 _attribute_ram_code_ void irq_handler(void)
 {
 	blc_sdk_irq_handler();
+
+#if (SOFT_UART_ENABLE)
+	soft_uart_irq_handler();
+#endif
 }
 
 
@@ -57,31 +61,28 @@ int main(void)
 	#endif
 
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
-#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+
 	int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup();  //MCU deep retention wakeUp
-#endif
+
 	rf_ble_1m_param_init();
 
 	clock_init(SYS_CLK_TYPE);
 
-#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 	gpio_init( !deepRetWakeUp );  //analog resistance will keep available in deepSleep mode, so no need initialize again
-#else
-	gpio_init(1);
-#endif
+
 	/* load customized freq_offset CAP value and TP value. */
 	blc_app_loadCustomizedParameters();
 
-#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+	#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 		if( deepRetWakeUp ){
 			user_init_deepRetn ();
 		}
-		else{
+		else
+	#endif
+		{
 			user_init_normal ();
 		}
-#else
-	user_init_normal();
-#endif
+
     irq_enable();
 
 	while (1) {

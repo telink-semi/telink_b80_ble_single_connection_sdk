@@ -44,11 +44,7 @@
 
 
 
-_attribute_data_retention_	int device_in_connection_state;
 _attribute_data_retention_ u32	advertise_begin_tick;
-#if (PM_DEEPSLEEP_ENABLE)
-_attribute_data_retention_ u8  sendTerminate_before_enterDeep = 0;
-#endif
 
 _attribute_data_retention_ own_addr_type_t app_own_address_type = OWN_ADDRESS_PUBLIC;
 
@@ -398,12 +394,12 @@ void user_init_normal(void)
 	u8 *uart_rx_addr = (spp_rx_fifo_b + (spp_rx_fifo.wptr & (spp_rx_fifo.num-1)) * spp_rx_fifo.size);
 	uart_recbuff_init( (unsigned char *)uart_rx_addr, spp_rx_fifo.size);
 
-	uart_gpio_set(GPIO_PB4, GPIO_PB5);
+	uart_gpio_set(UART_TX_PIN, UART_RX_PIN);
 
 	uart_reset();  //will reset uart digital registers from 0x90 ~ 0x9f, so uart setting must set after this reset
 
 	//baud rate: 115200
-	uart_init_baudrate(115200,CLOCK_SYS_CLOCK_HZ,PARITY_NONE, STOP_BIT_ONE);
+	uart_init_baudrate(UART_BAUD_RATE,CLOCK_SYS_CLOCK_HZ,PARITY_NONE, STOP_BIT_ONE);
 
 	uart_dma_enable(1, 1); 	//uart data in hardware buffer moved by dma, so we need enable them first
 
@@ -464,7 +460,7 @@ void user_init_normal(void)
 }
 
 
-
+#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 /**
  * @brief		user initialization when MCU wake_up from deepSleep_retention mode
  * @param[in]	none
@@ -472,7 +468,6 @@ void user_init_normal(void)
  */
 _attribute_ram_code_ void user_init_deepRetn(void)
 {
-#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 	//////////// LinkLayer Initialization  Begin /////////////////////////
 	blc_ll_initBasicMCU();                      //mandatory
 
@@ -513,8 +508,8 @@ _attribute_ram_code_ void user_init_deepRetn(void)
 	cpu_set_gpio_wakeup (GPIO_WAKEUP_MODULE, Level_High, 1);  // pad high wakeup deepsleep
 
 	GPIO_WAKEUP_MODULE_LOW;
-#endif
 }
+#endif
 
 
 /**

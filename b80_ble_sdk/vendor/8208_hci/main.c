@@ -40,9 +40,9 @@ _attribute_ram_code_ void irq_handler(void)
 
 	blc_sdk_irq_handler();
 
-#if (HCI_ACCESS==HCI_USE_UART)
-	app_uart_irq_handler();
-#endif
+	#if (HCI_ACCESS==HCI_USE_UART)
+		app_uart_irq_handler();
+	#endif
 
 }
 
@@ -54,49 +54,36 @@ _attribute_ram_code_ void irq_handler(void)
  */
 int main(void)
 {
-#if (BLE_APP_PM_ENABLE)
-	blc_pm_select_internal_32k_crystal();
-#endif
+	#if (BLE_APP_PM_ENABLE)
+		blc_pm_select_internal_32k_crystal();
+	#endif
 
-#if (BLE_OTA_SERVER_ENABLE && (FLASH_SIZE_OPTION == FLASH_SIZE_OPTION_128K))
-	blc_ota_setFirmwareSizeAndBootAddress(48, MULTI_BOOT_ADDR_0x10000);
-#endif
+	#if (BLE_OTA_SERVER_ENABLE && (FLASH_SIZE_OPTION == FLASH_SIZE_OPTION_128K))
+		blc_ota_setFirmwareSizeAndBootAddress(48, MULTI_BOOT_ADDR_0x10000);
+	#endif
 
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
-#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+
 	int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup(); //MCU deep retention wakeUp
-#endif
+
 	rf_ble_1m_param_init();
 
 	clock_init(SYS_CLK_TYPE);
 
-#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 	gpio_init( !deepRetWakeUp ); //analog resistance will keep available in deepSleep mode, so no need initialize again
-#else
-	gpio_init(1);
-#endif
+
 	/* load customized freq_offset CAP value and TP value. */
 	blc_app_loadCustomizedParameters();
 
-#if FIRMWARES_SIGNATURE_ENABLE
-	blt_firmware_signature_check();
-#endif
-#if (PM_DEEPSLEEP_RETENTION_ENABLE)
-	if( deepRetWakeUp ) {
-		user_init_deepRetn ();
-	}
-	else {
-		user_init_normal ();
-	}
-#else
-	user_init_normal();
-#endif
+	#if FIRMWARES_SIGNATURE_ENABLE
+		blt_firmware_signature_check();
+	#endif
+
+	user_init_normal ();
+
 	irq_enable();
 
 	while (1) {
-#if (MODULE_WATCHDOG_ENABLE)
-		wd_clear(); //clear watch dog
-#endif
 
 		main_loop();
 	}

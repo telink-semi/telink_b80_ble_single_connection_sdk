@@ -33,7 +33,7 @@
 
 
 
-_attribute_data_retention_ u32 latest_user_event_tick;
+
 
 
 
@@ -58,7 +58,10 @@ extern u32	scan_pin_need;
  */
 void key_change_proc(void)
 {
-	latest_user_event_tick = clock_time();  //record latest key change time
+	#if (PM_DEEPSLEEP_ENABLE)
+		extern u32 latest_user_event_tick;
+		latest_user_event_tick = clock_time();  //record latest key change time
+	#endif
 
 	u8 key0 = kb_event.keycode[0];
 	u8 key_buf[8] = {0,0,0,0,0,0,0,0};
@@ -149,12 +152,12 @@ void proc_keyboard (u8 e, u8 *p, int n)
  */
 void app_set_kb_wakeup(u8 e, u8 *p, int n)
 {
-#if (BLE_APP_PM_ENABLE)
+	#if (BLE_APP_PM_ENABLE)
 	if( blc_ll_getCurrentState() == BLS_LINK_STATE_CONN
 		&& ((u32)(bls_pm_getSystemWakeupTick() - clock_time())) > 80 *CLOCK_16M_SYS_TIMER_CLK_1MS ){  //suspend time > 30ms.add gpio wakeup
 		bls_pm_setWakeupSource(PM_WAKEUP_PAD);  //gpio CORE wakeup suspend
 	}
-#endif
+	#endif
 }
 
 
@@ -182,12 +185,11 @@ _attribute_data_retention_ int 	ota_is_working = 0;
  */
 void app_enter_ota_mode(void)
 {
-#if(UI_LED_ENABLE)
+	#if(UI_LED_ENABLE)
 	gpio_write(GPIO_LED_BLUE, 1);
 	gpio_write(GPIO_LED_GREEN, 1);
-#endif
+	#endif
 	ota_is_working = 1;
-	bls_ota_setTimeout(30 * 1000 * 1000); //set OTA timeout  15 seconds
 }
 
 /**
@@ -207,15 +209,15 @@ void app_ota_result(int result)
 		}
 		else{  //OTA fail
 
-			#if 0 //this is only for debug, can not use this in application code
-				irq_disable();
+		#if 0 //this is only for debug, can not use this in application code
+			irq_disable();
 
-				while(1)
-				{
-					gpio_toggle(GPIO_LED_BLUE);
-					sleep_us(1000000);  //led on for 1 second
-				}
-			#endif
+			while(1)
+			{
+				gpio_toggle(GPIO_LED_BLUE);
+				sleep_us(1000000);  //led on for 1 second
+			}
+		#endif
 
 		}
 	#endif

@@ -65,7 +65,6 @@ void app_phytest_irq_proc(void);
 
 
 
-extern u32 latest_user_event_tick;
 
 extern int 	key_not_released;
 

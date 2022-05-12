@@ -26,9 +26,14 @@
 
 #include "../gpio.h"
 #include "common/types.h"
-#include "stack/ble/ble_config.h"
-#if (SOFT_UART_ENABLE)
 
+
+#ifndef SOFT_UART_ENABLE
+#define SOFT_UART_ENABLE                 				0
+#endif
+
+
+#if (SOFT_UART_ENABLE)
 
 
 #ifndef SOFT_UART_BAUD_RATE
@@ -51,9 +56,6 @@
 #define	SOFT_UART_OFFSET				 1
 #endif
 
-#ifndef	SOFT_UART_CHECK_RF_EN
-#define	SOFT_UART_CHECK_RF_EN			 1
-#endif
 
 #define SOFT_UART_SEND_ONE_BYTE          (1000000/SOFT_UART_BAUD_RATE)*20
 
@@ -98,17 +100,13 @@ typedef struct{
 
 	unsigned int 	data_size; 	   					//Maximum receive cache
 	unsigned char 	data_count;	   					//Receive cache counter
-#if(OPTIMIZE_CODE_SIZE)
+
 	volatile unsigned char   mutex_flag;            //lock is 1 ,unlock is 0
 	unsigned char rsdv[2];
 
 
 
 	unsigned char 	*data;        	    			//Receive cache address
-#else
-	unsigned char 	*data;        	    			//Receive cache address
-	volatile unsigned char   mutex_flag;            //lock is 1 ,unlock is 0
-#endif
 }soft_uart_rece_t;
 
 
@@ -122,12 +120,14 @@ typedef void (*soft_uart_irq_handler_t)(void);
  */
 void soft_uart_init(void);
 
+
+
 /**
- * @brief       Interrupts an internal call to a function
+ * @brief      software serial port interrupt handler function
  * @param[in]	none
  * @return      none
  */
-extern soft_uart_irq_handler_t  soft_uart_irq_cb;
+void soft_uart_irq_handler(void);
 
 /**
  * @brief     data receive buffer initiate function. ,

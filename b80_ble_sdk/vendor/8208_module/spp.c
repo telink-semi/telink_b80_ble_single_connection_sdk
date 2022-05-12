@@ -96,9 +96,6 @@ int controller_event_handler(u32 h, u8 *para, int n)
 				//Slave received Master's LL_Connect_Update_Req pkt.
 				rf_packet_ll_updateConnPara_t p;
 				memcpy((u8*)&p.winSize, para, 11);
-
-//				printf("Receive Master's LL_Connect_Update_Req pkt.\n");
-//				printf("Connection interval:%dus.\n", p.interval*1250);
 			}
 			break;
 
@@ -117,8 +114,6 @@ int controller_event_handler(u32 h, u8 *para, int n)
 				//Master send SIG_Connection_Param_Update_Rsp pkt,and the reply result is 0x0000. When connection event counter value is equal
 				//to the instant, a callback event BLT_EV_FLAG_CONN_PARA_UPDATE will generate. The connection interval at this time should be the
 				//currently updated and valid connection interval!
-//				printf("Update param event occur.\n");
-//				printf("Current Connection interval:%dus.\n", bls_ll_getConnectionInterval() * 1250);
 			}
 			break;
 
@@ -261,7 +256,9 @@ int bls_uart_handler (u8 *p, int n)
 	// set device name: 13 ff 0a 00  01 02 03 04 05 06 07 08 09 0a
 	else if (spp_cmd == SPP_CMD_SET_DEV_NAME)
 	{
-		pEvt->param[0] = bls_att_setDeviceName(cmdPara,p[2]);
+		extern u8  my_devName[MAX_DEV_NAME_LEN];
+		memset(my_devName, 0, MAX_DEV_NAME_LEN );
+		memcpy(my_devName, cmdPara, p[2] < MAX_DEV_NAME_LEN ? p[2] : MAX_DEV_NAME_LEN);
 	}
 	// get connection parameter: 14 ff 00 00
 	else if (spp_cmd == SPP_CMD_GET_CONN_PARA)
@@ -360,13 +357,13 @@ int spp_send_data (u32 header, spp_event_t * pEvt)
 		return -1;
 	}
 
-#if (BLE_MODULE_INDICATE_DATA_TO_MCU)
-	if(!module_uart_data_flg){ //UART idle, new data is sent
-		GPIO_WAKEUP_MCU_HIGH;  //Notify MCU that there is data here
-		module_wakeup_module_tick = clock_time() | 1;
-		module_uart_data_flg = 1;
-	}
-#endif
+	#if (BLE_MODULE_INDICATE_DATA_TO_MCU)
+		if(!module_uart_data_flg){ //UART idle, new data is sent
+			GPIO_WAKEUP_MCU_HIGH;  //Notify MCU that there is data here
+			module_wakeup_module_tick = clock_time() | 1;
+			module_uart_data_flg = 1;
+		}
+	#endif
 
 
 	int sppEvt_len = pEvt->paramLen + 2;
@@ -412,15 +409,15 @@ int tx_to_uart_cb(void) {
 	memcpy(&T_txdata_buf.data, p + 2, p[0] | (p[1] << 8));
 
 	T_txdata_buf.len = p[0] | (p[1] << 8);
-#if (BLE_MODULE_INDICATE_DATA_TO_MCU)
-		//If the MCU side is designed to have low power consumption and the module has data to pull up
-		//the GPIO_WAKEUP_MCU will only wake up the MCU, then you need to consider whether MCU needs a
-		//reply time T from wakeup to a stable receive UART data. If you need a response time of T, ch-
-		//ange the following 100US to the actual time required by user.
-		if(module_wakeup_module_tick){
-			while( !clock_time_exceed(module_wakeup_module_tick, 100) );
-		}
-#endif
+	#if (BLE_MODULE_INDICATE_DATA_TO_MCU)
+			//If the MCU side is designed to have low power consumption and the module has data to pull up
+			//the GPIO_WAKEUP_MCU will only wake up the MCU, then you need to consider whether MCU needs a
+			//reply time T from wakeup to a stable receive UART data. If you need a response time of T, ch-
+			//ange the following 100US to the actual time required by user.
+			if(module_wakeup_module_tick){
+				while( !clock_time_exceed(module_wakeup_module_tick, 100) );
+			}
+	#endif
 	Tr_clrUartTxDone();
 	uart_send_dma((unsigned char*) (&T_txdata_buf));
 	my_fifo_pop(&spp_tx_fifo);

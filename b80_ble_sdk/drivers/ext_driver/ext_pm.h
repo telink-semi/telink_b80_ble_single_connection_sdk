@@ -29,5 +29,13 @@ extern unsigned int ota_program_bootAddr;
 extern unsigned int ota_program_offset;
 extern unsigned int ota_firmware_size_k;
 
+
+
+static inline void blc_app_setExternalCrystalCapEnable(unsigned char  en)
+{
+	blt_miscParam.ext_cap_en = en;
+}
+
+
 #endif
 

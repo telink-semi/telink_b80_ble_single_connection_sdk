@@ -47,14 +47,15 @@
 
 
 
-_attribute_data_retention_	int device_in_connection_state;
 _attribute_data_retention_ u32	advertise_begin_tick;
+
 #if (PM_DEEPSLEEP_ENABLE)
+_attribute_data_retention_	int device_in_connection_state;
 _attribute_data_retention_ u8  sendTerminate_before_enterDeep = 0;
+_attribute_data_retention_ u32 latest_user_event_tick;
 #endif
 
 _attribute_data_retention_ own_addr_type_t app_own_address_type = OWN_ADDRESS_PUBLIC;
-
 
 
 /**
@@ -98,9 +99,6 @@ void app_switch_to_indirect_adv(u8 e, u8 *p, int n)
 }
 
 
-
-
-
 /**
  * @brief      callback function of LinkLayer Event "BLT_EV_FLAG_CONNECT"
  * @param[in]  e - LinkLayer Event type
@@ -111,10 +109,13 @@ void app_switch_to_indirect_adv(u8 e, u8 *p, int n)
 void task_connect(u8 e, u8 *p, int n)
 {
 
-	bls_l2cap_requestConnParamUpdate (CONN_INTERVAL_10MS, CONN_INTERVAL_10MS, 99, CONN_TIMEOUT_8S);  // 1 S
+	bls_l2cap_requestConnParamUpdate (CONN_INTERVAL_10MS, CONN_INTERVAL_10MS, 99, CONN_TIMEOUT_4S);  // 1 S
 
-	latest_user_event_tick = clock_time();
-	device_in_connection_state = 1;
+	#if (PM_DEEPSLEEP_ENABLE)
+		latest_user_event_tick = clock_time();
+		device_in_connection_state = 1;
+	#endif
+
 	#if (UI_LED_ENABLE)
 		gpio_write(GPIO_LED_RED, LED_ON_LEVAL);
 	#endif
@@ -131,7 +132,10 @@ void task_connect(u8 e, u8 *p, int n)
  */
 void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 {
-	device_in_connection_state = 0;
+	#if (PM_DEEPSLEEP_ENABLE)
+		device_in_connection_state = 0;
+	#endif
+
 	if(*p == HCI_ERR_CONN_TIMEOUT){
 
 	}
@@ -176,7 +180,6 @@ _attribute_ram_code_ void task_suspend_exit (u8 e, u8 *p, int n)
 
 
 
-
 /**
  * @brief      power management code for application
  * @param[in]  none
@@ -184,7 +187,7 @@ _attribute_ram_code_ void task_suspend_exit (u8 e, u8 *p, int n)
  */
 void blt_pm_proc(void)
 {
-#if(BLE_APP_PM_ENABLE)
+	#if(BLE_APP_PM_ENABLE)
 		#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 			bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
 		#else
@@ -204,60 +207,37 @@ void blt_pm_proc(void)
 		#endif
 
 
-#if (PM_DEEPSLEEP_ENABLE)   //test connection power, should disable deepSleep
-		if(sendTerminate_before_enterDeep == 2){  //Terminate OK
-			cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_PAD, 0);  //deepSleep
-		}
-
-
-		if(  !blc_ll_isControllerEventPending() ){  //no controller event pending
-			//adv 60s, deepsleep
-			if( blc_ll_getCurrentState() == BLS_LINK_STATE_ADV && !sendTerminate_before_enterDeep && \
-				clock_time_exceed(advertise_begin_tick , ADV_IDLE_ENTER_DEEP_TIME * 1000000))
-			{
-				cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_PAD, 0);  //deepsleep
+		#if (PM_DEEPSLEEP_ENABLE)   //test connection power, should disable deepSleep
+			if(sendTerminate_before_enterDeep == 2){  //Terminate OK
+				cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_PAD, 0);  //deepSleep
 			}
-			//conn 60s no event(key/voice/led), enter deepsleep
-			else if( device_in_connection_state && \
-					clock_time_exceed(latest_user_event_tick, CONN_IDLE_ENTER_DEEP_TIME * 1000000) )
-			{
 
-				bls_ll_terminateConnection(HCI_ERR_REMOTE_USER_TERM_CONN); //push terminate cmd into ble TX buffer
-				bls_ll_setAdvEnable(0);   //disable adv
-				sendTerminate_before_enterDeep = 1;
+
+			if(  !blc_ll_isControllerEventPending() ){  //no controller event pending
+				//adv 60s, deepsleep
+				if( blc_ll_getCurrentState() == BLS_LINK_STATE_ADV && !sendTerminate_before_enterDeep && \
+						clock_time_exceed(advertise_begin_tick , ADV_IDLE_ENTER_DEEP_TIME * 1000000))
+				{
+					cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_PAD, 0);  //deepsleep
+				}
+				//conn 60s no event(key/voice/led), enter deepsleep
+				else if( device_in_connection_state && \
+						clock_time_exceed(latest_user_event_tick, CONN_IDLE_ENTER_DEEP_TIME * 1000000) )
+				{
+
+					bls_ll_terminateConnection(HCI_ERR_REMOTE_USER_TERM_CONN); //push terminate cmd into ble TX buffer
+					bls_ll_setAdvEnable(0);   //disable adv
+					sendTerminate_before_enterDeep = 1;
+				}
 			}
-		}
-#endif  //end of !TEST_CONN_CURRENT_ENABLE
-#endif//END of  BLE_APP_PM_ENABLE
+		#endif  //end of PM_DEEPSLEEP_ENABLE
+	#endif//END of  BLE_APP_PM_ENABLE
 }
 
-#if(SOFT_UART_ENABLE)
-/**
- * @brief		this function is used to process rx  data.
- * @param[in]	none
- * @return      0 is ok
- */
-//_attribute_data_retention_
-							u8 		 	uart_rx_buf[80 * 4] = {0};
-_attribute_data_retention_	my_fifo_t	uart_rx_fifo = {
-												80,
-												4,
-												0,
-												0,
-												uart_rx_buf,};
 
-//_attribute_data_retention_
-int app_soft_rx_uart_cb(void)//UART data send to Master,we will handler the data as CMD or DATA
-{
-	if (((uart_rx_fifo.wptr - uart_rx_fifo.rptr) & 255) < uart_rx_fifo.num) {
-		uart_rx_fifo.wptr++;
-		unsigned char* p = uart_rx_fifo.p + (uart_rx_fifo.wptr & (uart_rx_fifo.num - 1)) * uart_rx_fifo.size;
-		soft_uart_RxSetFifo(p, uart_rx_fifo.size);
-	}
-	return 0;
-}
 
-#endif
+
+
 /**
  * @brief		user initialization when MCU power on or wake_up from deepSleep mode
  * @param[in]	none
@@ -268,6 +248,9 @@ void user_init_normal(void)
 	/* random number generator must be initiated here( in the beginning of user_init_nromal).
 	 * When deepSleep retention wakeUp, no need initialize again */
 	random_generator_init();  //this is must
+
+
+
 
 	//////////////////////////// BLE stack Initialization  Begin //////////////////////////////////
 	u8 mac_public[6];
@@ -298,6 +281,12 @@ void user_init_normal(void)
 	u8 check_status = blc_controller_check_appBufferInitialization();
 	if(check_status != BLE_SUCCESS){
 		/* here user should set some log to know which application buffer incorrect */
+
+		#if(UI_LED_ENABLE) //add some LED to show this error
+			gpio_write(GPIO_LED_RED, LED_ON_LEVAL);
+			gpio_write(GPIO_LED_WHITE, LED_ON_LEVAL);
+		#endif
+
 		while(1);
 	}
 	//////////// LinkLayer Initialization  End /////////////////////////
@@ -313,6 +302,7 @@ void user_init_normal(void)
 
 
 
+
 	//////////// Host Initialization  Begin /////////////////////////
 	/* GAP initialization must be done before any other host feature initialization !!! */
 	blc_gap_peripheral_init();    //gap initialization
@@ -320,10 +310,10 @@ void user_init_normal(void)
 	/* GATT Initialization */
 	my_gatt_init();
 
+
 	/* L2CAP Initialization */
 	blc_l2cap_register_handler(blc_l2cap_packet_receive);
 	blc_l2cap_initRxDataBuffer(app_l2cap_rx_fifo, L2CAP_RX_BUFF_SIZE);
-
 
 	/* SMP Initialization */
 	/* SMP Initialization may involve flash write/erase(when one sector stores too much information,
@@ -404,7 +394,7 @@ void user_init_normal(void)
 	#if(BLE_OTA_SERVER_ENABLE)
 		/* OTA module initialization must be called after "blc_ota_setNewFirmwwareStorageAddress"(if used), and before any other OTA API.*/
 		blc_ota_initOtaServer_module();
-
+		blc_ota_setOtaProcessTimeout(60); //set OTA whole process timeout
 		blc_ota_registerOtaStartCmdCb(app_enter_ota_mode);
 		blc_ota_registerOtaResultIndicationCb(app_ota_result);
 	#endif
@@ -436,14 +426,14 @@ void user_init_normal(void)
 
 		bls_app_registerEventCallback (BLT_EV_FLAG_GPIO_EARLY_WAKEUP, &proc_keyboard);
 	#endif
-///////////////////////////////////////software uart init//////////////////////////////////////////////////
-#if(SOFT_UART_ENABLE)
-		soft_uart_rx_handler( app_soft_rx_uart_cb);
-		soft_uart_RxSetFifo(uart_rx_fifo.p, uart_rx_fifo.size);
-		soft_uart_init();
-#endif
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 	advertise_begin_tick = clock_time();
 }
+
 #if (PM_DEEPSLEEP_RETENTION_ENABLE)
 /**
  * @brief		user initialization when MCU wake_up from deepSleep_retention mode
@@ -453,6 +443,7 @@ void user_init_normal(void)
 _attribute_ram_code_
 void user_init_deepRetn(void)
 {
+
 
 	//////////// LinkLayer Initialization  Begin /////////////////////////
 	blc_ll_initBasicMCU();                      //mandatory
@@ -485,23 +476,17 @@ void main_loop (void)
 
 	////////////////////////////////////// BLE entry /////////////////////////////////
 	blc_sdk_main_loop();
-#if (UI_LED_ENABLE)
-	gpio_write(GPIO_LED_GREEN,1);
-#endif
+
 	////////////////////////////////////// UI entry /////////////////////////////////
+	#if (UI_LED_ENABLE)
+		gpio_write(GPIO_LED_GREEN,1);
+	#endif
+
 	#if (UI_KEYBOARD_ENABLE)
 		proc_keyboard (0, 0, 0);
 	#endif
-		////////////////////////////////////// software uart /////////////////////////////////
-#if(SOFT_UART_ENABLE)
-		if(uart_rx_fifo.wptr != uart_rx_fifo.rptr){
-			u8 *p = uart_rx_fifo.p + (uart_rx_fifo.rptr & (uart_rx_fifo.num-1)) * uart_rx_fifo.size;
 
-			soft_uart_send(&p[4], p[0]);
 
-			uart_rx_fifo.rptr++;
-		}
-#endif
 	////////////////////////////////////// PM Process /////////////////////////////////
 	blt_pm_proc();
 

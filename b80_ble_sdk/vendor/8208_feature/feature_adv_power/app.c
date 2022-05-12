@@ -46,7 +46,9 @@
 
 
 _attribute_data_retention_ u32	advertise_begin_tick;
-_attribute_data_retention_ u32 latest_user_event_tick;
+
+
+
 
 
 
@@ -69,8 +71,6 @@ void task_connect(u8 e, u8 *p, int n)
 {
 
 	bls_l2cap_requestConnParamUpdate (CONN_INTERVAL_10MS, CONN_INTERVAL_10MS, 99, CONN_TIMEOUT_4S);  // 1 S
-
-	latest_user_event_tick = clock_time();
 
 	#if (UI_LED_ENABLE)
 		gpio_write(GPIO_LED_RED, LED_ON_LEVAL);
@@ -127,12 +127,12 @@ _attribute_ram_code_ void task_suspend_exit (u8 e, u8 *p, int n)
 
 /**
  * @brief      power management code for application
- * @param	   none
+ * @param[in]  none
  * @return     none
  */
 void blt_pm_proc(void)
 {
-#if(BLE_APP_PM_ENABLE)
+	#if(BLE_APP_PM_ENABLE)
 		#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 			bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
 		#else
@@ -145,7 +145,7 @@ void blt_pm_proc(void)
 				bls_pm_setManualLatency(0);
 			}
 		#endif
-#endif//END of  BLE_APP_PM_ENABLE
+	#endif//END of  BLE_APP_PM_ENABLE
 }
 
 
@@ -182,111 +182,113 @@ void app_feature_adv_power(void)
     //	blc_ll_setAdvCustomedChannel(33,34,35);
 
 
-#if   (APP_ADV_POWER_TEST_TYPE == CONNECT_12B_1S_1CHANNEL)
-	// ADV data length:	12 byte
-	// ADV type: 		connectable undirected ADV
-	// ADV power index: 0 dBm
-	// ADV interval: 	1S
-	// ADV channel: 	1 channel
-	// test result: 	8258 : 9 uA; 8278 : 14uA;
-	u8 status = bls_ll_setAdvParam( ADV_INTERVAL_1S, ADV_INTERVAL_1S,
-									ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
-									 0,  NULL,  BLT_ENABLE_ADV_37, ADV_FP_ALLOW_SCAN_WL_ALLOW_CONN_WL);  //no scan, no connect
-#elif  (APP_ADV_POWER_TEST_TYPE == CONNECT_12B_1S_3CHANNEL)
-	// ADV data length:	12 byte
-	// ADV type: 		connectable undirected ADV
-	// ADV power index: 0 dBm
-	// ADV interval: 	1S
-	// ADV channel: 	3 channel
-	// test result: 	15 uA
-	u8 status = bls_ll_setAdvParam( ADV_INTERVAL_1S, ADV_INTERVAL_1S,
-									ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
-									 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_ALLOW_SCAN_WL_ALLOW_CONN_WL);  //no scan, no connect
-#elif   (APP_ADV_POWER_TEST_TYPE == CONNECT_12B_500MS_3CHANNEL)
-	// ADV data length:	12 byte
-	// ADV type: 		connectable undirected ADV
-	// ADV power index: 0 dBm
-	// ADV interval: 	500 mS
-	// ADV channel: 	3 channel
-	// test result: 	8258 : 30 uA; 8278 : 50uA;
-	u8 status = bls_ll_setAdvParam( ADV_INTERVAL_500MS, ADV_INTERVAL_500MS,
-									ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
-									 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_ALLOW_SCAN_WL_ALLOW_CONN_WL);  //no scan, no connect
-#elif   (APP_ADV_POWER_TEST_TYPE == CONNECT_12B_30MS_3CHANNEL)
-	// ADV data length:	12 byte
-	// ADV type: 		connectable undirected ADV
-	// ADV power index: 0 dBm
-	// ADV interval: 	30 mS
-	// ADV channel: 	3 channel
-	// test result: 	430 uA
-	u8 status = bls_ll_setAdvParam( ADV_INTERVAL_30MS, ADV_INTERVAL_30MS,
-									ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
-									 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_ALLOW_SCAN_WL_ALLOW_CONN_WL);  //no scan, no connect
+	#if   (APP_ADV_POWER_TEST_TYPE == CONNECT_12B_1S_1CHANNEL)
+		// ADV data length:	12 byte
+		// ADV type: 		connectable undirected ADV
+		// ADV power index: 0 dBm
+		// ADV interval: 	1S
+		// ADV channel: 	1 channel
+		// test result: 	8258 : 9 uA; 8278 : 14uA;
+		u8 status = bls_ll_setAdvParam( ADV_INTERVAL_1S, ADV_INTERVAL_1S,
+										ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+										 0,  NULL,  BLT_ENABLE_ADV_37, ADV_FP_ALLOW_SCAN_WL_ALLOW_CONN_WL);  //no scan, no connect
+	#elif  (APP_ADV_POWER_TEST_TYPE == CONNECT_12B_1S_3CHANNEL)
+		// ADV data length:	12 byte
+		// ADV type: 		connectable undirected ADV
+		// ADV power index: 0 dBm
+		// ADV interval: 	1S
+		// ADV channel: 	3 channel
+		// test result: 	15 uA
+		u8 status = bls_ll_setAdvParam( ADV_INTERVAL_1S, ADV_INTERVAL_1S,
+										ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+										 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_ALLOW_SCAN_WL_ALLOW_CONN_WL);  //no scan, no connect
+	#elif   (APP_ADV_POWER_TEST_TYPE == CONNECT_12B_500MS_3CHANNEL)
+		// ADV data length:	12 byte
+		// ADV type: 		connectable undirected ADV
+		// ADV power index: 0 dBm
+		// ADV interval: 	500 mS
+		// ADV channel: 	3 channel
+		// test result: 	8258 : 30 uA; 8278 : 50uA;
+		u8 status = bls_ll_setAdvParam( ADV_INTERVAL_500MS, ADV_INTERVAL_500MS,
+										ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+										 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_ALLOW_SCAN_WL_ALLOW_CONN_WL);  //no scan, no connect
+	#elif   (APP_ADV_POWER_TEST_TYPE == CONNECT_12B_30MS_3CHANNEL)
+		// ADV data length:	12 byte
+		// ADV type: 		connectable undirected ADV
+		// ADV power index: 0 dBm
+		// ADV interval: 	30 mS
+		// ADV channel: 	3 channel
+		// test result: 	430 uA
+		u8 status = bls_ll_setAdvParam( ADV_INTERVAL_30MS, ADV_INTERVAL_30MS,
+										ADV_TYPE_CONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+										 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_ALLOW_SCAN_WL_ALLOW_CONN_WL);  //no scan, no connect
 
-#endif
-#if (APP_ADV_POWER_TEST_TYPE == CONNECT_12B_1S_1CHANNEL || APP_ADV_POWER_TEST_TYPE == CONNECT_12B_1S_3CHANNEL || APP_ADV_POWER_TEST_TYPE == CONNECT_12B_500MS_3CHANNEL||APP_ADV_POWER_TEST_TYPE == CONNECT_12B_30MS_3CHANNEL)  // connectable undirected ADV
-	//ADV data length: 12 byte
-	u8 tbl_advData[12] = {
-		 0x08, 0x09, 't', 'e', 's', 't', 'a', 'd', 'v',
-		 0x02, 0x01, 0x05,
-		};
-	u8	tbl_scanRsp [] = {
-			 0x08, 0x09, 'T', 'E', 'S', 'T', 'A', 'D', 'V',	//scan name
-		};
-
-	bls_ll_setAdvData( (u8 *)tbl_advData, sizeof(tbl_advData) );
-	bls_ll_setScanRspData( (u8 *)tbl_scanRsp, sizeof(tbl_scanRsp));
-#endif
-
-
-
-
-#if (APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1S_3CHANNEL  || APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1_5S_3CHANNEL || APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_2S_3CHANNEL || APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1S_3CHANNEL|| APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1_5S_3CHANNEL|| APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_2S_3CHANNEL) 
-	#if (APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1S_3CHANNEL  || APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1_5S_3CHANNEL || APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_2S_3CHANNEL)  	//ADV data length: 16 byte
-		u8 tbl_advData[] = {
-			 15, 0x09, 't', 'e', 's', 't', 'a', 'd', 'v', '8', '9', 'A', 'B', 'C', 'D', 'E',
-			};
-	#elif (APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1S_3CHANNEL|| APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1_5S_3CHANNEL|| APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_2S_3CHANNEL)   	//ADV data length: max 31 byte
-		u8 tbl_advData[] = {
-			 30, 0x09, 't', 'e', 's', 't', 'a', 'd', 'v', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D'
-		};
 	#endif
 
-	bls_ll_setAdvData( (u8 *)tbl_advData, sizeof(tbl_advData) );
-#endif
-#if   (APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1S_3CHANNEL||APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1S_3CHANNEL)
-	// ADV data length: 16 byte
-	// ADV type: non_connectable undirected ADV
-	// ADV power index: 0 dBm
-	// ADV interval: 1S
-	// ADV channel: 3 channel
-	// test result: 11 uA (if ADV data length change to 31 byte, test result: 14 uA)
-	u8 status = bls_ll_setAdvParam( ADV_INTERVAL_1S, ADV_INTERVAL_1S, 
-									ADV_TYPE_NONCONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
-									 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_NONE);
+	#if (APP_ADV_POWER_TEST_TYPE == CONNECT_12B_1S_1CHANNEL || APP_ADV_POWER_TEST_TYPE == CONNECT_12B_1S_3CHANNEL || APP_ADV_POWER_TEST_TYPE == CONNECT_12B_500MS_3CHANNEL||APP_ADV_POWER_TEST_TYPE == CONNECT_12B_30MS_3CHANNEL)  // connectable undirected ADV
+		//ADV data length: 12 byte
+		u8 tbl_advData[12] = {
+			 0x08, 0x09, 't', 'e', 's', 't', 'a', 'd', 'v',
+			 0x02, 0x01, 0x05,
+			};
+		u8	tbl_scanRsp [] = {
+				 0x08, 0x09, 'T', 'E', 'S', 'T', 'A', 'D', 'V',	//scan name
+			};
 
-#elif (APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1_5S_3CHANNEL||APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1_5S_3CHANNEL)
-	// ADV data length: 16 byte
-	// ADV type: non_connectable undirected ADV
-	// ADV power index: 0 dBm
-	// ADV interval: 1.5S
-	// ADV channel: 3 channel
-	// test result: 8 uA (if ADV data length change to 31 byte, test result: 11 uA)
-	u8 status = bls_ll_setAdvParam( ADV_INTERVAL_1S5, ADV_INTERVAL_1S5,
-									ADV_TYPE_NONCONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
-									 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_NONE);
+		bls_ll_setAdvData( (u8 *)tbl_advData, sizeof(tbl_advData) );
+		bls_ll_setScanRspData( (u8 *)tbl_scanRsp, sizeof(tbl_scanRsp));
+	#endif
 
-#elif (APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_2S_3CHANNEL||APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_2S_3CHANNEL)
-	// ADV data length: 16 byte
-	// ADV type: non_connectable undirected ADV
-	// ADV power index: 0 dBm
-	// ADV interval: 2S
-	// ADV channel: 3 channel
-	// test result: 6 uA (if ADV data length change to 31 byte, test result: 7 uA)
-	u8 status = bls_ll_setAdvParam( ADV_INTERVAL_2S, ADV_INTERVAL_2S,
-									ADV_TYPE_NONCONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
-									 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_NONE);
-#endif
+
+
+
+	#if (APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1S_3CHANNEL  || APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1_5S_3CHANNEL || APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_2S_3CHANNEL || APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1S_3CHANNEL|| APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1_5S_3CHANNEL|| APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_2S_3CHANNEL)
+		#if (APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1S_3CHANNEL  || APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1_5S_3CHANNEL || APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_2S_3CHANNEL)  	//ADV data length: 16 byte
+			u8 tbl_advData[] = {
+				 15, 0x09, 't', 'e', 's', 't', 'a', 'd', 'v', '8', '9', 'A', 'B', 'C', 'D', 'E',
+				};
+		#elif (APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1S_3CHANNEL|| APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1_5S_3CHANNEL|| APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_2S_3CHANNEL)   	//ADV data length: max 31 byte
+			u8 tbl_advData[] = {
+				 30, 0x09, 't', 'e', 's', 't', 'a', 'd', 'v', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D'
+			};
+		#endif
+
+		bls_ll_setAdvData( (u8 *)tbl_advData, sizeof(tbl_advData) );
+	#endif
+
+	#if   (APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1S_3CHANNEL||APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1S_3CHANNEL)
+		// ADV data length: 16 byte
+		// ADV type: non_connectable undirected ADV
+		// ADV power index: 0 dBm
+		// ADV interval: 1S
+		// ADV channel: 3 channel
+		// test result: 11 uA (if ADV data length change to 31 byte, test result: 14 uA)
+		u8 status = bls_ll_setAdvParam( ADV_INTERVAL_1S, ADV_INTERVAL_1S,
+										ADV_TYPE_NONCONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+										 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_NONE);
+
+	#elif (APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1_5S_3CHANNEL||APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_1_5S_3CHANNEL)
+		// ADV data length: 16 byte
+		// ADV type: non_connectable undirected ADV
+		// ADV power index: 0 dBm
+		// ADV interval: 1.5S
+		// ADV channel: 3 channel
+		// test result: 8 uA (if ADV data length change to 31 byte, test result: 11 uA)
+		u8 status = bls_ll_setAdvParam( ADV_INTERVAL_1S5, ADV_INTERVAL_1S5,
+										ADV_TYPE_NONCONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+										 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_NONE);
+
+	#elif (APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_2S_3CHANNEL||APP_ADV_POWER_TEST_TYPE == UNCONNECT_32B_2S_3CHANNEL)
+		// ADV data length: 16 byte
+		// ADV type: non_connectable undirected ADV
+		// ADV power index: 0 dBm
+		// ADV interval: 2S
+		// ADV channel: 3 channel
+		// test result: 6 uA (if ADV data length change to 31 byte, test result: 7 uA)
+		u8 status = bls_ll_setAdvParam( ADV_INTERVAL_2S, ADV_INTERVAL_2S,
+										ADV_TYPE_NONCONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+										 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_NONE);
+	#endif
    if(BLE_SUCCESS != status)
    {
 	   printf("ERRO:%S = 0x%02x",__FUNCTION__,status);
@@ -411,13 +413,14 @@ void user_init_normal(void)
 		bls_app_registerEventCallback (BLT_EV_FLAG_GPIO_EARLY_WAKEUP, &proc_keyboard);
 	#endif
 
-////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
 	advertise_begin_tick = clock_time();
 }
 
+#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 /**
  * @brief		user initialization when MCU wake_up from deepSleep_retention mode
  * @param[in]	none
@@ -426,7 +429,7 @@ void user_init_normal(void)
 _attribute_ram_code_
 void user_init_deepRetn(void)
 {
-#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+
 
 	//////////// LinkLayer Initialization  Begin /////////////////////////
 	blc_ll_initBasicMCU();                      //mandatory
@@ -446,9 +449,8 @@ void user_init_deepRetn(void)
 		}
 	#endif
 ////////////////////////////////////////////////////////////////////////////////////////////////
-#endif
 }
-
+#endif
 
 
 
@@ -473,7 +475,6 @@ extern u32	scan_pin_need;
  */
 void key_change_proc(void)
 {
-	latest_user_event_tick = clock_time();  //record latest key change time
 
 	u8 key0 = kb_event.keycode[0];
 	u8 key_buf[8] = {0,0,0,0,0,0,0,0};
@@ -598,7 +599,6 @@ void main_loop (void)
 	#if (UI_KEYBOARD_ENABLE)
 		proc_keyboard (0, 0, 0);
 	#endif
-
 
 
 	////////////////////////////////////// PM Process /////////////////////////////////

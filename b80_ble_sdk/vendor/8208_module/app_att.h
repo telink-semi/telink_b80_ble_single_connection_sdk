@@ -23,6 +23,7 @@
 #ifndef APP_ATT_H_
 #define APP_ATT_H_
 
+#define MAX_DEV_NAME_LEN			20
 
 
 ///////////////////////////////////// ATT  HANDLER define ///////////////////////////////////////

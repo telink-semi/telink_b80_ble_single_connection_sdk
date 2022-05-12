@@ -46,7 +46,7 @@ u32 A_tick = 0;
 
 
 _attribute_data_retention_ u32	advertise_begin_tick;
-_attribute_data_retention_ u32 latest_user_event_tick;
+
 
 
 
@@ -113,7 +113,6 @@ void task_connect(u8 e, u8 *p, int n)
 
 	bls_l2cap_requestConnParamUpdate (CONN_INTERVAL_10MS, CONN_INTERVAL_10MS, 99, CONN_TIMEOUT_4S);  // 1 S
 
-	latest_user_event_tick = clock_time();
 	A_tick = clock_time()|1;
 	#if (UI_LED_ENABLE)
 		gpio_write(GPIO_LED_RED, LED_ON_LEVAL);
@@ -170,12 +169,12 @@ _attribute_ram_code_ void task_suspend_exit (u8 e, u8 *p, int n)
 
 /**
  * @brief      power management code for application
- * @param	   none
+ * @param[in]  none
  * @return     none
  */
 void blt_pm_proc(void)
 {
-#if(BLE_APP_PM_ENABLE)
+	#if(BLE_APP_PM_ENABLE)
 		#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 			bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
 		#else
@@ -188,7 +187,7 @@ void blt_pm_proc(void)
 				bls_pm_setManualLatency(0);
 			}
 		#endif
-#endif//END of  BLE_APP_PM_ENABLE
+	#endif//END of  BLE_APP_PM_ENABLE
 }
 
 
@@ -331,19 +330,19 @@ void user_init_normal(void)
 		bls_app_registerEventCallback (BLT_EV_FLAG_GPIO_EARLY_WAKEUP, &proc_keyboard);
 	#endif
 
-////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////
 
-		///////////////////////////////////////software uart init//////////////////////////////////////////////////
-		#if(SOFT_UART_ENABLE)
-				soft_uart_rx_handler( app_soft_rx_uart_cb);
-				soft_uart_RxSetFifo(uart_rx_fifo.p, uart_rx_fifo.size);
-				soft_uart_init();
-
-		#endif
+	///////////////////////////////////////software uart init//////////////////////////////////////////////////
+	#if(SOFT_UART_ENABLE)
+		soft_uart_rx_handler(app_soft_rx_uart_cb);
+		soft_uart_RxSetFifo(uart_rx_fifo.p, uart_rx_fifo.size);
+		soft_uart_init();
+	#endif
 
 	advertise_begin_tick = clock_time();
 }
 
+#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 /**
  * @brief		user initialization when MCU wake_up from deepSleep_retention mode
  * @param[in]	none
@@ -352,7 +351,7 @@ void user_init_normal(void)
 _attribute_ram_code_
 void user_init_deepRetn(void)
 {
-#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+
 
 	//////////// LinkLayer Initialization  Begin /////////////////////////
 	blc_ll_initBasicMCU();                      //mandatory
@@ -372,9 +371,8 @@ void user_init_deepRetn(void)
 		}
 	#endif
 ////////////////////////////////////////////////////////////////////////////////////////////////
-#endif
 }
-
+#endif
 
 
 
@@ -399,7 +397,6 @@ extern u32	scan_pin_need;
  */
 void key_change_proc(void)
 {
-	latest_user_event_tick = clock_time();  //record latest key change time
 
 	u8 key0 = kb_event.keycode[0];
 	u8 key_buf[8] = {0,0,0,0,0,0,0,0};
@@ -525,35 +522,37 @@ void main_loop (void)
 	#if (UI_KEYBOARD_ENABLE)
 		proc_keyboard (0, 0, 0);
 	#endif
-		////////////////////////////////////// software uart /////////////////////////////////
-#if(SOFT_UART_ENABLE)
-#if (TEST_RX_TX_RUN == TEST_SOFT_UART_RUN_MODEL)
-	if (uart_rx_fifo.wptr != uart_rx_fifo.rptr) {
-		u8 *p = uart_rx_fifo.p + (uart_rx_fifo.rptr & (uart_rx_fifo.num - 1))
-				* uart_rx_fifo.size;
 
-		soft_uart_send(&p[4], p[0]);
 
-		uart_rx_fifo.rptr++;
-	}
-#elif   (TEST_ONLY_TX_RUN == TEST_SOFT_UART_RUN_MODEL)
-	soft_uart_send(send_buf, 10);
-#endif
-#endif
+	////////////////////////////////////// software uart /////////////////////////////////
+	#if(SOFT_UART_ENABLE)
+		#if (TEST_RX_TX_RUN == TEST_SOFT_UART_RUN_MODEL)
+			if (uart_rx_fifo.wptr != uart_rx_fifo.rptr) {
+				u8 *p = uart_rx_fifo.p + (uart_rx_fifo.rptr & (uart_rx_fifo.num - 1))
+						* uart_rx_fifo.size;
 
-#if 1//DLE test
-		if(bltParam.blt_state == BLS_LINK_STATE_CONN) //enter conn state
-		{
-			if(A_tick && clock_time_exceed(A_tick, 5000*1000))
-			{
-				while (1) {
-					if (BLE_SUCCESS != blc_gatt_pushHandleValueNotify(BLS_CONN_HANDLE,GenericAccess_DeviceName_DP_H, A_buf, 20)) {
-						break;
-		             }
-			    }
+				soft_uart_send(&p[4], p[0]);
+
+				uart_rx_fifo.rptr++;
 			}
-		}
-#endif
+		#elif   (TEST_ONLY_TX_RUN == TEST_SOFT_UART_RUN_MODEL)
+			soft_uart_send(send_buf, 10);
+		#endif
+	#endif
+
+	#if 1//DLE test
+			if(bltParam.blt_state == BLS_LINK_STATE_CONN) //enter conn state
+			{
+				if(A_tick && clock_time_exceed(A_tick, 5000*1000))
+				{
+					while (1) {
+						if (BLE_SUCCESS != blc_gatt_pushHandleValueNotify(BLS_CONN_HANDLE,GenericAccess_DeviceName_DP_H, A_buf, 20)) {
+							break;
+						 }
+					}
+				}
+			}
+	#endif
 
 	////////////////////////////////////// PM Process /////////////////////////////////
 	blt_pm_proc();

@@ -61,11 +61,6 @@ typedef struct{
 }kb_data_t;
 
 extern kb_data_t	kb_event;
-#if(!OPTIMIZE_CODE_SIZE)
-extern kb_data_t	kb_event_cache;
-extern unsigned char deepback_key_state;
-extern unsigned int deepback_key_tick;
-#endif
 
 
 #ifndef		LONG_PRESS_KEY_POWER_OPTIMIZE

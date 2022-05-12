@@ -45,11 +45,11 @@ int blt_ecc_gen_rand(unsigned char *dest, unsigned int size);
 
 
 #if  (MCU_CORE_TYPE == MCU_CORE_827x || MCU_CORE_TYPE == MCU_CORE_9518)
-#define		ECC_METHOD_SELECTION		ECC_HW_IMPLEMEMTATION //Eagle/Vulture use hw ECC, Kite use sw ECC
+#define		ECC_METHOD_SELECTION		ECC_HW_IMPLEMEMTATION //B91/B87 use hw ECC
 #elif(MCU_CORE_TYPE == MCU_CORE_825x)
-#define		ECC_METHOD_SELECTION		ECC_SW_IMPLEMEMTATION //Eagle/Vulture use hw ECC, Kite use sw ECC
+#define		ECC_METHOD_SELECTION		ECC_SW_IMPLEMEMTATION //B85 use sw ECC
 #elif(MCU_CORE_TYPE == MCU_CORE_8208)
-#define		ECC_METHOD_SELECTION		ECC_SW_IMPLEMEMTATION //Eagle/Vulture use hw ECC, Kite use sw ECC
+#define		ECC_METHOD_SELECTION		ECC_SW_IMPLEMEMTATION //B80 use sw ECC
 #endif
 
 
@@ -57,7 +57,7 @@ int blt_ecc_gen_rand(unsigned char *dest, unsigned int size);
 #define		uECC_set_rng				swECC_set_rng
 #define		uECC_make_key				swECC_make_key
 #define		fake_rng					blt_ecc_gen_rand
-#define		tn_crypto_f4   				blt_smp_alg_f4	//?
+#define		tn_crypto_f4   				blt_smp_alg_f4
 #define		uECC_shared_secret			swECC_shared_secret
 
 #elif (ECC_METHOD_SELECTION == ECC_HW_IMPLEMEMTATION)

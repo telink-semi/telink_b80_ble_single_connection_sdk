@@ -78,9 +78,7 @@ static u16 serviceChangeVal[2] = {0};
 
 static u8 serviceChangeCCC[2] = {0,0};
 
-#define  MAX_DEV_NAME_LEN 				    18
-#define MY_DEV_NAME                        "EModule"
-extern  u8 ble_devName[];
+_attribute_data_retention_	u8  my_devName[MAX_DEV_NAME_LEN] = {'E','M','o','d','u','l','e'};
 
 static const u8 my_PnPtrs [] = {0x02, 0x8a, 0x24, 0x66, 0x82, 0x01, 0x00};
 
@@ -198,7 +196,7 @@ static const attribute_t my_Attributes[] = {
 	// 0001 - 0007  gap
 	{7,ATT_PERMISSIONS_READ,2,2,(u8*)(&my_primaryServiceUUID), 	(u8*)(&my_gapServiceUUID), 0},
 	{0,ATT_PERMISSIONS_READ,2,sizeof(my_devNameCharVal),(u8*)(&my_characterUUID), (u8*)(my_devNameCharVal), 0},
-	{0,ATT_PERMISSIONS_READ,2,MAX_DEV_NAME_LEN, (u8*)(&my_devNameUUID), (u8*)(ble_devName), 0},
+	{0,ATT_PERMISSIONS_READ,2,sizeof(my_devName), (u8*)(&my_devNameUUID), (u8*)(my_devName), 0},
 	{0,ATT_PERMISSIONS_READ,2,sizeof(my_appearanceCharVal),(u8*)(&my_characterUUID), (u8*)(my_appearanceCharVal), 0},
 	{0,ATT_PERMISSIONS_READ,2,sizeof (my_appearance), (u8*)(&my_appearanceUIID), 	(u8*)(&my_appearance), 0},
 	{0,ATT_PERMISSIONS_READ,2,sizeof(my_periConnParamCharVal),(u8*)(&my_characterUUID), (u8*)(my_periConnParamCharVal), 0},
@@ -247,7 +245,4 @@ static const attribute_t my_Attributes[] = {
 void	my_gatt_init (void)
 {
 	bls_att_setAttributeTable ((u8 *)my_Attributes);
-
-	u8 device_name[] = MY_DEV_NAME;
-	bls_att_setDeviceName(device_name, sizeof(MY_DEV_NAME));
 }

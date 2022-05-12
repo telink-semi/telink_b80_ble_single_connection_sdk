@@ -46,7 +46,7 @@
 
 
 _attribute_data_retention_ u32	advertise_begin_tick;
-_attribute_data_retention_ u32 latest_user_event_tick;
+
 _attribute_data_retention_	u32	lowBattDet_tick   = 0;
 
 
@@ -86,8 +86,6 @@ void task_connect(u8 e, u8 *p, int n)
 {
 
 	bls_l2cap_requestConnParamUpdate (CONN_INTERVAL_10MS, CONN_INTERVAL_10MS, 99, CONN_TIMEOUT_4S);  // 1 S
-
-	latest_user_event_tick = clock_time();
 
 	#if (UI_LED_ENABLE)
 		gpio_write(GPIO_LED_RED, LED_ON_LEVAL);
@@ -144,12 +142,12 @@ _attribute_ram_code_ void task_suspend_exit (u8 e, u8 *p, int n)
 
 /**
  * @brief      power management code for application
- * @param	   none
+ * @param[in]  none
  * @return     none
  */
 void blt_pm_proc(void)
 {
-#if(BLE_APP_PM_ENABLE)
+	#if(BLE_APP_PM_ENABLE)
 		#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 			bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
 		#else
@@ -162,7 +160,7 @@ void blt_pm_proc(void)
 				bls_pm_setManualLatency(0);
 			}
 		#endif
-#endif//END of  BLE_APP_PM_ENABLE
+	#endif//END of  BLE_APP_PM_ENABLE
 }
 
 
@@ -181,26 +179,26 @@ void user_init_normal(void)
 	random_generator_init();  //this is must
 
 	/*****************************************************************************************
-		 Note: battery check must do before any flash write/erase operation, cause flash write/erase
-			   under a low or unstable power supply will lead to error flash operation
+	 Note: battery check must do before any flash write/erase operation, cause flash write/erase
+		   under a low or unstable power supply will lead to error flash operation
 
-			   Some module initialization may involve flash write/erase, include: OTA initialization,
-					SMP initialization, ..
-					So these initialization must be done after  battery check
-		*****************************************************************************************/
-		#if (BATT_CHECK_ENABLE)  //battery check must do before OTA relative operation
-			u8 battery_check_returnVaule = 0;
-			if(analog_read(USED_DEEP_ANA_REG) & LOW_BATT_FLG){
-				do{
-					battery_check_returnVaule = app_battery_power_check(VBAT_ALRAM_THRES_MV + 200);  //2.2 V
-				}while(battery_check_returnVaule);
-			}
-			else{
-				do{
-					battery_check_returnVaule = app_battery_power_check(VBAT_ALRAM_THRES_MV);  //2.0 V
-				}while(battery_check_returnVaule);
-			}
-		#endif
+		   Some module initialization may involve flash write/erase, include: OTA initialization,
+				SMP initialization, ..
+				So these initialization must be done after  battery check
+	*****************************************************************************************/
+	#if (BATT_CHECK_ENABLE)  //battery check must do before OTA relative operation
+		u8 battery_check_returnVaule = 0;
+		if(analog_read(USED_DEEP_ANA_REG) & LOW_BATT_FLG){
+			do{
+				battery_check_returnVaule = app_battery_power_check(VBAT_ALRAM_THRES_MV + 200);  //2.2 V
+			}while(battery_check_returnVaule);
+		}
+		else{
+			do{
+				battery_check_returnVaule = app_battery_power_check(VBAT_ALRAM_THRES_MV);  //2.0 V
+			}while(battery_check_returnVaule);
+		}
+	#endif
 
 
 	//////////////////////////// BLE stack Initialization  Begin //////////////////////////////////
@@ -325,13 +323,14 @@ void user_init_normal(void)
 		bls_app_registerEventCallback (BLT_EV_FLAG_GPIO_EARLY_WAKEUP, &proc_keyboard);
 	#endif
 
-////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
 	advertise_begin_tick = clock_time();
 }
 
+#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 /**
  * @brief		user initialization when MCU wake_up from deepSleep_retention mode
  * @param[in]	none
@@ -340,7 +339,7 @@ void user_init_normal(void)
 _attribute_ram_code_
 void user_init_deepRetn(void)
 {
-#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+
 
 	//////////// LinkLayer Initialization  Begin /////////////////////////
 	blc_ll_initBasicMCU();                      //mandatory
@@ -360,9 +359,8 @@ void user_init_deepRetn(void)
 		}
 	#endif
 ////////////////////////////////////////////////////////////////////////////////////////////////
-#endif
 }
-
+#endif
 
 
 
@@ -387,7 +385,6 @@ extern u32	scan_pin_need;
  */
 void key_change_proc(void)
 {
-	latest_user_event_tick = clock_time();  //record latest key change time
 
 	u8 key0 = kb_event.keycode[0];
 	u8 key_buf[8] = {0,0,0,0,0,0,0,0};
@@ -478,12 +475,12 @@ void proc_keyboard (u8 e, u8 *p, int n)
  */
 void app_set_kb_wakeup(u8 e, u8 *p, int n)
 {
-#if (BLE_APP_PM_ENABLE)
-	if( blc_ll_getCurrentState() == BLS_LINK_STATE_CONN
-		&& ((u32)(bls_pm_getSystemWakeupTick() - clock_time())) > 80 *CLOCK_16M_SYS_TIMER_CLK_1MS ){  //suspend time > 30ms.add gpio wakeup
-		bls_pm_setWakeupSource(PM_WAKEUP_PAD);  //gpio CORE wakeup suspend
-	}
-#endif
+	#if (BLE_APP_PM_ENABLE)
+		if( blc_ll_getCurrentState() == BLS_LINK_STATE_CONN
+			&& ((u32)(bls_pm_getSystemWakeupTick() - clock_time())) > 80 *CLOCK_16M_SYS_TIMER_CLK_1MS ){  //suspend time > 30ms.add gpio wakeup
+			bls_pm_setWakeupSource(PM_WAKEUP_PAD);  //gpio CORE wakeup suspend
+		}
+	#endif
 }
 
 

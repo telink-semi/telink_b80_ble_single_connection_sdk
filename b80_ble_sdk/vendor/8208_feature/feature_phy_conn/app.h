@@ -61,7 +61,6 @@ void main_loop (void);
 
 
 
-extern u32 latest_user_event_tick;
 
 extern int 	key_not_released;
 

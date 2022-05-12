@@ -28,6 +28,7 @@
 #include "app_config.h"
 
 #if (FEATURE_TEST_MODE == TEST_POWER_ADV)
+
 /**
  * @brief		user initialization when MCU power on or wake_up from deepSleep mode
  * @param[in]	none
@@ -60,7 +61,6 @@ void main_loop (void);
 
 
 
-extern u32 latest_user_event_tick;
 
 extern int 	key_not_released;
 

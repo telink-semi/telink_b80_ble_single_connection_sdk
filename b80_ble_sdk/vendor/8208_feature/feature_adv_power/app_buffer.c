@@ -48,4 +48,5 @@ _attribute_data_retention_ u8 app_l2cap_rx_fifo[L2CAP_RX_BUFF_SIZE];
 
 
 
+
 #endif //end of (FEATURE_TEST_MODE == xxx)

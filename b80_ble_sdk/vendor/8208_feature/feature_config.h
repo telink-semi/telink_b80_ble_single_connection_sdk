@@ -50,9 +50,12 @@
 
 #define TEST_USER_BLT_SOFT_UART                     11
 
-#define TEST_FEATURE_DEBUG											12
+#define TEST_FEATURE_DEBUG							12
 
-#define FEATURE_TEST_MODE							TEST_FEATURE_DEBUG
+
+
+
+#define FEATURE_TEST_MODE							TEST_FEATURE_BACKUP
 
 
 

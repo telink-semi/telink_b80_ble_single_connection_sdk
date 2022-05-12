@@ -23,6 +23,7 @@
 
 #ifndef VENDOR_B80_BLE_SAMPLE_APP_UART_H_
 #define VENDOR_B80_BLE_SAMPLE_APP_UART_H_
+
 #if (FEATURE_TEST_MODE == TEST_FEATURE_DEBUG&&BLE_DEBUG_MODE==BLE_DEBUG_UART)
 
 #define   UART_TX_PIN    GPIO_PD5
@@ -39,10 +40,49 @@ typedef struct{
     unsigned int len;        // data max 252
     unsigned char data[UART_DATA_LEN];
 }uart_data_t;
+extern u8 		 	uart_rx_fifo_b[UART_RXFIFO_SIZE * UART_RXFIFO_NUM];
+extern my_fifo_t	 uart_rx_fifo;
 
+extern  u8 		 	uart_tx_fifo_b[UART_TXFIFO_SIZE * UART_TXFIFO_NUM];
+extern  my_fifo_t	 uart_tx_fifo;
+extern  volatile unsigned char uart_dma_send_flag;
+extern  uart_data_t txdata_buf;
+
+/**
+ * @brief     This function serves to initialize uart.
+ * @param[in] none
+ * @return    none
+ */
 void user_uart_init();
-s8 uart_printf(char *txdata,unsigned int len);
-int user_uart_mainloop(void);
+
+/**
+ * @brief     This function serves to print data by uart.
+ * @param[in] none
+ * @return    0 is OK, -1 is err.
+ */
+s8 uart_tx_printf(const char *format, ...);
+
+/**
+ * @brief     This function serves to tx str by uart.
+ * @param[in] none
+ * @return    0 is OK, -1 is err.
+ */
+s8 uart_tx_str(char *txdata,unsigned int len);
+
+/**
+ * @brief		this function is used to process tx uart data.
+ * @param[in]	none
+ * @return      0 is ok
+ */
+int user_uart_loop(void);
+
+/**
+ * @brief     This function serves to handle uart irq.
+ * @param[in] none
+ * @return    none
+ */
+void uart_irq_handler(void);
+
 #endif //end of (FEATURE_TEST_MODE == xxx)
 #endif /* VENDOR_B80_BLE_SAMPLE_APP_UART_H_ */
 

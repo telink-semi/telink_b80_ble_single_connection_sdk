@@ -122,7 +122,7 @@ typedef enum {
 
 	SHUTDOWN_MODE						= 0x40,
 
-	DEEPSLEEP_MODE_RET_SRAM_LOW16K  	= 0x01,  //for boot from sram   different with vulture.
+	DEEPSLEEP_MODE_RET_SRAM_LOW16K  	= 0x01,  //for boot from sram   different with B87.
 
 	//not available mode
 	DEEPSLEEP_RETENTION_FLAG			= 0x0F,
@@ -436,9 +436,6 @@ extern  unsigned char 		    tl_24mrc_cal;
 extern 	unsigned int 			tick_32k_calib;
 extern  unsigned int 			tick_cur;
 extern  unsigned int 			tick_32k_cur;
-#if(!OPTIMIZE_CODE_SIZE)
-extern  unsigned char       	pm_long_suspend;
-#endif
 
 void sleep_start(void);
 

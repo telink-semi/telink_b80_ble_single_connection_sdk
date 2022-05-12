@@ -39,7 +39,7 @@
 #define _inline_ 							inline
 
 #ifndef	BLC_PM_DEEP_RETENTION_MODE_EN
-#define	BLC_PM_DEEP_RETENTION_MODE_EN		1
+#define	BLC_PM_DEEP_RETENTION_MODE_EN		0
 #endif
 
 #if (BLC_PM_DEEP_RETENTION_MODE_EN)

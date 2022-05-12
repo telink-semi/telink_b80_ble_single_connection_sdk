@@ -37,7 +37,7 @@
 
 /* Power Management */
 #define BLE_MODULE_PM_ENABLE							1
-#define PM_DEEPSLEEP_RETENTION_ENABLE            1&&BLE_MODULE_PM_ENABLE
+#define PM_DEEPSLEEP_RETENTION_ENABLE         0
 
 
 
@@ -180,7 +180,9 @@ typedef struct{
     unsigned char data[UART_DATA_LEN];
 }uart_data_t;
 
-
+#define UART_TX_PIN 		  GPIO_PB4
+#define UART_RX_PIN 		  GPIO_PB5
+#define UART_BAUD_RATE  115200
 /**
  *  @brief  Definition for gpio debug
  */

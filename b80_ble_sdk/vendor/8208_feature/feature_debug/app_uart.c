@@ -50,7 +50,12 @@ _attribute_data_retention_  volatile unsigned char uart_dma_send_flag;
 
 uart_data_t txdata_buf;
 
-void user_uart_init()
+/**
+ * @brief     This function serves to initialize uart.
+ * @param[in] none
+ * @return    none
+ */
+void user_uart_init(void)
 {
 	u8 *uart_rx_addr = (uart_rx_fifo_b + (uart_rx_fifo.wptr & (uart_rx_fifo.num-1)) * uart_rx_fifo.size);
 	uart_recbuff_init( (unsigned char *)uart_rx_addr, uart_rx_fifo.size);
@@ -81,7 +86,7 @@ void user_uart_init()
  * @param[in]	none
  * @return      0 is ok
  */
-int user_uart_mainloop(void) {
+int user_uart_loop(void) {
 
 	if(uart_tx_fifo.wptr == uart_tx_fifo.rptr){
 		return 0;//have no data
@@ -100,7 +105,12 @@ int user_uart_mainloop(void) {
 	return 1;
 }
 
-s8 uart_printf(char *txdata,unsigned int len)
+/**
+ * @brief     This function serves to tx str by uart.
+ * @param[in] none
+ * @return    0 is OK, -1 is err.
+ */
+s8 uart_tx_str(char *txdata,unsigned int len)
 {
 	u8 *p = my_fifo_wptr (&uart_tx_fifo);
 	if (!p || (len+4) >= uart_tx_fifo.size)
@@ -115,7 +125,85 @@ s8 uart_printf(char *txdata,unsigned int len)
 	memcpy (p, (u8 *)txdata, len);
 
 	my_fifo_next (&uart_tx_fifo);
+	user_uart_loop();
 	return 0;
 }
 
+typedef char* VA_LIST;
+#define VA_START(list, param) (list = (VA_LIST)((int)&param + sizeof(param)))
+#define VA_ARG(list, type) ((type *)(list += sizeof(type)))[-1]
+#define VA_END(list) (list = (VA_LIST)0)
+
+/**
+ * @brief     This function serves to print data by uart.
+ * @param[in] none
+ * @return    0 is OK, -1 is err.
+ */
+s8 uart_tx_printf(const char *format, ...)
+{
+	char* buff=(char* )txdata_buf.data;
+	VA_LIST list;
+
+	VA_START(list, format);
+	extern void tl_print(char** out, const char *format, VA_LIST list);
+	tl_print(&buff, format, list);
+	VA_END(list);
+
+	txdata_buf.len=0;
+	while(txdata_buf.data[txdata_buf.len++]);
+	txdata_buf.len--;
+
+	if ((txdata_buf.len+4) >= uart_tx_fifo.size)
+	{
+				return -1;
+	}
+	if(uart_tx_fifo.wptr == uart_tx_fifo.rptr&&uart_dma_send_flag) {
+		uart_dma_send_flag=0;
+		uart_send_dma((unsigned char*) (&txdata_buf));
+	}
+	else
+	{
+		u8 *p = my_fifo_wptr (&uart_tx_fifo);
+		if (!p)
+		{
+			return -1;
+		}
+
+		*p++ = txdata_buf.len;
+		*p++ = txdata_buf.len >> 8;
+		*p++ = txdata_buf.len >> 16;
+		*p++ = txdata_buf.len >> 24;
+		memcpy (p, (u8 *)txdata_buf.data, txdata_buf.len);
+
+		my_fifo_next (&uart_tx_fifo);
+		user_uart_loop();
+	}
+	return 0;
+}
+
+
+/**
+ * @brief     This function serves to handle uart irq.
+ * @param[in] none
+ * @return    none
+ */
+void uart_irq_handler(void)
+{
+	if(reg_uart_status1 & FLD_UART_TX_DONE)
+	{
+		extern volatile unsigned char uart_dma_send_flag;
+		uart_dma_send_flag=1;
+		uart_clr_tx_done();
+		user_uart_loop();
+	}
+	if(dma_chn_irq_status_get() & FLD_DMA_CHN_UART_RX)
+	{
+		dma_chn_irq_status_clr(FLD_DMA_CHN_UART_RX);
+	}
+
+	if(uart_is_parity_error())//when stop bit error or parity error.
+	{
+		uart_clear_parity_error();
+	}
+}
 #endif //end of (FEATURE_TEST_MODE == xxx)

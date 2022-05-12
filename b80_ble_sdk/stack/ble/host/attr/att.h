@@ -137,13 +137,6 @@ void bls_att_registerHandleValueConfirmCb(att_handleValueConfirm_callback_t cb);
  */
 u16  blc_att_getEffectiveMtuSize(void);
 
-/**
- * @brief      set device name
- * @param[in]  p - the point of name
- * @param[in]  len - the length of name
- * @return     BLE_SUCCESS
- */
-ble_sts_t 	bls_att_setDeviceName(u8* pName,u8 len);  //only module/mesh/HCI use
 
 /**
  * @brief      set HID Report Map

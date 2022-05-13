@@ -516,13 +516,13 @@ void app_set_kb_wakeup(u8 e, u8 *p, int n)
  */
 int module_onReceiveData(void *para)
 {
-	rf_packet_att_write_t *p = (rf_packet_att_write_t*)para;
+	rf_packet_att_data_t *p = (rf_packet_att_data_t*)para;
 	u8 len = p->l2capLen - 3;
 	if(len > 0)
 	{
 		printf("RF_RX len: %d\nc2s:write data: %d\n", p->rf_len, len);
 		printf("s2c:notify data: %d\n", len);
-		blc_gatt_pushHandleValueNotify(BLS_CONN_HANDLE,SPP_SERVER_TO_CLIENT_DP_H, &p->value, len);  //this API can auto handle MTU size
+		blc_gatt_pushHandleValueNotify(BLS_CONN_HANDLE,SPP_SERVER_TO_CLIENT_DP_H, p->dat, len);  //this API can auto handle MTU size
 	}
 
 	return 0;
@@ -552,7 +552,7 @@ void feature_sdle_test_mainloop(void)
 
 		if(!dle_started_flg){ //master do not send data length request in time
 			printf("Master hasn't initiated the DLE yet, S send DLE req to the Master.\n");
-			blc_ll_exchangeDataLength(LL_LENGTH_REQ , ACL_CONN_MAX_TX_OCTETS);
+			blc_ll_exchangeDataLength(0x14 , ACL_CONN_MAX_TX_OCTETS);//LENGTH_REQ opcode: 0x14
 			app_test_data_tick = clock_time() | 1;
 			dle_started_flg = 1;
 		}

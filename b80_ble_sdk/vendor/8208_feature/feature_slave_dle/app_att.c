@@ -354,7 +354,7 @@ static const u8 my_OtaCharVal[19] = {
 	TELINK_SPP_DATA_OTA,
 };
 
-extern int module_onReceiveData(rf_packet_att_write_t *p);
+extern int module_onReceiveData(rf_packet_att_data_t *p);
 
 // TM : to modify
 static const attribute_t my_Attributes[] = {

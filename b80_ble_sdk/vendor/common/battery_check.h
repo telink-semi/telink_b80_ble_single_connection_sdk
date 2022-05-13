@@ -23,8 +23,6 @@
 #ifndef BATTERY_CHECK_H_
 #define BATTERY_CHECK_H_
 
-#if (BATT_CHECK_ENABLE)
-
 /**
  * @brief		set lowBattery detect enable
  * @param[in]	en - lowBattDet_enable value
@@ -46,5 +44,4 @@ int  battery_get_detect_enable (void);
  */
 int app_battery_power_check(unsigned short alram_vol_mv);
 
-#endif
 #endif /* BATTERY_CHECK_H_ */

@@ -27,7 +27,6 @@
 
 #include "ext_rf.h"
 #include "ext_pm.h"
-//#include "ext_gpio.h"
 #include "ext_misc.h"
 #include "software_pa.h"
 

@@ -30,7 +30,7 @@
  */
 #define FLASH_SIZE_OPTION							FLASH_SIZE_OPTION_512K //very important, user need confirm !!!
 #define APP_SECURITY_ENABLE      					1
-#define	BLE_OTA_SERVER_ENABLE						1
+#define	BLE_OTA_SERVER_ENABLE						0
 #define TEST_CONN_CURRENT_ENABLE				0		//test connection current, disable UI to have a pure power
 
 /* firmware signature check */
@@ -38,8 +38,8 @@
 
 /* Power Management */
 #define BLE_APP_PM_ENABLE							1
-#define PM_DEEPSLEEP_ENABLE            				1 		//test connection power, should disable deepSleep
-#define PM_DEEPSLEEP_RETENTION_ENABLE               1
+#define PM_DEEPSLEEP_ENABLE            				0 		//test connection power, should disable deepSleep
+#define PM_DEEPSLEEP_RETENTION_ENABLE               0
 
 
 

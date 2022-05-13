@@ -30,6 +30,5 @@
 //#include "ext_gpio.h"
 #include "ext_misc.h"
 #include "software_pa.h"
-#include "software_uart.h"
 
 #endif /* DRIVERS_EXT_DRIVER_DRIVER_EXT_H_ */

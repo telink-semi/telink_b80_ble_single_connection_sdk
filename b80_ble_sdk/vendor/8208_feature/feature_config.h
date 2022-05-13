@@ -48,7 +48,7 @@
 #define TEST_GATT_SECURITY							10
 
 
-#define TEST_USER_BLT_SOFT_UART                     11
+
 
 #define TEST_FEATURE_DEBUG							12
 

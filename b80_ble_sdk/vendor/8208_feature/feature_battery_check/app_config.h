@@ -251,6 +251,16 @@ enum{
 		#define PB7_INPUT_ENABLE				0
 		#define ADC_INPUT_PCHN					B7P    //corresponding  ADC_InputPchTypeDef in adc.h
 	#endif
+
+	#define VBAT_ALRAM_THRES_MV				2000   // 2000 mV low battery alarm
+	//////////////////////////// FEATURE PM GPIO	(EVK board) /////////////////////////////////
+	#define GPIO_WAKEUP_FEATURE				GPIO_PD6   //mcu wakeup module
+	#define	PD6_FUNC							AS_GPIO
+	#define PD6_INPUT_ENABLE					1
+	#define	PD6_OUTPUT_ENABLE					0
+	#define	PD6_DATA_OUT						0
+	#define GPIO_WAKEUP_FEATURE_HIGH				gpio_setup_up_down_resistor(GPIO_WAKEUP_FEATURE, PM_PIN_PULLUP_10K);
+	#define GPIO_WAKEUP_FEATURE_LOW				gpio_setup_up_down_resistor(GPIO_WAKEUP_FEATURE, PM_PIN_PULLDOWN_100K);
 #endif
 
 

@@ -36,7 +36,12 @@
 */
 void 			blt_ecc_init(void);
 
-
+/**
+ * @brief		This function is used to provide random number generator for ECC calculation
+ * @param[out]  dest: The address where the random number is stored
+ * @param[in]   size: Output random number size, unit byte
+ * @return		1:  success
+ */
 int blt_ecc_gen_rand(unsigned char *dest, unsigned int size);
 
 //ECC implementation method selection

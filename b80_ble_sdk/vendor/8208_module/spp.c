@@ -94,8 +94,6 @@ int controller_event_handler(u32 h, u8 *para, int n)
 			case BLT_EV_FLAG_CONN_PARA_REQ:
 			{
 				//Slave received Master's LL_Connect_Update_Req pkt.
-				rf_packet_ll_updateConnPara_t p;
-				memcpy((u8*)&p.winSize, para, 11);
 			}
 			break;
 
@@ -213,9 +211,7 @@ int bls_uart_handler (u8 *p, int n)
 	// get module available data buffer: 0c ff 00  00
 	else if (spp_cmd == SPP_CMD_GET_BUF_SIZE)
 	{
-		u8 r[4];
-		pEvt->param[0] = (u8)blc_hci_le_readBufferSize_cmd( (u8 *)(r) );
-		pEvt->param[1] = r[2];
+		pEvt->param[1] = blc_ll_get_connEffectiveMaxTxOctets();
 		pEvt->paramLen = 4;  //eventID + param
 	}
 	// set advertising type: 0d ff 01 00  00

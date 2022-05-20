@@ -31,15 +31,6 @@
 #include "app_ui.h"
 
 
-
-
-
-
-
-
-
-
-
 #if (UI_KEYBOARD_ENABLE)
 
 _attribute_data_retention_	int 	key_not_released;
@@ -108,7 +99,6 @@ void key_change_proc(void)
 }
 
 
-
 /**
  * @brief      this function is used to detect if key pressed or released.
  * @param[in]  e - LinkLayer Event type
@@ -116,6 +106,7 @@ void key_change_proc(void)
  * @param[in]  n - data length of event
  * @return     none
  */
+
 
 void proc_keyboard (u8 e, u8 *p, int n)
 {
@@ -138,11 +129,6 @@ void proc_keyboard (u8 e, u8 *p, int n)
 #endif  //end of UI_KEYBOARD_ENABLE
 
 
-
-
-
-
-
 /**
  * @brief      callback function of LinkLayer Event "BLT_EV_FLAG_SUSPEND_ENTER"
  * @param[in]  e - LinkLayer Event type
@@ -159,16 +145,6 @@ void app_set_kb_wakeup(u8 e, u8 *p, int n)
 	}
 	#endif
 }
-
-
-
-
-
-
-
-
-
-
 
 
 /*----------------------------------------------------------------------------*/
@@ -191,6 +167,7 @@ void app_enter_ota_mode(void)
 	#endif
 	ota_is_working = 1;
 }
+
 
 /**
  * @brief       no matter whether the OTA result is successful or fail.

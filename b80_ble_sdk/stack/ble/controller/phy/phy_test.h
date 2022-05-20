@@ -143,8 +143,12 @@ ble_sts_t blc_phy_setEnhancedReceiverTest (u8 rx_chn,u8 phy_mode,u8 modulation_i
  */
 ble_sts_t blc_phy_setEnhancedTransmitterTest (u8 tx_chn, u8 length, u8 pkt_type,u8 phy_mode);
 
-void phy_test_driver_init(RF_ModeTypeDef rf_mode);
-
+/**
+ * @brief      This function is used to set preamble length.
+ * @param[in]     len  	preamble length
+ * @return     none
+ */
+void blc_phy_preamble_length_set(unsigned char len);
 
 #endif
 

@@ -45,8 +45,6 @@
 #define ACL_CONN_MAX_TX_OCTETS			27
 
 
-
-
 /********************* ACL connection LinkLayer TX & RX data FIFO allocation, Begin ************************************************/
 /**
  * @brief	ACL RX buffer size & number
@@ -78,16 +76,9 @@
 #define ACL_TX_FIFO_NUM					8
 
 
-
-
 extern	u8	app_acl_rxfifo[];
 extern	u8	app_acl_txfifo[];
 /******************** ACL connection LinkLayer TX & RX data FIFO allocation, End ***************************************************/
-
-
-
-
-
 
 
 /***************** ACL connection L2CAP layer RX data FIFO allocation, Begin ********************************/

@@ -45,8 +45,6 @@
 
 #define	BLE_DEVICE_ADDRESS_TYPE 	BLE_DEVICE_ADDRESS_PUBLIC
 
-
-
 _attribute_data_retention_ u32	advertise_begin_tick;
 
 #if (PM_DEEPSLEEP_ENABLE)
@@ -56,7 +54,6 @@ _attribute_data_retention_ u32 latest_user_event_tick;
 #endif
 
 _attribute_data_retention_ own_addr_type_t app_own_address_type = OWN_ADDRESS_PUBLIC;
-
 
 /**
  * @brief	BLE Advertising data
@@ -74,10 +71,6 @@ const u8	tbl_advData[] = {
 const u8	tbl_scanRsp [] = {
 	 8,  DT_COMPLETE_LOCAL_NAME, 				'e', 'S', 'a', 'm', 'p', 'l', 'e',
 };
-
-
-
-
 
 
 /**
@@ -122,7 +115,6 @@ void task_connect(u8 e, u8 *p, int n)
 }
 
 
-
 /**
  * @brief      callback function of LinkLayer Event "BLT_EV_FLAG_TERMINATE"
  * @param[in]  e - LinkLayer Event type
@@ -165,7 +157,6 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 }
 
 
-
 /**
  * @brief      callback function of LinkLayer Event "BLT_EV_FLAG_SUSPEND_EXIT"
  * @param[in]  e - LinkLayer Event type
@@ -177,7 +168,6 @@ _attribute_ram_code_ void task_suspend_exit (u8 e, u8 *p, int n)
 {
 	rf_set_power_level_index (MY_RF_POWER_INDEX);
 }
-
 
 
 /**
@@ -233,9 +223,6 @@ void blt_pm_proc(void)
 		#endif  //end of PM_DEEPSLEEP_ENABLE
 	#endif//END of  BLE_APP_PM_ENABLE
 }
-
-
-
 
 
 /**
@@ -429,10 +416,9 @@ void user_init_normal(void)
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
 	advertise_begin_tick = clock_time();
 }
+
 
 #if (PM_DEEPSLEEP_RETENTION_ENABLE)
 /**

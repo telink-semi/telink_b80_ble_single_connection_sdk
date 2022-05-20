@@ -477,166 +477,156 @@ typedef struct {
 
 
 
+/**
+ * @brief     The Disconnection Complete event occurs when a connection is terminated.
+ * @param[in]     status  							0x00 successfully completed.
+ * 																	0x01 每 0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * @param[in]	  connHandle 				Connection_Handle
+ * @param[in]	  reason  							Reason for disconnection. See [Vol 2] Part D, Error Codes.
+ * @return			  1,0,-1
+ */
+int hci_disconnectionComplete_evt(u8 status, u16 connHandle, u8 reason);
 
 /**
- *  @brief  Event Parameters for "7.7.65.25 LE CIS Established event"
+ * @brief      The Command Complete event is used by the Controller for most commands
+ * 					  to transmit return status of a command and the other event parameters that are
+ * 					  specified for the issued HCI command.
+ * @param[in]     paraLen  						length of parameter
+ * @param[in]	  para 								Pointer of parameter
+ * @param[in]	  opCode_ogf  				OpCode Group Field
+ * @param[in]	  numHciCmds 				The Number of HCI command packets which are allowed to be sent to the
+ * 																	Controller from the Host.
+ * @param[in]	  result  							event result
+ * @return			  1,0,-1
  */
-typedef struct {
-	u8        	subEventCode;
-	u8        	status;
-	u16			cisHandle;
-	u8          cigSyncDly[3];
-	u8          cisSyncDly[3];
-	u8          transLaty_m2s[3];
-	u8          transLaty_s2m[3];
-	u8			phy_m2s;
-	u8			phy_s2m;
-	u8			nse;
-	u8			bn_m2s;
-	u8			bn_s2m;
-	u8			ft_m2s;
-	u8			ft_s2m;
-	u16			maxPDU_m2s;
-	u16			maxPDU_s2m;
-	u16			isoIntvl;
-} hci_le_cisEstablishedEvt_t;
-
+int hci_cmdComplete_evt(u8 numHciCmds, u8 opCode_ocf, u8 opCode_ogf, u8 paraLen, u8 *para, u8 *result);
 
 /**
- *  @brief  Event Parameters for "7.7.65.26 LE CIS Request event"
+ * @brief      The Command Status event is used to indicate that the command described by
+ * 					  the Command_Opcode parameter has been received, and that the Controller
+ * 					  is currently performing the task for this command.
+ * @param[in]     status  							0x00 successfully completed.
+ * 																	0x01 每 0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * @param[in]	  opCode_ocf 				OpCode Command Field
+ * @param[in]	  opCode_ogf  				OpCode Group Field
+ * @param[in]	  numHciCmds 				The Number of HCI command packets which are allowed to be sent to the
+ * 																	Controller from the Host.
+ * @param[in]	  result  							event result
+ * @return			  1,0,-1
  */
-typedef struct {
-	u8        	subEventCode;
-	u16        	aclHandle;
-	u16        	cisHandle;
-	u8			cigId;
-	u8			cisId;
-} hci_le_cisReqEvt_t;
-
+void hci_cmdStatus_evt(u8 numHciCmds, u8 opCode_ocf, u8 opCode_ogf, u8 status, u8 *result);
 
 /**
- *  @brief  Event Parameters for "7.7.65.27 LE Create BIG Complete event"
+ * @brief       The LE Connection Complete event indicates to both of the Hosts forming the connection that a new connection has been created.
+ * @param[in]     status  							0x00 successfully completed.
+ * 																	0x01 每 0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * @param[in]	  connHandle 				Connection_Handle
+ * @param[in]	  role  								0x00 Connection is master, 0x01 Connection is slave
+ * @param[in]	  peerAddrType 			0x00 Peer is using a Public Device Address, 0x01 Peer is using a Random Device Address
+ * @param[in]	  peerAddr  					Public Device Address or Random Device Address of the peer device
+ * @param[in]	  connInterval  				Connection interval
+ * @param[in]	  slaveLatency  				Slave latency
+ * @param[in]	  supervisionTimeout  	Connection supervision timeout
+ * @param[in]	  masterClkAccuracy 		Master Clock Accuracy
+ * @return			  1,0,-1
  */
-typedef struct {
-	u8        	subEventCode;
-	u8        	status;
-	u8			bigHandle;
-	u8        	bigSyncDly[3];
-	u8          transLatyBig[3];
-	u8			phy;
-	u8			nse;
-	u8			bn;
-	u8			pto;
-	u8			irc;
-	u16			maxPDU;
-	u16			isoIntvl;
-	u8			numBis;
-	u16		    bisHandles[1];//LL_BIS_IN_PER_BIG_BCST_NUM_MAX];
-} hci_le_createBigCompleteEvt_t;
-
-
+int hci_le_connectionComplete_evt(u8 status, u16 connHandle, u8 role, u8 peerAddrType, u8 *peerAddr,
+                                   u16 connInterval, u16 slaveLatency, u16 supervisionTimeout, u8 masterClkAccuracy);
 
 /**
- *  @brief  Event Parameters for "7.7.65.28 LE Terminate BIG Complete event"
+ * @brief       The LE Connection Update Complete event is used to indicate that the Controller process to update the connection has completed.
+ * @param[in]     status  							0x00 successfully completed.
+ * 																	0x01 每 0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * @param[in]	  connHandle 				Connection_Handle
+ * @param[in]	  connInterval  				Connection interval
+ * @param[in]	  connLatency  				Slave latency
+ * @param[in]	  supervisionTimeout  	Connection supervision timeout
+ * @return			  1,0,-1
  */
-typedef struct {
-	u8        	subEventCode;
-	u8			bigHandle;
-	u8			reason;
-} hci_le_terminateBigCompleteEvt_t;
-
-
-/**
- *  @brief  Event Parameters for "7.7.65.20 LE Channel Selection Algorithm event"
- */
-typedef struct {
-	u8        	subEventCode;
-	u8        	status;
-	u8			bigHandle;
-	u8          transLatyBig[3];
-	u8			nse;
-	u8			bn;
-	u8			pto;
-	u8			irc;
-	u16			maxPDU;
-	u16			isoIntvl;
-	u8			numBis;
-	u16         bisHandles[1];//BIS_IN_PER_BIG_SYNC_NUM_MAX];
-} hci_le_bigSyncEstablishedEvt_t;
+int hci_le_connectionUpdateComplete_evt(u8 status, u16 connHandle, u16 connInterval,
+                                         u16 connLatency, u16 supervisionTimeout);
 
 
 /**
- *  @brief  Event Parameters for "7.7.65.29 LE BIG Sync Established event"
+ * @brief       The LE Read Remote Features Complete event is used to indicate the
+ * 					   completion of the process of the Controller obtaining the features used
+ * 					   on the connection and the features supported by the remote Bluetooth
+ * 					   device specified by the Connection_Handle event parameter.
+ * @param[in]     status  							0x00 successfully completed.
+																	0x01 每 0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * @param[in]	  connHandle 				Connection_Handle
+ * @param[in]	  feature  						LE features. See [Vol 6] Part B, Section 4.6.
+ * @return			  1,0,-1
  */
-typedef struct {
-	u8        	subEventCode;
-	u8			bigHandle;
-	u8			reason;
-} hci_le_bigSyncLostEvt_t;
+int hci_le_readRemoteFeaturesComplete_evt(u8 status, u16 connHandle, u8 *feature);
 
 
 
 /**
- *  @brief  Event Parameters for "7.7.65.30 LE BIG Sync Lost event"
+ * @brief       The LE PHY Update Complete Event is used to indicate that the Controller has
+ * 					   changed the transmitter PHY or receiver PHY in use.
+ * @param[in]     status  							0x00 successfully completed.
+																	0x01 每 0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * @param[in]	  connHandle 				Connection_Handle
+ * @param[in]	  new_phy  						0x01 The receiver PHY for the connection is LE 1M
+ * 																	0x02 The receiver PHY for the connection is LE 2M
+ * @return			  1,0,-1
  */
+int hci_le_phyUpdateComplete_evt(u16 connhandle,u8 status, u8 new_phy);
+
+/**
+ * @brief       The LE Long Term Key Request event indicates that the master device is
+ * 					  attempting to encrypt or re-encrypt the link and is requesting the Long
+ * 					  Term Key from the Host.
+ * @param[in]	  connHandle 				Connection_Handle
+ * @param[in]	  random  						64-bit random number.
+ * @param[in]	  ediv  								16-bit encrypted diversifier
+ * @param[in]	  result  							event result
+ * @return			  1,0,-1
+ */
+int hci_le_longTermKeyRequest_evt(u16 connHandle, u8 *random, u16 ediv, u8 *result);
+
+/**
+ * @brief       This event is generated when local P-256 key generation is complete.
+ * @param[in]     status  							0x00 successfully completed.
+																	0x01 每 0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * @param[in]	  localP256Key 				Local P-256 public key.
+ * @return			  1,0,-1
+ */
+int hci_le_readLocalP256KeyComplete_evt(u8* localP256Key, u8 status);
+
+/**
+ * @brief       This event indicates that LE Diffie Hellman key generation has been completed
+ * 				   	   by the Controller.
+ * @param[in]     status  							0x00 successfully completed.
+ * 																	0x01 每 0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * @param[in]	  DHkey 							Diffie Hellman Key.
+ * @return			  1,0,-1
+ */
+int hci_le_generateDHKeyComplete_evt(u8* DHkey, u8 status);
 
 
 /**
- *  @brief  Event Parameters for "7.7.65.34 LE BIGInfo Advertising Report event"
+ * @brief       The Encryption Change event is used to indicate that the change of the
+ * 					   encryption mode has been completed.
+ * @param[in]	  connHandle 				Connection Handle
+ * @param[in]	  encrypt_en					0x00 Link Level Encryption is OFF.
+ * 																	0x01 Link Level Encryption is ON with E0 for BR/EDR.
+ * 																			 Link Level Encryption is ON with AES-CCM for LE.
+ * 																	0x02 Link Level Encryption is ON with AES-CCM for BR/EDR.
+ * @return			  1,0,-1
  */
-typedef struct {
-	u8		subEventCode;
-	u16		syncHandle;
-	u8		numBis;
-	u8		nse;
-	u16		IsoItvl; //in units of 1.25 ms.
-	u8		bn;
-	u8		pto;
-	u8		irc;
-	u16		maxPdu;
-	u8		sduItvl[3];
-	u16		maxSdu;
-	u8		phy;
-	u8		framing;
-	u8		enc;
-} hci_le_bigInfoAdvReportEvt_t;
+int hci_le_encryptChange_evt(u16 connhandle, u8 encrypt_en);
 
 
-int		hci_le_periodicAdvSyncEstablished_evt (u8 status, u16 syncHandle,u8 advSID, u8 advAddrType, u8 advAddress[6], u8 advPHY,
-										       u16 perdAdvItvl, u8 advClkAccuracy);
-int		hci_le_periodicAdvReport_evt (u8 subEventCode, u16 syncHandle, u8 txPower, u8 RSSI, u8 cteType,u8 dataStatus, u8 dataLength,
-								      u8* data);
-int		hci_le_periodicAdvSyncLost_evt (u16 syncHandle);
-int		hci_le_cisEstablished_evt(u8 status, u16 cisHandle, u8 cigSyncDly[3], u8 cisSyncDly[3], u8 transLaty_m2s[3], u8 transLaty_s2m[3], u8 phy_m2s,
-		                         u8 phy_s2m, u8 nse, u8 bn_m2s, u8 bn_s2m, u8 ft_m2s, u8 ft_s2m, u16 maxPDU_m2s, u16 maxPDU_s2m, u16 isoIntvl );
-int		hci_le_cisReq_evt(u16 aclHandle, u16 cisHandle, u8 cigId, u8 cisId);
-int		hci_le_createBigComplete_evt(u8 status, u8 bigHandle, u8 bigSyncDly[3], u8 transLatyBig[3], u8 phy, u8 nse,
-								     u8 bn, u8 pto, u8 irc, u16 maxPDU, u16 isoIntvl, u8 numBis, u16* bisHandles);
-int		hci_le_terminateBigComplete_evt(u8 bigHandle, u8 reason);
-int		hci_le_bigSyncEstablished_evt(u8 staus, u8 bigHandle, u8 transLatyBig[3], u8 nse, u8 bn, u8 pto, u8 irc,
-		                              u16 maxPDU, u16 isoIntvl,  u8 numBis, u16* bisHandles);
-int		hci_le_bigSyncLost_evt(u8 bigHandle, u8 reason);
-int		hci_le_BigInfoAdvReport_evt(u16 syncHandle, u8 numBis, u8 nse, u16 IsoItvl, u8 bn, u8 pto, u8 irc,
-		                             u16 maxPdu, u8 sduItvl[3], u16 maxSdu, u8 phy, u8 framing, u8 enc);
-int		hci_disconnectionComplete_evt(u8 status, u16 connHandle, u8 reason);
-int		hci_cmdComplete_evt(u8 numHciCmds, u8 opCode_ocf, u8 opCode_ogf, u8 paraLen, u8 *para, u8 *result);
-void	hci_cmdStatus_evt(u8 numHciCmds, u8 opCode_ocf, u8 opCode_ogf, u8 status, u8 *result);
-int		hci_le_connectionComplete_evt(u8 status, u16 connHandle, u8 role, u8 peerAddrType, u8 *peerAddr,
-                                      u16 connInterval, u16 slaveLatency, u16 supervisionTimeout, u8 masterClkAccuracy);
-int		hci_le_enhancedConnectionComplete_evt(u8 status, u16 connHandle, u8 role, u8 peerAddrType, u8 *peerAddr, u8 *loaclRpa, u8 *peerRpa,
-                                              u16 connInterval, u16 connLatency, u16 supervisionTimeout, u8 masterClkAccuracy);
-int		hci_le_connectionUpdateComplete_evt(u8 status, u16 connHandle, u16 connInterval,
-        									u16 connLatency, u16 supervisionTimeout);
-int		hci_le_readRemoteFeaturesComplete_evt(u8 status, u16 connHandle, u8 * feature);
-int		hci_le_chennel_selection_algorithm_evt(u16 connhandle, u8 channel_selection_alg);
-int		hci_le_phyUpdateComplete_evt(u16 connhandle,u8 status, u8 new_phy);
-int		hci_le_data_len_update_evt(u16 connhandle,u16 effTxOctets, u16 effRxOctets, u16 maxtxtime, u16 maxrxtime);
-int		hci_le_longTermKeyRequest_evt(u16 connHandle, u8* random, u16 ediv, u8* result);
-int		hci_le_readLocalP256KeyComplete_evt(u8* localP256Key, u8 status);
-int		hci_le_generateDHKeyComplete_evt(u8* DHkey, u8 status);
-int		hci_le_encryptChange_evt(u16 connhandle,  u8 encrypt_en);
-int		hci_le_encryptKeyRefresh_evt(u16 connhandle);
-int		hci_remoteNateReqComplete_evt (u8* bd_addr);
+/**
+ * @brief       The Encryption Key Refresh Complete event is used to indicate to the Host
+ * 					  that the encryption key was refreshed on the given Connection_Handle any
+ * 					  time encryption is paused and then resumed.
+ * @param[in]	  connHandle 				Connection Handle
+ * @return			  1,0,-1
+ */
+int hci_le_encryptKeyRefresh_evt(u16 connhandle);
 
 
 #endif /* HCI_EVENT_H_ */

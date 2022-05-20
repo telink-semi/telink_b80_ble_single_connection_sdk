@@ -86,7 +86,7 @@ enum{
 #define	LOW_BATT_FLG					    BIT(0)
 
 //////////////////////////// MODULE PM GPIO	/////////////////////////////////
-#define GPIO_WAKEUP_MODULE					GPIO_PB5   //mcu wakeup module
+#define GPIO_WAKEUP_MODULE					GPIO_PD5   //mcu wakeup module
 #define	PB5_FUNC							AS_GPIO
 #define PB5_INPUT_ENABLE					1
 #define	PB5_OUTPUT_ENABLE					0
@@ -94,7 +94,7 @@ enum{
 #define GPIO_WAKEUP_MODULE_HIGH				gpio_setup_up_down_resistor(GPIO_WAKEUP_MODULE, PM_PIN_PULLUP_10K);
 #define GPIO_WAKEUP_MODULE_LOW				gpio_setup_up_down_resistor(GPIO_WAKEUP_MODULE, PM_PIN_PULLDOWN_100K);
 
-#define GPIO_WAKEUP_MCU						GPIO_PB6  //module wakeup mcu
+#define GPIO_WAKEUP_MCU						GPIO_PD6  //module wakeup mcu
 #define	PB6_FUNC							AS_GPIO
 #define PB6_INPUT_ENABLE					1
 #define	PB6_OUTPUT_ENABLE					1
@@ -121,7 +121,7 @@ enum{
 
 	#define VBAT_ALRAM_THRES_MV				2000   // 2000 mV low battery alarm
 	//////////////////////////// FEATURE PM GPIO	(EVK board) /////////////////////////////////
-	#define GPIO_WAKEUP_FEATURE				GPIO_PD6   //mcu wakeup module
+	#define GPIO_WAKEUP_FEATURE				GPIO_PB6   //mcu wakeup module
 	#define	PD6_FUNC							AS_GPIO
 	#define PD6_INPUT_ENABLE					1
 	#define	PD6_OUTPUT_ENABLE					0

@@ -1,33 +1,55 @@
 /********************************************************************************************************
- * @file     app_att.c
+ * @file	app_att.c
  *
- * @brief    This is the source file for BLE SDK
+ * @brief	This is the source file for BLE SDK
  *
- * @author	 BLE GROUP
- * @date         12,2021
+ * @author	BLE GROUP
+ * @date	06,2020
  *
- * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2020, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ *          All rights reserved.
  *
- *          Licensed under the Apache License, Version 2.0 (the "License");
- *          you may not use this file except in compliance with the License.
- *          You may obtain a copy of the License at
+ *          Redistribution and use in source and binary forms, with or without
+ *          modification, are permitted provided that the following conditions are met:
  *
- *              http://www.apache.org/licenses/LICENSE-2.0
+ *              1. Redistributions of source code must retain the above copyright
+ *              notice, this list of conditions and the following disclaimer.
  *
- *          Unless required by applicable law or agreed to in writing, software
- *          distributed under the License is distributed on an "AS IS" BASIS,
- *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *          See the License for the specific language governing permissions and
- *          limitations under the License.
+ *              2. Unless for usage inside a TELINK integrated circuit, redistributions
+ *              in binary form must reproduce the above copyright notice, this list of
+ *              conditions and the following disclaimer in the documentation and/or other
+ *              materials provided with the distribution.
+ *
+ *              3. Neither the name of TELINK, nor the names of its contributors may be
+ *              used to endorse or promote products derived from this software without
+ *              specific prior written permission.
+ *
+ *              4. This software, with or without modification, must only be used with a
+ *              TELINK integrated circuit. All other usages are subject to written permission
+ *              from TELINK and different commercial license may apply.
+ *
+ *              5. Licensee shall be solely responsible for any claim to the extent arising out of or
+ *              relating to such deletion(s), modification(s) or alteration(s).
+ *
+ *          THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *          ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *          WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *          DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER BE LIABLE FOR ANY
+ *          DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *          (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *          LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ *          ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *          (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *          SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  *******************************************************************************************************/
 #include "tl_common.h"
+
 #include "stack/ble/ble.h"
 #include "app_att.h"
-#include "spp.h"
 
-/**
- *  @brief  connect parameters structure for ATT
- */
+#if (FEATURE_TEST_MODE == TEST_GATT_SECURITY)
+
 typedef struct
 {
   /** Minimum value for the connection event (interval. 0x0006 - 0x0C80 * 1.25 ms) */
@@ -39,6 +61,23 @@ typedef struct
   /** Connection Timeout (0x000A - 0x0C80 * 10 ms) */
   u16 timeout;
 } gap_periConnectParams_t;
+
+/**
+ * @brief      write callback of Attribute of TelinkSppDataClient2ServerUUID
+ * @param[in]  para - rf_packet_att_write_t
+ * @return     0
+ */
+int module_onReceiveData(void *para)
+{
+	rf_packet_att_write_t *p = (rf_packet_att_write_t*)para;
+	u16 len = p->l2capLen - 3;
+	if(len > 0)
+	{
+		blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE, 0x11, &p->value, len);
+	}
+
+	return 0;
+}
 
 static const u16 clientCharacterCfgUUID = GATT_UUID_CLIENT_CHAR_CFG;
 
@@ -78,7 +117,7 @@ static u16 serviceChangeVal[2] = {0};
 
 static u8 serviceChangeCCC[2] = {0,0};
 
-_attribute_data_retention_	u8  my_devName[MAX_DEV_NAME_LEN] = {'E','M','o','d','u','l','e'};
+static const u8 my_devName[] = {'F','e','a','t','u','r','e'};
 
 static const u8 my_PnPtrs [] = {0x02, 0x8a, 0x24, 0x66, 0x82, 0x01, 0x00};
 
@@ -88,6 +127,7 @@ static const u8 my_PnPtrs [] = {0x02, 0x8a, 0x24, 0x66, 0x82, 0x01, 0x00};
 static const  u8 my_OtaUUID[16]					    = WRAPPING_BRACES(TELINK_SPP_DATA_OTA);
 static const  u8 my_OtaServiceUUID[16]				= WRAPPING_BRACES(TELINK_OTA_UUID_SERVICE);
 static u8 my_OtaData 						        = 0x00;
+static u8 otaDataCCC[2] 							= {0,0};
 static const  u8 my_OtaName[] 						= {'O', 'T', 'A'};
 
 ////////////////////// SPP ////////////////////////////////////
@@ -164,30 +204,6 @@ static const u8 my_OtaCharVal[19] = {
 	TELINK_SPP_DATA_OTA
 };
 
-/**
- * @brief      write callback of Attribute of TelinkSppDataClient2ServerUUID
- * @param[in]  para - rf_packet_att_write_t
- * @return     0
- */
-int module_onReceiveData(void *para)
-{
-	rf_packet_att_data_t *p = (rf_packet_att_data_t*)para;
-	u8 len = p->l2capLen - 3;
-	if(len > 0)
-	{
-		spp_event_t *pEvt =  (spp_event_t *)p;
-		pEvt->token = 0xFF;
-		pEvt->paramLen = p->l2capLen + 2;   //l2cap_len + 2 byte (eventId)
-		pEvt->eventId = 0x07a0;  //data received event
-		memcpy(pEvt->param, &p->opcode, len + 3);
-
-		spp_send_data(HCI_FLAG_EVENT_TLK_MODULE, pEvt);
-	}
-
-	return 0;
-}
-
-
 static const attribute_t my_Attributes[] = {
 
 	{ATT_END_H - 1, 0,0,0,0,0},	// total num of attribute
@@ -218,24 +234,25 @@ static const attribute_t my_Attributes[] = {
 
 	// 000f - 0016 SPP
 	{8,ATT_PERMISSIONS_READ,2,16,(u8*)(&my_primaryServiceUUID), 	(u8*)(&TelinkSppServiceUUID), 0},
+	// server to client TX
 	{0,ATT_PERMISSIONS_READ,2,sizeof(TelinkSppDataServer2ClientCharVal),(u8*)(&my_characterUUID), 		(u8*)(TelinkSppDataServer2ClientCharVal), 0},				//prop
 	{0,ATT_PERMISSIONS_READ,16,sizeof(SppDataServer2ClientData),(u8*)(&TelinkSppDataServer2ClientUUID), (u8*)(SppDataServer2ClientData), 0},	//value
 	{0,ATT_PERMISSIONS_RDWR,2,2,(u8*)&clientCharacterCfgUUID,(u8*)(&SppDataServer2ClientDataCCC)},
 	{0,ATT_PERMISSIONS_READ,2,sizeof(TelinkSPPS2CDescriptor),(u8*)&userdesc_UUID,(u8*)(&TelinkSPPS2CDescriptor)},
+	// client to server RX
 	{0,ATT_PERMISSIONS_READ,2,sizeof(TelinkSppDataClient2ServerCharVal),(u8*)(&my_characterUUID), 		(u8*)(TelinkSppDataClient2ServerCharVal), 0},				//prop
-	{0,ATT_PERMISSIONS_RDWR,16,sizeof(SppDataClient2ServerData),(u8*)(&TelinkSppDataClient2ServerUUID), (u8*)(SppDataClient2ServerData), (att_readwrite_callback_t)&module_onReceiveData},	//value
+	{0,SPP_C2S_ATT_PERMISSIONS_RDWR,16,sizeof(SppDataClient2ServerData),(u8*)(&TelinkSppDataClient2ServerUUID), (u8*)(SppDataClient2ServerData), &module_onReceiveData},	//value
 	{0,ATT_PERMISSIONS_READ,2,sizeof(TelinkSPPC2SDescriptor),(u8*)&userdesc_UUID,(u8*)(&TelinkSPPC2SDescriptor)},
 
 
 	////////////////////////////////////// OTA /////////////////////////////////////////////////////
 	// 0017 - 001B OTA
-	{4,ATT_PERMISSIONS_READ, 2,16,(u8*)(&my_primaryServiceUUID), 	(u8*)(&my_OtaServiceUUID), 0},
+	{5,ATT_PERMISSIONS_READ, 2,16,(u8*)(&my_primaryServiceUUID), 	(u8*)(&my_OtaServiceUUID), 0},
 	{0,ATT_PERMISSIONS_READ, 2, sizeof(my_OtaCharVal),(u8*)(&my_characterUUID), (u8*)(my_OtaCharVal), 0},				//prop
 	{0,ATT_PERMISSIONS_RDWR,16,sizeof(my_OtaData),(u8*)(&my_OtaUUID),	(&my_OtaData), &otaWrite, NULL},				//value
+	{0,ATT_PERMISSIONS_RDWR,2,sizeof(otaDataCCC),(u8*)(&clientCharacterCfgUUID), 	(u8*)(otaDataCCC), 0},				//value
 	{0,ATT_PERMISSIONS_READ, 2,sizeof (my_OtaName),(u8*)(&userdesc_UUID), (u8*)(my_OtaName), 0},
-
 };
-
 
 /**
  * @brief      Initialize the attribute table
@@ -246,3 +263,6 @@ void	my_gatt_init (void)
 {
 	bls_att_setAttributeTable ((u8 *)my_Attributes);
 }
+
+#endif
+

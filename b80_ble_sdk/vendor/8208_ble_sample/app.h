@@ -33,6 +33,7 @@
 
 void user_init_normal(void);
 
+
 /**
  * @brief		user initialization when MCU wake_up from deepSleep_retention mode
  * @param[in]	none
@@ -41,15 +42,12 @@ void user_init_normal(void);
 void user_init_deepRetn(void);
 
 
-
 /**
  * @brief     BLE main loop
  * @param[in]  none.
  * @return     none.
  */
 void main_loop (void);
-
-
 
 
 #endif /* APP_H_ */

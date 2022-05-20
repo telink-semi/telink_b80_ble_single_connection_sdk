@@ -461,7 +461,21 @@ typedef struct {
 
 
 
+/**
+ * @brief       this function is used to set PHY type for connection
+ * @param[in]   *para -  Command Parameters for "7.8.49 LE Set PHY command"
+ * @return      0 : success
+ * 				other : fail
+ */
 ble_sts_t blc_hci_le_setPhy(hci_le_setPhyCmd_param_t* para);
+
+/**
+ * @brief       this function is used to read PHY type for connection
+ * @param[in]   connHandle -  Connection Handle
+ * @param[in]   *para -  Command Parameters for "7.8.47 LE Read PHY command"
+ * @return      0 : success
+ * 				other : fail
+ */
 ble_sts_t blc_hci_le_readPhy(u16 connHandle, hci_le_readPhyCmd_retParam_t  *para);
 
 
@@ -1325,5 +1339,24 @@ typedef struct{
 	u32 failed_packet_count;
 
 }hci_le_isoTestEndCmdRetParam_t;
+
+typedef enum{
+    BLE_PHY_1M    = BIT(0),
+    BLE_PHY_2M    = BIT(1),
+    TLK_NORDIC_2M = BIT(5),
+} le_phy_type_t;
+
+typedef enum{
+    PHY_PREFER_1M = BIT(0),
+    PHY_PREFER_2M = BIT(1),
+} le_phy_prefer_type_t;
+
+typedef enum{
+    PHY_TRX_PREFER    = 0,                 //has preference among TX & RX PHYs
+    PHY_TX_NO_PREFER  = BIT(0),            //has no preference among TX PHYs
+    PHY_RX_NO_PREFER  = BIT(1),            //has no preference among RX PHYs
+    PHY_TRX_NO_PREFER = (BIT(0) | BIT(1)), //has no preference among TX & RX PHYs
+} le_phy_prefer_mask_t;
+
 
 #endif /* HCI_CMD_H_ */

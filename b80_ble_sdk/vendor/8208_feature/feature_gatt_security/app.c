@@ -28,7 +28,7 @@
 
 #include "app.h"
 #include "app_buffer.h"
-#include "../default_att.h"
+#include "app_att.h"
 
 
 
@@ -168,12 +168,6 @@ void blt_pm_proc(void)
 			bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
 		#endif
 
-		#if(UI_KEYBOARD_ENABLE)
-			if(scan_pin_need || key_not_released )
-			{
-				bls_pm_setManualLatency(0);
-			}
-		#endif
 	#endif//END of  BLE_APP_PM_ENABLE
 }
 
@@ -322,17 +316,6 @@ void user_init_normal(void)
 		bls_pm_setSuspendMask (SUSPEND_DISABLE);
 	#endif
 
-	#if (UI_KEYBOARD_ENABLE)
-		/////////// keyboard gpio wakeup init ////////
-		u32 pin[] = KB_DRIVE_PINS;
-		for (int i=0; i<(sizeof (pin)/sizeof(*pin)); i++)
-		{
-			cpu_set_gpio_wakeup (pin[i], Level_High,1);  //drive pin pad high wakeup deepsleep
-		}
-
-		bls_app_registerEventCallback (BLT_EV_FLAG_GPIO_EARLY_WAKEUP, &proc_keyboard);
-	#endif
-
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -359,116 +342,9 @@ void user_init_deepRetn(void)
 	/* set rf power index, user must set it after every suspend wakeup, cause relative setting will be reset in suspend */
 	rf_set_power_level_index (MY_RF_POWER_INDEX);
 	blc_ll_recoverDeepRetention();
-
-	#if (UI_KEYBOARD_ENABLE)
-		/////////// keyboard gpio wakeup init ////////
-		u32 pin[] = KB_DRIVE_PINS;
-		for (int i=0; i<(sizeof (pin)/sizeof(*pin)); i++)
-		{
-			cpu_set_gpio_wakeup (pin[i], Level_High,1);  //drive pin pad high wakeup deepsleep
-		}
-	#endif
 ////////////////////////////////////////////////////////////////////////////////////////////////
 }
 #endif
-
-
-
-
-
-
-#if (UI_KEYBOARD_ENABLE)
-
-_attribute_data_retention_	int 	key_not_released;
-_attribute_data_retention_	u8 		key_type;
-_attribute_data_retention_	static u32 keyScanTick = 0;
-
-extern u32	scan_pin_need;
-
-#define CONSUMER_KEY   	   		1
-#define KEYBOARD_KEY   	   		2
-
-/**
- * @brief		this function is used to process keyboard matrix status change.
- * @param[in]	none
- * @return      none
- */
-void key_change_proc(void)
-{
-
-	u8 key0 = kb_event.keycode[0];
-	u8 key_buf[8] = {0,0,0,0,0,0,0,0};
-
-	key_not_released = 1;
-	if (kb_event.cnt == 2)   //two key press, do  not process
-	{
-	}
-	else if(kb_event.cnt == 1)
-	{
-		if(key0 >= CR_VOL_UP )  //volume up/down
-		{
-			key_type = CONSUMER_KEY;
-			u16 consumer_key;
-			if(key0 == CR_VOL_UP){  	//volume up
-				consumer_key = MKEY_VOL_UP;
-			}
-			else if(key0 == CR_VOL_DN){ //volume down
-				consumer_key = MKEY_VOL_DN;
-			}
-			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
-		}
-		else
-		{
-			key_type = KEYBOARD_KEY;
-			key_buf[2] = key0;
-			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8);
-		}
-	}
-	else   //kb_event.cnt == 0,  key release
-	{
-		key_not_released = 0;
-		if(key_type == CONSUMER_KEY)
-		{
-			u16 consumer_key = 0;
-			blc_gatt_pushHandleValueNotify ( BLS_CONN_HANDLE,HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
-		}
-		else if(key_type == KEYBOARD_KEY)
-		{
-			key_buf[2] = 0;
-			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8); //release
-		}
-	}
-}
-
-
-
-/**
- * @brief      this function is used to detect if key pressed or released.
- * @param[in]  e - LinkLayer Event type
- * @param[in]  p - data pointer of event
- * @param[in]  n - data length of event
- * @return     none
- */
-
-void proc_keyboard (u8 e, u8 *p, int n)
-{
-	if(clock_time_exceed(keyScanTick, 8000)){
-		keyScanTick = clock_time();
-	}
-	else{
-		return;
-	}
-
-	kb_event.keycode[0] = 0;
-	int det_key = kb_scan_key (0, 1);
-
-	if (det_key){
-		key_change_proc();
-	}
-}
-
-
-#endif  //end of UI_KEYBOARD_ENABLE
 
 
 
@@ -516,9 +392,6 @@ void main_loop (void)
 	blc_sdk_main_loop();
 
 	////////////////////////////////////// UI entry /////////////////////////////////
-	#if (UI_KEYBOARD_ENABLE)
-		proc_keyboard (0, 0, 0);
-	#endif
 
 
 	////////////////////////////////////// PM Process /////////////////////////////////

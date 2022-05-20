@@ -31,7 +31,7 @@
 #define FLASH_SIZE_OPTION							FLASH_SIZE_OPTION_512K //very important, user need confirm !!!
 #define APP_SECURITY_ENABLE      					1
 #define	BLE_OTA_SERVER_ENABLE						0
-#define TEST_CONN_CURRENT_ENABLE				0		//test connection current, disable UI to have a pure power
+#define TEST_CONN_CURRENT_ENABLE					0		//test connection current, disable UI to have a pure power
 
 /* firmware signature check */
 #define FIRMWARES_SIGNATURE_ENABLE     		 		0
@@ -40,8 +40,6 @@
 #define BLE_APP_PM_ENABLE							1
 #define PM_DEEPSLEEP_ENABLE            				0 		//test connection power, should disable deepSleep
 #define PM_DEEPSLEEP_RETENTION_ENABLE               0
-
-
 
 
 /**
@@ -56,17 +54,14 @@
 #endif
 
 
-
 /**
  *  @brief  DEBUG  Configuration
  */
 #define DEBUG_GPIO_ENABLE							0
 
 
-
 ///////////////////////// System Clock  Configuration /////////////////////////////////////////
 #define CLOCK_SYS_CLOCK_HZ      					16000000
-
 
 #if (CLOCK_SYS_CLOCK_HZ == 16000000)
 	#define SYS_CLK_TYPE  							SYS_CLK_16M_Crystal
@@ -87,15 +82,11 @@ enum{
 };
 
 
-
-
 /**
  *  @brief  watchdog enable and timeout setting
  */
 #define MODULE_WATCHDOG_ENABLE						0
 #define WATCHDOG_INIT_TIMEOUT						500  //Unit:ms
-
-
 
 
 /**
@@ -113,19 +104,14 @@ enum{
 
 	#define	KB_LINE_HIGH_VALID				0   //dirve pin output 0 when keyscan, scanpin read 0 is valid
 
-
-
 	#define			CR_VOL_UP				0xf0
 	#define			CR_VOL_DN				0xf1
-
 
 	/**
 	 *  @brief  Normal keyboard map
 	 */
 	#define		KB_MAP_NORMAL	{	{CR_VOL_UP,		VK_1},	 \
 									{CR_VOL_DN,		VK_2}, }
-
-
 
 	//////////////////// KEY CONFIG (EVK board) ///////////////////////////
 	#define  KB_DRIVE_PINS  {GPIO_PF0, GPIO_PF1}
@@ -160,12 +146,10 @@ enum{
 #endif
 
 
-
-
 #if(UI_LED_ENABLE)
-		/**
-		 *  @brief  Definition gpio for led
-		 */
+	/**
+	 *  @brief  Definition gpio for led
+	 */
 	#define	GPIO_LED_BLUE  	GPIO_PA4
 	#define	GPIO_LED_GREEN	GPIO_PA5
 	#define	GPIO_LED_WHITE	GPIO_PA6

@@ -27,12 +27,11 @@
 
 
 extern int 	key_not_released;
-
-extern int button_detect_en;
-extern u32 button_detect_tick;
-extern int button_not_released;
-
+extern int	button_detect_en;
+extern u32	button_detect_tick;
+extern int	button_not_released;
 extern int 	ota_is_working;
+
 
 /**
  * @brief      this function is used to detect if key pressed or released.
@@ -42,7 +41,6 @@ extern int 	ota_is_working;
  * @return     none
  */
 void proc_keyboard (u8 e, u8 *p, int n);
-
 
 
 /**
@@ -65,16 +63,12 @@ void app_set_kb_wakeup(u8 e, u8 *p, int n);
 void proc_button (u8 e, u8 *p, int n);
 
 
-
-
-
 /**
  * @brief      this function is used to register the function for OTA start.
  * @param[in]  none
  * @return     none
  */
 void app_enter_ota_mode(void);
-
 
 
 /**
@@ -84,7 +78,6 @@ void app_enter_ota_mode(void);
  * @return      none
  */
 void app_ota_result(int result);
-
 
 
 #endif /* APP_UI_H_ */

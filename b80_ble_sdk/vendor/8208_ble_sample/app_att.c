@@ -89,9 +89,7 @@ static u8 batteryValueInCCC[2];
 static u8 my_batVal[1] 	= {99};
 
 //////////////////////// HID /////////////////////////////////////////////////////
-
 static const u16 my_hidServiceUUID        = SERVICE_UUID_HUMAN_INTERFACE_DEVICE;
-
 static const u16 hidServiceUUID           = SERVICE_UUID_HUMAN_INTERFACE_DEVICE;
 static const u16 hidProtocolModeUUID      = CHARACTERISTIC_UUID_HID_PROTOCOL_MODE;
 static const u16 hidReportUUID            = CHARACTERISTIC_UUID_HID_REPORT;
@@ -101,7 +99,6 @@ static const u16 hidbootKeyOutReportUUID  = CHARACTERISTIC_UUID_HID_BOOT_KEY_OUT
 static const u16 hidinformationUUID       = CHARACTERISTIC_UUID_HID_INFORMATION;
 static const u16 hidCtrlPointUUID         = CHARACTERISTIC_UUID_HID_CONTROL_POINT;
 static const u16 hidIncludeUUID           = GATT_UUID_INCLUDE;
-
 static u8 protocolMode 			  = DFLT_HID_PROTOCOL_MODE;
 
 // Key in Report characteristic variables
@@ -205,7 +202,6 @@ static const u8 reportMap[] =
 	0x2a,0x8c,0x02,  //local, max    0x28c
 	0x81,0x00,     //main,  input data varible, absolute
 	0xc0,        //main, end collection
-
 };
 
 // HID External Report Reference Descriptor for report map
@@ -224,24 +220,24 @@ static const u8  my_OtaName[] = {'O', 'T', 'A'};
 // Include attribute (Battery service)
 static const u16 include[3] = {BATT_PS_H, BATT_LEVEL_INPUT_CCB_H, SERVICE_UUID_BATTERY};
 
-
 //// GAP attribute values
 static const u8 my_devNameCharVal[5] = {
 	CHAR_PROP_READ | CHAR_PROP_NOTIFY,
 	U16_LO(GenericAccess_DeviceName_DP_H), U16_HI(GenericAccess_DeviceName_DP_H),
 	U16_LO(GATT_UUID_DEVICE_NAME), U16_HI(GATT_UUID_DEVICE_NAME)
 };
+
 static const u8 my_appearanceCharVal[5] = {
 	CHAR_PROP_READ,
 	U16_LO(GenericAccess_Appearance_DP_H), U16_HI(GenericAccess_Appearance_DP_H),
 	U16_LO(GATT_UUID_APPEARANCE), U16_HI(GATT_UUID_APPEARANCE)
 };
+
 static const u8 my_periConnParamCharVal[5] = {
 	CHAR_PROP_READ,
 	U16_LO(CONN_PARAM_DP_H), U16_HI(CONN_PARAM_DP_H),
 	U16_LO(GATT_UUID_PERI_CONN_PARAM), U16_HI(GATT_UUID_PERI_CONN_PARAM)
 };
-
 
 //// GATT attribute values
 static const u8 my_serviceChangeCharVal[5] = {
@@ -250,7 +246,6 @@ static const u8 my_serviceChangeCharVal[5] = {
 	U16_LO(GATT_UUID_SERVICE_CHANGE), U16_HI(GATT_UUID_SERVICE_CHANGE)
 };
 
-
 //// device Information  attribute values
 static const u8 my_PnCharVal[5] = {
 	CHAR_PROP_READ,
@@ -258,54 +253,60 @@ static const u8 my_PnCharVal[5] = {
 	U16_LO(CHARACTERISTIC_UUID_PNP_ID), U16_HI(CHARACTERISTIC_UUID_PNP_ID)
 };
 
-
 //// HID attribute values
 static const u8 my_hidProtocolModeCharVal[5] = {
 	CHAR_PROP_READ | CHAR_PROP_WRITE_WITHOUT_RSP,
 	U16_LO(HID_PROTOCOL_MODE_DP_H), U16_HI(HID_PROTOCOL_MODE_DP_H),
 	U16_LO(CHARACTERISTIC_UUID_HID_PROTOCOL_MODE), U16_HI(CHARACTERISTIC_UUID_HID_PROTOCOL_MODE)
 };
+
 static const u8 my_hidbootKeyInReporCharVal[5] = {
 	CHAR_PROP_READ | CHAR_PROP_NOTIFY,
 	U16_LO(HID_BOOT_KB_REPORT_INPUT_DP_H), U16_HI(HID_BOOT_KB_REPORT_INPUT_DP_H),
 	U16_LO(CHARACTERISTIC_UUID_HID_BOOT_KEY_INPUT), U16_HI(CHARACTERISTIC_UUID_HID_BOOT_KEY_INPUT)
 };
+
 static const u8 my_hidbootKeyOutReporCharVal[5] = {
 	CHAR_PROP_READ | CHAR_PROP_WRITE | CHAR_PROP_WRITE_WITHOUT_RSP,
 	U16_LO(HID_BOOT_KB_REPORT_OUTPUT_DP_H), U16_HI(HID_BOOT_KB_REPORT_OUTPUT_DP_H),
 	U16_LO(CHARACTERISTIC_UUID_HID_BOOT_KEY_OUTPUT), U16_HI(CHARACTERISTIC_UUID_HID_BOOT_KEY_OUTPUT)
 };
+
 static const u8 my_hidReportCCinCharVal[5] = {
 	CHAR_PROP_READ | CHAR_PROP_NOTIFY,
 	U16_LO(HID_CONSUME_REPORT_INPUT_DP_H), U16_HI(HID_CONSUME_REPORT_INPUT_DP_H),
 	U16_LO(CHARACTERISTIC_UUID_HID_REPORT), U16_HI(CHARACTERISTIC_UUID_HID_REPORT)
 };
+
 static const u8 my_hidReportKEYinCharVal[5] = {
 	CHAR_PROP_READ | CHAR_PROP_NOTIFY,
 	U16_LO(HID_NORMAL_KB_REPORT_INPUT_DP_H), U16_HI(HID_NORMAL_KB_REPORT_INPUT_DP_H),
 	U16_LO(CHARACTERISTIC_UUID_HID_REPORT), U16_HI(CHARACTERISTIC_UUID_HID_REPORT)
 };
+
 static const u8 my_hidReportKEYoutCharVal[5] = {
 	CHAR_PROP_READ | CHAR_PROP_WRITE | CHAR_PROP_WRITE_WITHOUT_RSP,
 	U16_LO(HID_NORMAL_KB_REPORT_OUTPUT_DP_H), U16_HI(HID_NORMAL_KB_REPORT_OUTPUT_DP_H),
 	U16_LO(CHARACTERISTIC_UUID_HID_REPORT), U16_HI(CHARACTERISTIC_UUID_HID_REPORT)
 };
+
 static const u8 my_hidReportMapCharVal[5] = {
 	CHAR_PROP_READ,
 	U16_LO(HID_REPORT_MAP_DP_H), U16_HI(HID_REPORT_MAP_DP_H),
 	U16_LO(CHARACTERISTIC_UUID_HID_REPORT_MAP), U16_HI(CHARACTERISTIC_UUID_HID_REPORT_MAP)
 };
+
 static const u8 my_hidinformationCharVal[5] = {
 	CHAR_PROP_READ,
 	U16_LO(HID_INFORMATION_DP_H), U16_HI(HID_INFORMATION_DP_H),
 	U16_LO(CHARACTERISTIC_UUID_HID_INFORMATION), U16_HI(CHARACTERISTIC_UUID_HID_INFORMATION)
 };
+
 static const u8 my_hidCtrlPointCharVal[5] = {
 	CHAR_PROP_WRITE_WITHOUT_RSP,
 	U16_LO(HID_CONTROL_POINT_DP_H), U16_HI(HID_CONTROL_POINT_DP_H),
 	U16_LO(CHARACTERISTIC_UUID_HID_CONTROL_POINT), U16_HI(CHARACTERISTIC_UUID_HID_CONTROL_POINT)
 };
-
 
 //// Battery attribute values
 static const u8 my_batCharVal[5] = {
@@ -422,6 +423,7 @@ static const attribute_t my_Attributes[] = {
 	{0,ATT_PERMISSIONS_READ, 2,sizeof (my_OtaName),(u8*)(&userdesc_UUID), (u8*)(my_OtaName), 0},
 	#endif
 };
+
 
 /**
  * @brief      Initialize the attribute table

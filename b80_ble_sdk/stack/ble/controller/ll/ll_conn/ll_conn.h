@@ -63,6 +63,12 @@ ble_sts_t	blc_ll_initAclConnRxFifo(u8 *pRxbuf, int size, int number);
  */
 ble_sts_t	blc_ll_setAclConnMaxOctetsNumber(u8 maxRxOct, u8 maxTxOct);
 
+/**
+ * @brief      for user to get connEffectiveMaxTxOctets
+ * @param[in]  none
+ * @return     connEffectiveMaxTxOctets
+ */
+u8 blc_ll_get_connEffectiveMaxTxOctets(void);
 
 
 #endif /* LL_CONN_H_ */

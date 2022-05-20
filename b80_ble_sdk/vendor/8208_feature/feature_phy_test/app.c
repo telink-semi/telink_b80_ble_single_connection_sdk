@@ -311,8 +311,6 @@ void user_init_normal(void)
 
 	write_reg8(0x402, 0x2b);   //set rf packet preamble for BQB
 
-	extern void blc_phy_preamble_length_set(unsigned char len);
-
 	blc_phy_initPhyTest_module();
 	blc_phy_setPhyTestEnable(BLC_PHYTEST_ENABLE);
 	blc_phy_preamble_length_set(11);

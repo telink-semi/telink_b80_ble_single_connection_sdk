@@ -42,6 +42,7 @@
 #include "stack/ble/controller/ll/ll_conn/ll_slave.h"
 
 
+#include "stack/ble/controller/phy/phy.h"
 #include "stack/ble/controller/phy/phy_test.h"
 #include "stack/ble/controller/whitelist/whitelist.h"
 

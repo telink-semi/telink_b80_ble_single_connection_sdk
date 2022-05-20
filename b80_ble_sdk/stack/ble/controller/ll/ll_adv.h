@@ -118,8 +118,22 @@ void 		blc_ll_setAdvCustomedChannel (u8 chn0, u8 chn1, u8 chn2);
  */
 u8 			blt_set_adv_direct_init_addrtype(u8* cmdPara);
 
+/**
+ * @brief      This function is used to set advertising type in slave role.
+ * @param[in]  advType - adv type
+ * @return     Status - 0x00:  success;
+ * 						other: fail
+ */
+ble_sts_t   bls_ll_setAdvType(u8 advType);
 
 
+/**
+ * @brief      This function is used to set advertising type.
+ * @param[in]  cmdPara - command parameter
+ * @return     Status - 0x00:  success;
+ * 						other: fail
+ */
+ble_sts_t 	blt_set_adv_addrtype(u8* cmdPara);
 
 
 

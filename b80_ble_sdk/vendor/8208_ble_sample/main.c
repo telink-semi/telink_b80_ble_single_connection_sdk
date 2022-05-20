@@ -30,7 +30,6 @@
 #include "app_buffer.h"
 
 
-
 /**
  * @brief   IRQ handler
  * @param   none.
@@ -40,9 +39,6 @@ _attribute_ram_code_ void irq_handler(void)
 {
 	blc_sdk_irq_handler();
 }
-
-
-
 
 
 /**

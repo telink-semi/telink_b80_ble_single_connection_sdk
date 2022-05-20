@@ -30,7 +30,11 @@ extern unsigned int ota_program_offset;
 extern unsigned int ota_firmware_size_k;
 
 
-
+/**
+ * @brief		This function is used to enable the external crystal capacitor
+ * @param[in]	en - enable the external crystal capacitor
+ * @return      none
+ */
 static inline void blc_app_setExternalCrystalCapEnable(unsigned char  en)
 {
 	blt_miscParam.ext_cap_en = en;

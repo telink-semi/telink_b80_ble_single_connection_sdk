@@ -48,9 +48,30 @@
 
 #include "stack/ble/hci/hci_cmd.h"
 
-#if(LL_FEATURE_SUPPORT_LE_2M_PHY)
-void rf_ble_switch_phy(le_phy_type_t phy);
-#endif
+
+/**
+ * @brief      this function is used to initialize 2M/Coded PHY  feature
+ * @param	   none
+ * @return     none
+ */
+void blc_ll_init2MPhy_feature(void);
+
+
+/**
+ * @brief       this function is used to set PHY type for connection
+ * @param[in]	connHandle -
+ * @param[in]	all_phys - preference PHY for TX & RX
+ * @param[in]	tx_phys - preference PHY for TX
+ * @param[in]	rx_phys - preference PHY for RX
+ * @param[in]	phy_options - LE coding indication prefer
+ * @return     status, 0x00:  succeed
+ * 					   other: failed
+ */
+ble_sts_t blc_ll_setPhy(u16 connHandle, le_phy_prefer_mask_t all_phys,
+                        le_phy_prefer_type_t tx_phys, le_phy_prefer_type_t rx_phys);
+
+
+
 
 
 #endif /* PHY_H_ */

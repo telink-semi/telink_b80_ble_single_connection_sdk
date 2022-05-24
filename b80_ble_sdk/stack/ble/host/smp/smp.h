@@ -55,52 +55,30 @@ typedef struct {  //82
 
 
 
-
-
-
-
-
-
-// IO Capability Values
+//See the Core_v5.0(Vol 3/Part C/10.2, Page 2067) for more information.
 typedef enum {
-	IO_CAPABILITY_DISPLAY_ONLY = 0,
-	IO_CAPABILITY_DISPLAY_YES_NO,
-	IO_CAPABILITY_KEYBOARD_ONLY,
-	IO_CAPABILITY_NO_INPUT_NO_OUTPUT,
-	IO_CAPABILITY_KEYBOARD_DISPLAY, // not used by secure simple pairing
-	IO_CAPABILITY_UNKNOWN = 0xff
-} io_capability_t;
-
-
-
-
-
-
-
-
-typedef enum{
-	SMP_PAIRING_DISABLE_TRRIGER = 0,
-	SMP_PAIRING_CONN_TRRIGER ,
-	SMP_PAIRING_PEER_TRRIGER,
-}smp_pairingTrriger_t;
-
-
-
-
-
+	LE_Security_Mode_1_Level_1 = BIT(0),  No_Authentication_No_Encryption			= BIT(0), 	No_Security = BIT(0),
+	LE_Security_Mode_1_Level_2 = BIT(1),  Unauthenticated_Paring_with_Encryption 	= BIT(1),
+}le_security_mode_level_t;
 
 
 
 
 /**
- * @brief      API used for slave enable the device pairing.
- * @param[in] encrypt_en - SMP_PAIRING_DISABLE_TRRIGER   -  not allow encryption
- * 				SMP_PAIRING_CONN_TRRIGER      -  pairing process start once connect.
- * 				SMP_PAIRING_PEER_TRRIGER      -  pairing process start once peer device start.
+ * @brief      This function is used to initialize each parameter configuration of SMP, including the initialization of the binding area FLASH.
+ * @param[in]  none
+ * @return     0: Initialization failed;
+ *             1: initialization succeeded.
+ */
+int 		blc_smp_peripheral_init(void);
+
+
+/**
+ * @brief      This function is used to set security level.
+ * @param[in]  mode_level - The security level value can refer to the structure 'le_security_mode_level_t'.
  * @return     none.
  */
-void 		bls_smp_enableParing (smp_pairingTrriger_t encrypt_en);
-
+void 		blc_smp_setSecurityLevel(le_security_mode_level_t  mode_level);
 
 /**
  * @brief      This function is used to configure the bonding storage address.
@@ -156,56 +134,9 @@ u32			blc_smp_param_loadByAddr(u8 addr_type, u8* addr, smp_param_save_t* smp_par
 void 		blc_smp_param_delete_all(void);
 
 
-/**
- * @brief      This function is used to solve Android7.0 issue .
- * @param[in]  none.
- * @return     none.
- */
-void HID_service_on_android7p0_init(void);
-
-
-/*
- * 	@brief 		used for enable authentication MITM
- * 	@param[in]  en - 0: Disable authentication MITM;
- *                       1: Enable authentication MITM.
- * 							pinCodeInput - TK's value, input range [000000, 999999].
- * 	@return  	0 - setting success
- * 				others - pin code not in ranged.[000000, 999999]
- */
-int blc_smp_enableAuthMITM (int en, u32 pinCodeInput);
-
-/*
- * 	@brief 		used for set MITM protect input pinCode
- * 	@param[in]  pinCodeInput - TK's value, input range [000000, 999999].
- * 	@return  	0 - setting failure
- * 				others - pin code in ranged.[000000, 999999]
- */
-int blc_smp_set_pinCode(u32 pinCodeInput);
-
-/*
- * 	@brief 		used for enable authentication bonding flag.
- * @param[in]  en - 0: Disable authentication bonding;
- *                       1: Enable authentication bonding.
- * 	@return  	  none
- */
-void blc_smp_enableBonding (int en);
-
-/**
- * @brief      This function is used to set device's IO capability.
- * @param[in]  ioCapablility - The IO capability's value can refer to the structure 'io_capability_t'.
- * @return     none.
- */
-void blc_smp_setIoCapability (u8 ioCapablility);
 
 
 
 
-
-
-
-
-//some API name compatible with other versions of SDK
-
-#define bls_smp_configParingSecurityInfoStorageAddr 		blc_smp_configPairingSecurityInfoStorageAddress
 
 #endif /* BLE_SMP_H_ */

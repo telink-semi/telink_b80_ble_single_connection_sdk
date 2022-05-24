@@ -45,7 +45,6 @@
 #define TEST_EMI									9		// emi test
 
 
-#define TEST_GATT_SECURITY							10
 
 
 

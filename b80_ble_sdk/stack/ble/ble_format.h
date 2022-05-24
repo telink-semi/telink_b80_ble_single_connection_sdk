@@ -46,4 +46,15 @@ typedef struct{
 }rf_packet_att_data_t;
 
 
+typedef struct{
+	u8	type;				//RFU(3)_MD(1)_SN(1)_NESN(1)-LLID(2)
+	u8  rf_len;				//LEN(5)_RFU(3)
+	u16	l2capLen;
+	u16	chanId;
+	u8  opcode;
+	u8 handle;
+	u8 handle1;
+	u8 value;
+}rf_packet_att_write_t;
+
 #endif	/* BLE_FORMAT_H */

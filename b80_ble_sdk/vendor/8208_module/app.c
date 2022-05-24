@@ -361,7 +361,6 @@ void user_init_normal(void)
 		blc_smp_setSecurityLevel(No_Security);
 	#endif
 
-	//HID_service_on_android7p0_init();  //hid device on android 7.0/7.1
 
 	//////////// Host Initialization  End /////////////////////////
 

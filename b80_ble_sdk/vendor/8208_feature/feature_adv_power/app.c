@@ -363,7 +363,7 @@ void user_init_normal(void)
 	/* SMP Initialization may involve flash write/erase(when one sector stores too much information,
 	 *   is about to exceed the sector threshold, this sector must be erased, and all useful information
 	 *   should re_stored) , so it must be done after battery check */
-	bls_smp_enableParing (SMP_PAIRING_DISABLE_TRRIGER );
+	blc_smp_setSecurityLevel(No_Security);
 
 	//////////// Host Initialization  End /////////////////////////
 

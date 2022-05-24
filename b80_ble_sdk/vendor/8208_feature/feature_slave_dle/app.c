@@ -280,10 +280,13 @@ void user_init_normal(void)
 	#if (APP_SECURITY_ENABLE)
 		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
 		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is 4, can not bigger than this value
-													    //and this func must call before bls_smp_enableParing
-		bls_smp_enableParing (SMP_PAIRING_CONN_TRRIGER );
+													    //and this func must call before blc_smp_setSecurityLevel
+
+		blc_smp_peripheral_init();
+		blc_smp_setSecurityLevel(Unauthenticated_Paring_with_Encryption);
+
 	#else
-		bls_smp_enableParing (SMP_PAIRING_DISABLE_TRRIGER );
+		blc_smp_setSecurityLevel(No_Security);
 	#endif
 
 	//////////// Host Initialization  End /////////////////////////

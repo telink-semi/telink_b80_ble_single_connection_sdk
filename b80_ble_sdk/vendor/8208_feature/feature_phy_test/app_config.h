@@ -43,8 +43,6 @@
 #define APP_DEFAULT_HID_BATTERY_OTA_ATTRIBUTE_TABLE			1
 
 
-///////////////////////// PHYTEST CONFIGURATION ////////////////////////////
-#define 		PHY_TEST									1
 
 #define 		PHYTEST_MODE_THROUGH_2_WIRE_UART		1   //Direct Test Mode through a 2-wire UART interface
 #define 		PHYTEST_MODE_OVER_HCI_WITH_UART			2   //Direct Test Mode over HCI(UART hardware interface)

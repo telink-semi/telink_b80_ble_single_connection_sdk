@@ -148,7 +148,7 @@ int 		blc_hci_send_data (u32 h, u8 *para, int n);
  */
 int 		blc_hci_handler (u8 *p, int n);
 
-#if PHY_TEST
+
 /**
  * @brief      this function is used to process HCI data
  * @param[in]  rx_chn - the rx channel
@@ -171,4 +171,4 @@ ble_sts_t blc_phy_setPhyTestEnd (u8 *pkt_num);
 ble_sts_t blc_phy_setTransmitterTest (u8 tx_chn, u8 length, u8 pkt_type);
 
 
-#endif
+

@@ -26,7 +26,7 @@
 
 
 
-#if (FEATURE_TEST_MODE == TEST_FEATURE_BATTERY_CHECK)
+#if (FEATURE_TEST_MODE == TEST_GATT_SECURITY)
 
 
 
@@ -95,9 +95,14 @@ extern	u8	app_acl_txfifo[];
 
 /***************** ACL connection L2CAP layer RX data FIFO allocation, Begin ********************************/
 
-/* RX MTU size */
-#define MTU_SIZE_SETTING						23
-
+#if ( SMP_TEST_MODE	== SMP_TEST_NO_SECURITY || SMP_TEST_MODE == SMP_TEST_LEGACY_PAIRING_JUST_WORKS || \
+	  SMP_TEST_MODE	== SMP_TEST_LEGACY_PASSKEY_ENTRY_SDMI)
+	/* RX MTU size */
+	#define MTU_SIZE_SETTING						23
+#elif(SMP_TEST_MODE	== SMP_TEST_SC_PAIRING_JUST_WORKS)
+	/* RX MTU size */
+	#define MTU_SIZE_SETTING						128
+#endif
 
 /**
  * @brief	L2CAP RX Buffer size

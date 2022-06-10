@@ -86,8 +86,6 @@ const u8	tbl_scanRsp [] = {
 
 _attribute_data_retention_	u8 	ui_ota_is_working = 0;
 
-_attribute_data_retention_	u32	lowBattDet_tick   = 0;
-
 #if (BLE_MODULE_OTA_ENABLE)
 
 /**
@@ -168,6 +166,26 @@ _attribute_data_retention_	u32 module_wakeup_module_tick;
 
 #define UART_TX_BUSY			( (spp_tx_fifo.rptr != spp_tx_fifo.wptr) || uart_tx_is_busy() )
 #define UART_RX_BUSY			(spp_rx_fifo.rptr != spp_rx_fifo.wptr)
+
+#if (BATT_CHECK_ENABLE)
+_attribute_data_retention_	u32	lowBattDet_tick   = 0;
+/**
+ * @brief		callback function of adjust whether allow enter to pm or not
+ * @param[in]	none
+ * @return      0 forbidden enter cpu_sleep_wakeup, 1 allow enter cpu_sleep_wakeup
+ */
+int app_suspend_enter_low_battery (void)
+{
+	if (!gpio_read(GPIO_WAKEUP_FEATURE)) //gpio low level
+	{
+		analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)|LOW_BATT_FLG);  //mark
+		return 1;//allow enter cpu_sleep_wakeup
+	}
+
+	analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)&(~LOW_BATT_FLG));  //clr
+	return 0; //forbidden enter cpu_sleep_wakeup
+}
+#endif
 
 /**
  * @brief		obtain uart working status
@@ -278,14 +296,30 @@ void user_init_normal(void)
 	#if (BATT_CHECK_ENABLE)  //battery check must do before OTA relative operation
 		u8 battery_check_returnVaule = 0;
 		if(analog_read(USED_DEEP_ANA_REG) & LOW_BATT_FLG){
-			do{
-				battery_check_returnVaule = app_battery_power_check(VBAT_ALRAM_THRES_MV + 200);  //2.2 V
-			}while(battery_check_returnVaule);
+			battery_check_returnVaule = app_battery_power_check(VBAT_ALRAM_THRES_MV + 200);  //2.2 V
 		}
 		else{
-			do{
-				battery_check_returnVaule = app_battery_power_check(VBAT_ALRAM_THRES_MV);  //2.0 V
-			}while(battery_check_returnVaule);
+			battery_check_returnVaule = app_battery_power_check(VBAT_ALRAM_THRES_MV);  //2.0 V
+		}
+		if(battery_check_returnVaule){
+			analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)&(~LOW_BATT_FLG));  //clr
+		}
+		else{
+			#if (UI_LED_ENABLE)  //led indicate
+				for(int k=0;k<3;k++){
+					gpio_write(GPIO_LED_BLUE, LED_ON_LEVAL);
+					sleep_us(200000);
+					gpio_write(GPIO_LED_BLUE, !LED_ON_LEVAL);
+					sleep_us(200000);
+				}
+			#endif
+
+			GPIO_WAKEUP_FEATURE_LOW;
+			bls_pm_registerFuncBeforeSuspend( &app_suspend_enter_low_battery );
+
+			cpu_set_gpio_wakeup (GPIO_WAKEUP_FEATURE, Level_High, 1);  //drive pin pad high wakeup deepsleep
+
+			cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_PAD, 0);  //deepsleep
 		}
 	#endif
 
@@ -352,7 +386,7 @@ void user_init_normal(void)
 	#if (BLE_MODULE_SECURITY_ENABLE)
 		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
 		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is 4, can not bigger than this value
-													    //and this func must call before blc_smp_setSecurityLevel
+													    //and this func must call before bls_smp_enableParing
 
 		blc_smp_peripheral_init();
 		blc_smp_setSecurityLevel(Unauthenticated_Paring_with_Encryption);
@@ -529,11 +563,32 @@ void main_loop (void)
 #if (BATT_CHECK_ENABLE)
 	if(battery_get_detect_enable() && clock_time_exceed(lowBattDet_tick, 500000) ){
 		lowBattDet_tick = clock_time();
+		u8 battery_check_returnVaule;
 		if(analog_read(USED_DEEP_ANA_REG) & LOW_BATT_FLG){
-			app_battery_power_check(VBAT_ALRAM_THRES_MV + 200);  //2.2 V
+			battery_check_returnVaule=app_battery_power_check(VBAT_ALRAM_THRES_MV + 200);  //2.2 V
 		}
 		else{
-			app_battery_power_check(VBAT_ALRAM_THRES_MV);  //2.0 V
+			battery_check_returnVaule=app_battery_power_check(VBAT_ALRAM_THRES_MV);  //2.0 V
+		}
+		if(battery_check_returnVaule){
+			analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)&(~LOW_BATT_FLG));  //clr
+		}
+		else{
+			#if (UI_LED_ENABLE)  //led indicate
+				for(int k=0;k<3;k++){
+					gpio_write(GPIO_LED_BLUE, LED_ON_LEVAL);
+					sleep_us(200000);
+					gpio_write(GPIO_LED_BLUE, !LED_ON_LEVAL);
+					sleep_us(200000);
+				}
+			#endif
+
+			GPIO_WAKEUP_FEATURE_LOW;
+			bls_pm_registerFuncBeforeSuspend( &app_suspend_enter_low_battery );
+
+			cpu_set_gpio_wakeup (GPIO_WAKEUP_FEATURE, Level_High, 1);  //drive pin pad high wakeup deepsleep
+
+			cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_PAD, 0);  //deepsleep
 		}
 	}
 #endif

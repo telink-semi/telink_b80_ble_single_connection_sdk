@@ -53,6 +53,7 @@
 	#define	UI_KEYBOARD_ENABLE					1
 #endif
 
+#define BATT_CHECK_ENABLE       			0   //enable or disable battery voltage detection
 
 /**
  *  @brief  DEBUG  Configuration
@@ -170,9 +171,36 @@ enum{
 
 
 
+/**
+ *  @brief  Battery_check Configuration
+ */
+#if (BATT_CHECK_ENABLE)
+	#if 0 //use VBAT , then adc measure this VBAT voltage
+		#define ADC_INPUT_PCHN					VBAT    //corresponding  ADC_InputPchTypeDef in adc.h
+	#else
+		//telink device: you must choose one gpio with adc function to output high level(voltage will equal to vbat), then use adc to measure high level voltage
+		//use PB7 output high level, then adc measure this high level voltage
+		#define GPIO_VBAT_DETECT				GPIO_PB7
+		#define PB7_FUNC						AS_GPIO
+		#define PB7_INPUT_ENABLE				0
+		#define ADC_INPUT_PCHN					B7P    //corresponding  ADC_InputPchTypeDef in adc.h
+	#endif
 
+	#define VBAT_ALRAM_THRES_MV				2000   // 2000 mV low battery alarm
 
+	/////////////////// DEEP SAVE FLG //////////////////////////////////
+	#define USED_DEEP_ANA_REG                   DEEP_ANA_REG0 //u8,can save 8 bit info when deep
+	#define	LOW_BATT_FLG					    BIT(0)
 
+	//////////////////////////// FEATURE PM GPIO	(EVK board) /////////////////////////////////
+	#define GPIO_WAKEUP_FEATURE				GPIO_PB6   //mcu wakeup module
+	#define	PB6_FUNC							AS_GPIO
+	#define PB6_INPUT_ENABLE					1
+	#define	PB6_OUTPUT_ENABLE					0
+	#define	PB6_DATA_OUT						0
+	#define GPIO_WAKEUP_FEATURE_HIGH				gpio_setup_up_down_resistor(GPIO_WAKEUP_FEATURE, PM_PIN_PULLUP_10K);
+	#define GPIO_WAKEUP_FEATURE_LOW				gpio_setup_up_down_resistor(GPIO_WAKEUP_FEATURE, PM_PIN_PULLDOWN_100K);
+#endif
 
 /**
  *  @brief  Definition for gpio debug

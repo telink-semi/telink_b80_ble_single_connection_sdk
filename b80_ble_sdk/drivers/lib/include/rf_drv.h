@@ -1,12 +1,13 @@
 /********************************************************************************************************
- * @file     rf_drv.h
+ * @file	rf_drv.h
  *
- * @brief    This is the header file for BLE SDK
+ * @brief	This is the header file for B80
  *
- * @author	 BLE GROUP
- * @date         12,2021
+ * @author	Driver Group
+ * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -19,8 +20,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
+ *
  *******************************************************************************************************/
-
 #ifndef _RF_DRV_H_
 #define _RF_DRV_H_
 
@@ -28,6 +29,12 @@
 #include "compiler.h"
 #include "gpio.h"
 #define RF_CHN_TABLE 		0x8000
+/*
+ * @brief	Due to the limited otp space, this macro definition is used to process the registers
+ * 			of adjacent addresses with write_reg32 and write_reg16 to reduce the space occupation.
+ */
+#define		OTP_SPACE_OPTIMIZATION			1
+
 /*
  *The function set_rf_para be used to deal 24*N(Mhz) sensitivity degradation.
  *but it does not work as we want(it should calibration and reduce 7 code one

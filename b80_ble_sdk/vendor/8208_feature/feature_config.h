@@ -38,24 +38,24 @@
 #define TEST_SLAVE_MD								4
 
 #define TEST_USER_BLT_SOFT_TIMER                    5
-#define TEST_FEATURE_BATTERY_CHECK                  6
-#define	TEST_PHY_CONN								7
 
-#define TEST_BLE_PHY								8		// BQB PHY_TEST demo
-#define TEST_EMI									9		// emi test
+#define	TEST_PHY_CONN								6
 
-
+#define TEST_BLE_PHY								7	// BQB PHY_TEST demo
+#define TEST_EMI									8		// emi test
 
 
-
-
-#define TEST_FEATURE_DEBUG							12
+#define TEST_GATT_SECURITY							9
 
 
 
 
-#define FEATURE_TEST_MODE							TEST_FEATURE_BACKUP
+#define TEST_FEATURE_DEBUG							11
 
+
+
+
+#define FEATURE_TEST_MODE							TEST_ADVERTISING_IN_CONN_SLAVE_ROLE
 
 
 

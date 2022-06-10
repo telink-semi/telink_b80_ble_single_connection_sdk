@@ -28,7 +28,7 @@
 #include "app.h"
 
 
-#if (FEATURE_TEST_MODE == TEST_FEATURE_BATTERY_CHECK)
+#if (FEATURE_TEST_MODE == TEST_GATT_SECURITY)
 
 
 /**

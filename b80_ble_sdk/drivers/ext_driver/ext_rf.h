@@ -59,6 +59,26 @@ static inline void rf_trigle_codedPhy_accesscode(void)
  */
 void rf_ble_1m_param_init();
 
+typedef enum{
+	FSM_BTX 	= 0x81,
+	FSM_BRX 	= 0x82,
+	FSM_STX 	= 0x85,
+	FSM_SRX 	= 0x86,
+	FSM_TX2RX	= 0x87,
+	FSM_RX2TX	= 0x88,
+}fsm_mode_e;
+
+/**
+ * @brief     	This function serves to RF trigger RF state machine.
+ * @param[in] 	mode  - FSM mode.
+ * @param[in] 	tx_addr  - DMA TX buffer, if not TX, must be "NULL"
+ * @param[in] 	tick  - FAM Trigger tick.
+ * @return	   	none.
+ */
+void rf_start_fsm(fsm_mode_e mode, void* tx_addr, unsigned int tick);
+
+unsigned int cpu_stall_WakeUp_By_RF_SystemTick(int WakeupSrc, unsigned short rf_mask, unsigned int tick);
+
 #define		rf_receiving_flag				is_rf_receiving_pkt ///static inline
 #define		rf_tx_settle_adjust				tx_settle_adjust    ///static inline
 

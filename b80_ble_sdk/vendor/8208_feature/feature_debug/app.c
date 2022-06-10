@@ -162,7 +162,7 @@ int app_suspend_enter ()
  * @param[in]  n - data length of event
  * @return     none
  */
-_attribute_ram_code_ void task_suspend_exit (u8 e, u8 *p, int n)
+void task_suspend_exit (u8 e, u8 *p, int n)
 {
 	rf_set_power_level_index (MY_RF_POWER_INDEX);
 	if(((u32*)p)[0]&WAKEUP_STATUS_TIMER){
@@ -277,7 +277,7 @@ void user_init_normal(void)
 	#if (APP_SECURITY_ENABLE)
 		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
 		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is 4, can not bigger than this value
-													    //and this func must call before blc_smp_setSecurityLevel
+													    //and this func must call before bls_smp_enableParing
 
 		blc_smp_peripheral_init();
 		blc_smp_setSecurityLevel(Unauthenticated_Paring_with_Encryption);

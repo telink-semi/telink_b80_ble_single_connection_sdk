@@ -4,9 +4,9 @@
  * @brief    This is the header file for BLE SDK
  *
  * @author	 BLE GROUP
- * @date         12,2021
+ * @date         06,2022
  *
- * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include "../../drivers.h"
+#include "drivers.h"
 
 #define KB_RETURN_KEY_MAX	6
 

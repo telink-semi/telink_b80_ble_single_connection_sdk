@@ -4,9 +4,9 @@
  * @brief    This is the source file for BLE SDK
  *
  * @author	 BLE GROUP
- * @date         12,2021
+ * @date         06,2022
  *
- * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -21,22 +21,22 @@
  *          limitations under the License.
  *******************************************************************************************************/
 
-#include "../../tl_common.h"
-#include "../../drivers.h"
+#include "tl_common.h"
+#include "drivers.h"
 #include "keyboard.h"
-#include "../usbstd/usbkeycode.h"
+#include "application/usbstd/usbkeycode.h"
 
 
 #if (defined(KB_DRIVE_PINS) && defined(KB_SCAN_PINS))
 
-u32 drive_pins[] = KB_DRIVE_PINS;
-u32 scan_pins[] = KB_SCAN_PINS;
+const u32 drive_pins[] = KB_DRIVE_PINS;
+const u32 scan_pins[] = KB_SCAN_PINS;
 
 #if (STUCK_KEY_PROCESS_ENABLE)
 unsigned char stuckKeyPress[ARRAY_SIZE(drive_pins)];
 #endif
 
-kb_data_t	kb_event;
+_attribute_data_retention_	kb_data_t	kb_event;
 
 #ifndef		SCAN_PIN_50K_PULLUP_ENABLE
 #define		SCAN_PIN_50K_PULLUP_ENABLE		0
@@ -72,6 +72,10 @@ kb_data_t	kb_event;
 
 #ifndef		KB_DRV_DELAY_TIME
 #define		KB_DRV_DELAY_TIME		10
+#endif
+
+#ifndef		KB_STANDARD_KEYBOARD
+#define		KB_STANDARD_KEYBOARD	0
 #endif
 
 
@@ -124,6 +128,8 @@ static const unsigned char kb_map_normal[ARRAY_SIZE(scan_pins)][ARRAY_SIZE(drive
 static const unsigned char kb_map_normal[ARRAY_SIZE(scan_pins)][ARRAY_SIZE(drive_pins)] = KB_MAP_NORMAL;
 #endif
 
+
+#if (KB_STANDARD_KEYBOARD)
 #ifndef			KB_MAP_NUM
 static const unsigned char kb_map_num[ARRAY_SIZE(scan_pins)][ARRAY_SIZE(drive_pins)] = {
 	{VK_PAUSE,	 VK_POWER,	  VK_EURO,		VK_SLEEP,	 	VK_RCTRL,	  VK_WAKEUP,	VK_CTRL,	    VK_F5},
@@ -176,11 +182,12 @@ static const unsigned char kb_map_fn[ARRAY_SIZE(scan_pins)][ARRAY_SIZE(drive_pin
 #endif
 
 kb_k_mp_t *	kb_p_map[4] = {
-		(kb_k_mp_t *)kb_map_normal,
-		(kb_k_mp_t *)kb_map_num,
-		(kb_k_mp_t *)kb_map_fn,
-		(kb_k_mp_t *)kb_map_fn,
+		kb_map_normal,
+		kb_map_num,
+		kb_map_fn,
+		kb_map_fn,
 };
+#endif
 
 
 ///////////////////////////////////////////////////////////////////////
@@ -190,7 +197,7 @@ kb_k_mp_t *	kb_p_map[4] = {
 
 #endif
 
-u32	scan_pin_need;
+_attribute_data_retention_	u32	scan_pin_need;
 
 static unsigned char 	kb_is_fn_pressed = 0;
 
@@ -201,7 +208,6 @@ void kb_rmv_ghost_key(u32 * pressed_matrix){
 	foreach_arr(i, drive_pins){
 		for(int j = (i+1); j < ARRAY_SIZE(drive_pins); ++j){
 			u32 mix = (pressed_matrix[i] & pressed_matrix[j]);
-			// >=2,ghost key
 			//four or three key at "#" is pressed at the same time, should remove ghost key
 			if( mix && (!BIT_IS_POW2(mix) || (pressed_matrix[i] ^ pressed_matrix[j])) ){
 				// remove ghost keys
@@ -295,7 +301,11 @@ static inline void kb_remap_key_row(int drv_ind, u32 m, int key_max, kb_data_t *
 
 static inline void kb_remap_key_code(u32 * pressed_matrix, int key_max, kb_data_t *kb_data, int numlock_status){
 
+#if (KB_STANDARD_KEYBOARD)
 	kb_k_mp = kb_p_map[(numlock_status&1) | (kb_is_fn_pressed << 1)];
+#else
+	kb_k_mp = (kb_k_mp_t *)&kb_map_normal[0];
+#endif
 	foreach_arr(i, drive_pins){
 		u32 m = pressed_matrix[i];
 		if(!m) continue;
@@ -397,8 +407,11 @@ u32 kb_scan_key_value (int numlock_status, int read_key,unsigned char * gpio)
 		kb_is_fn_pressed = 0;
 
 		u32 pressed_matrix[ARRAY_SIZE(drive_pins)] = {0};
+#if (KB_STANDARD_KEYBOARD)
 		kb_k_mp = kb_p_map[0];
-
+#else
+		kb_k_mp = (kb_k_mp_t *)&kb_map_normal[0];
+#endif
 		kb_scan_row (0, gpio);
 		for (int i=0; i<=ARRAY_SIZE(drive_pins); i++) {
 			u32 r = kb_scan_row (i < ARRAY_SIZE(drive_pins) ? i : 0, gpio);

@@ -91,6 +91,25 @@ void app_switch_to_indirect_adv(u8 e, u8 *p, int n)
 	bls_ll_setAdvEnable(BLC_ADV_ENABLE);  //must: set adv enable
 }
 
+#if (BATT_CHECK_ENABLE)
+_attribute_data_retention_	u32	lowBattDet_tick   = 0;
+/**
+ * @brief		callback function of adjust whether allow enter to pm or not
+ * @param[in]	none
+ * @return      0 forbidden enter cpu_sleep_wakeup, 1 allow enter cpu_sleep_wakeup
+ */
+int app_suspend_enter_low_battery (void)
+{
+	if (!gpio_read(GPIO_WAKEUP_FEATURE)) //gpio low level
+	{
+		analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)|LOW_BATT_FLG);  //mark
+		return 1;//allow enter cpu_sleep_wakeup
+	}
+
+	analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)&(~LOW_BATT_FLG));  //clr
+	return 0; //forbidden enter cpu_sleep_wakeup
+}
+#endif
 
 /**
  * @brief      callback function of LinkLayer Event "BLT_EV_FLAG_CONNECT"
@@ -164,7 +183,7 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
  * @param[in]  n - data length of event
  * @return     none
  */
-_attribute_ram_code_ void task_suspend_exit (u8 e, u8 *p, int n)
+void task_suspend_exit (u8 e, u8 *p, int n)
 {
 	rf_set_power_level_index (MY_RF_POWER_INDEX);
 }
@@ -237,7 +256,43 @@ void user_init_normal(void)
 	random_generator_init();  //this is must
 
 
+	/*****************************************************************************************
+	 Note: battery check must do before any flash write/erase operation, cause flash write/erase
+		   under a low or unstable power supply will lead to error flash operation
 
+		   Some module initialization may involve flash write/erase, include: OTA initialization,
+				SMP initialization, ..
+				So these initialization must be done after  battery check
+	*****************************************************************************************/
+	#if (BATT_CHECK_ENABLE)  //battery check must do before OTA relative operation
+		u8 battery_check_returnVaule = 0;
+		if(analog_read(USED_DEEP_ANA_REG) & LOW_BATT_FLG){
+			battery_check_returnVaule = app_battery_power_check(VBAT_ALRAM_THRES_MV + 200);  //2.2 V
+		}
+		else{
+			battery_check_returnVaule = app_battery_power_check(VBAT_ALRAM_THRES_MV);  //2.0 V
+		}
+		if(battery_check_returnVaule){
+			analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)&(~LOW_BATT_FLG));  //clr
+		}
+		else{
+			#if (UI_LED_ENABLE)  //led indicate
+				for(int k=0;k<3;k++){
+					gpio_write(GPIO_LED_BLUE, LED_ON_LEVAL);
+					sleep_us(200000);
+					gpio_write(GPIO_LED_BLUE, !LED_ON_LEVAL);
+					sleep_us(200000);
+				}
+			#endif
+
+			GPIO_WAKEUP_FEATURE_LOW;
+			bls_pm_registerFuncBeforeSuspend( &app_suspend_enter_low_battery );
+
+			cpu_set_gpio_wakeup (GPIO_WAKEUP_FEATURE, Level_High, 1);  //drive pin pad high wakeup deepsleep
+
+			cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_PAD, 0);  //deepsleep
+		}
+	#endif
 
 	//////////////////////////// BLE stack Initialization  Begin //////////////////////////////////
 	u8 mac_public[6];
@@ -309,7 +364,7 @@ void user_init_normal(void)
 	#if (APP_SECURITY_ENABLE)
 		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
 		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is 4, can not bigger than this value
-													    //and this func must call before blc_smp_setSecurityLevel
+													    //and this func must call before bls_smp_enableParing
 
 		blc_smp_peripheral_init();
 		blc_smp_setSecurityLevel(Unauthenticated_Paring_with_Encryption);
@@ -466,6 +521,39 @@ void main_loop (void)
 	blc_sdk_main_loop();
 
 	////////////////////////////////////// UI entry /////////////////////////////////
+	#if (BATT_CHECK_ENABLE)
+		if(battery_get_detect_enable() && clock_time_exceed(lowBattDet_tick, 500000) ){
+			lowBattDet_tick = clock_time();
+			u8 battery_check_returnVaule;
+			if(analog_read(USED_DEEP_ANA_REG) & LOW_BATT_FLG){
+				battery_check_returnVaule=app_battery_power_check(VBAT_ALRAM_THRES_MV + 200);  //2.2 V
+			}
+			else{
+				battery_check_returnVaule=app_battery_power_check(VBAT_ALRAM_THRES_MV);  //2.0 V
+			}
+			if(battery_check_returnVaule){
+				analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)&(~LOW_BATT_FLG));  //clr
+			}
+			else{
+				#if (UI_LED_ENABLE)  //led indicate
+					for(int k=0;k<3;k++){
+						gpio_write(GPIO_LED_BLUE, LED_ON_LEVAL);
+						sleep_us(200000);
+						gpio_write(GPIO_LED_BLUE, !LED_ON_LEVAL);
+						sleep_us(200000);
+					}
+				#endif
+
+				GPIO_WAKEUP_FEATURE_LOW;
+				bls_pm_registerFuncBeforeSuspend( &app_suspend_enter_low_battery );
+
+				cpu_set_gpio_wakeup (GPIO_WAKEUP_FEATURE, Level_High, 1);  //drive pin pad high wakeup deepsleep
+
+				cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_PAD, 0);  //deepsleep
+			}
+		}
+	#endif
+
 	#if (UI_LED_ENABLE)
 		gpio_write(GPIO_LED_GREEN,1);
 	#endif

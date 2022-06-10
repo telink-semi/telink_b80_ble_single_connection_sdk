@@ -42,28 +42,6 @@ _attribute_data_retention_  u16     batt_vol_mv;
 
 _attribute_data_retention_	volatile unsigned int adc_dat_buf[ADC_SAMPLE_NUM];  //size must 16 byte aligned(16/32/64...)
 
-
-
-
-
-
-/**
- * @brief		callback function of adjust whether allow enter to pm or not
- * @param[in]	none
- * @return      0 forbidden enter cpu_sleep_wakeup, 1 allow enter cpu_sleep_wakeup
- */
-int app_suspend_enter_low_battery (void)
-{
-	if (!gpio_read(GPIO_WAKEUP_FEATURE)) //gpio low level
-	{
-		analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)|LOW_BATT_FLG);  //mark
-		return 1;//allow enter cpu_sleep_wakeup
-	}
-
-	analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)&(~LOW_BATT_FLG));  //clr
-	return 0; //forbidden enter cpu_sleep_wakeup
-}
-
 /**
  * @brief		set lowBattery detect enable
  * @param[in]	en - lowBattDet_enable value
@@ -272,33 +250,10 @@ int app_battery_power_check(u16 alram_vol_mv)
 
 
 	if(batt_vol_mv < alram_vol_mv){
-
-		#if (1 && UI_LED_ENABLE)  //led indicate
-			gpio_set_output_en(GPIO_LED_BLUE, 1);  //output enable
-			for(int k=0;k<3;k++){
-				gpio_write(GPIO_LED_BLUE, LED_ON_LEVAL);
-				sleep_us(200000);
-				gpio_write(GPIO_LED_BLUE, !LED_ON_LEVAL);
-				sleep_us(200000);
-			}
-		#endif
-
-
-		GPIO_WAKEUP_FEATURE_LOW;
-		bls_pm_registerFuncBeforeSuspend( &app_suspend_enter_low_battery );
-//		bls_pm_registerFuncBeforeSuspend( NULL );
-
-		cpu_set_gpio_wakeup (GPIO_WAKEUP_FEATURE, Level_High, 1);  //drive pin pad high wakeup deepsleep
-
-		cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_PAD, 0);  //deepsleep
-//		cpu_sleep_wakeup(DEEPSLEEP_MODE, 0, 0);  //deepsleep
-
-		return 1;
+		return 0;
 	}
 	else{ // batt level > alarm level
-		analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)&(~LOW_BATT_FLG));  //clr
-
-		return 0;
+		return 1;
 	}
 }
 

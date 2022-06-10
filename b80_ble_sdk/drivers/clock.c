@@ -1,12 +1,13 @@
 /********************************************************************************************************
- * @file     clock.c
+ * @file	clock.c
  *
- * @brief    This is the source file for BLE SDK
+ * @brief	This is the source file for B80
  *
- * @author	 BLE GROUP
- * @date         12,2021
+ * @author	Driver Group
+ * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -19,14 +20,17 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
+ *
  *******************************************************************************************************/
-
 #include "register.h"
 #include "clock.h"
 #include "irq.h"
 #include "analog.h"
 #include "timer.h"
-#include "pm.h"
+#include "lib/include/pm.h"
+#include "lib/include/otp/otp.h"
+
+
 
 extern _attribute_data_retention_ unsigned char tl_24mrc_cal;
 

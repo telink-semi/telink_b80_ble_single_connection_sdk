@@ -1,12 +1,13 @@
 /********************************************************************************************************
- * @file     flash_type.h
+ * @file	flash_type.h
  *
- * @brief    This is the header file for BLE SDK
+ * @brief	This is the header file for B80
  *
- * @author	 BLE GROUP
- * @date         12,2021
+ * @author	Driver Group
+ * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -19,13 +20,14 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
+ *
  *******************************************************************************************************/
-
 #ifndef __FLASH_TYPE_H__
 #define __FLASH_TYPE_H__
 
-#include "../flash.h"
-#include "flash_mid136085.h"	// P25D40L
+#include "flash.h"
+#include "flash_mid1160c8.h"	// GD25LD10C
+#include "flash_mid1360c8.h"	// GD25LD40C
 
 
 /**

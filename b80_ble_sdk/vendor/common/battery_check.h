@@ -39,8 +39,8 @@ int  battery_get_detect_enable (void);
 
 /**
  * @brief		This is battery check function
- * @param[in]	alram_vol_mv - input battery calue
- * @return      0 fail 1 success
+ * @param[in]	alram_vol_mv - input battery calibration
+ * @return      0: batt_vol_mv < alram_vol_mv 1: batt_vol_mv > alram_vol_mv
  */
 int app_battery_power_check(unsigned short alram_vol_mv);
 

@@ -27,8 +27,8 @@
 
 #include "../feature_config.h"
 
-#if (FEATURE_TEST_MODE == TEST_FEATURE_BATTERY_CHECK)
-#include "battery_check.h"
+#if (FEATURE_TEST_MODE == TEST_GATT_SECURITY)
+
 ///////////////////////// Feature Configuration////////////////////////////////////////////////
 /**
  *  @brief  Feature select in BLE Sample project
@@ -37,28 +37,63 @@
 #define BLE_APP_PM_ENABLE							1
 #define PM_DEEPSLEEP_RETENTION_ENABLE            	0
 #define APP_SECURITY_ENABLE      					0
-#define BATT_CHECK_ENABLE       					1   //enable or disable battery voltage detection
 
 
-#define APP_DEFAULT_HID_BATTERY_OTA_ATTRIBUTE_TABLE			1
 
+
+// LE_Security_Mode_1_Level_1, no authentication and no encryption
+#define 	SMP_TEST_NO_SECURITY				1
+
+
+// LE_Security_Mode_1_Level_2, unauthenticated paring with encryption
+#define 	SMP_TEST_LEGACY_PAIRING_JUST_WORKS	2 //JustWorks
+#define 	SMP_TEST_SC_PAIRING_JUST_WORKS		3 //JustWorks
+
+// LE_Security_Mode_1_Level_3, authenticated paring with encryption
+#define 	SMP_TEST_LEGACY_PASSKEY_ENTRY_SDMI	4 //PK_Resp_Dsply_Init_Input
+
+// LE security mode select
+#define 	LE_SECURITY_MODE_1_LEVEL_1			SMP_TEST_NO_SECURITY
+#define 	LE_SECURITY_MODE_1_LEVEL_2			SMP_TEST_LEGACY_PAIRING_JUST_WORKS//SMP_TEST_SC_PAIRING_JUST_WORKS
+#define 	LE_SECURITY_MODE_1_LEVEL_3			SMP_TEST_LEGACY_PASSKEY_ENTRY_SDMI
+
+
+#define     SMP_TEST_MODE						LE_SECURITY_MODE_1_LEVEL_3
+
+//use lightblue or nrf connect app, after connected, enable notify, write some data into characteristic Telink SPP:Phone->Module
+
+//client to server RX character permission
+//refer to core5.0 Vol3,Part C, Table 10.2 for more information
+#if (SMP_TEST_MODE == LE_SECURITY_MODE_1_LEVEL_1)
+	#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_RDWR
+	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_ENCRYPT_RDWR
+	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_AUTHEN_RDWR
+	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_SECURE_CONN_RDWR
+#elif(SMP_TEST_MODE == LE_SECURITY_MODE_1_LEVEL_2)
+	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_RDWR
+	#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_ENCRYPT_RDWR
+	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_AUTHEN_RDWR
+	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_SECURE_CONN_RDWR
+#elif(SMP_TEST_MODE == LE_SECURITY_MODE_1_LEVEL_3)
+	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_RDWR
+	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_ENCRYPT_RDWR
+	#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_AUTHEN_RDWR
+	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_SECURE_CONN_RDWR
+#endif
 
 /**
  *  @brief  UI Configuration
  */
 #define UI_LED_ENABLE          	 					1
-#define	UI_KEYBOARD_ENABLE							1
 
 
 
 /**
  *  @brief  DEBUG  Configuration
  */
-#define DEBUG_GPIO_ENABLE							0
+#define DEBUG_GPIO_ENABLE							1
 
-/////////////////// DEEP SAVE FLG //////////////////////////////////
-#define USED_DEEP_ANA_REG                   DEEP_ANA_REG0 //u8,can save 8 bit info when deep
-#define	LOW_BATT_FLG					    BIT(0)
+
 
 
 
@@ -83,66 +118,6 @@ enum{
 	CLOCK_SYS_CLOCK_1MS = (CLOCK_SYS_CLOCK_1S / 1000),
 	CLOCK_SYS_CLOCK_1US = (CLOCK_SYS_CLOCK_1S / 1000000),
 };
-
-
-
-
-
-
-
-
-#if (UI_KEYBOARD_ENABLE)   // if test pure power, kyeScan GPIO setting all disabled
-	//---------------  KeyMatrix PA0/PD4/PF0/PF1 -----------------------------
-	#define	MATRIX_ROW_PULL					PM_PIN_PULLDOWN_100K
-	#define	MATRIX_COL_PULL					PM_PIN_PULLUP_10K
-
-	#define	KB_LINE_HIGH_VALID				0   //dirve pin output 0 when keyscan, scanpin read 0 is valid
-
-
-
-	#define			CR_VOL_UP				0xf0
-	#define			CR_VOL_DN				0xf1
-
-
-	/**
-	 *  @brief  Normal keyboard map
-	 */
-	#define		KB_MAP_NORMAL	{	{CR_VOL_UP,		VK_1},	 \
-									{CR_VOL_DN,		VK_2}, }
-
-
-
-	//////////////////// KEY CONFIG (EVK board) ///////////////////////////
-	#define  KB_DRIVE_PINS  {GPIO_PF0, GPIO_PF1}
-	#define  KB_SCAN_PINS   {GPIO_PA0, GPIO_PD4}
-
-	//drive pin as gpio
-	#define	PF0_FUNC				AS_GPIO
-	#define	PF1_FUNC				AS_GPIO
-
-	//drive pin need 100K pulldown
-	#define	PULL_WAKEUP_SRC_PF0		MATRIX_ROW_PULL
-	#define	PULL_WAKEUP_SRC_PF1		MATRIX_ROW_PULL
-
-	//drive pin open input to read gpio wakeup level
-	#define PF0_INPUT_ENABLE		1
-	#define PF1_INPUT_ENABLE		1
-
-	//scan pin as gpio
-	#define	PA0_FUNC				AS_GPIO
-	#define	PD4_FUNC				AS_GPIO
-
-	//scan  pin need 10K pullup
-	#define	PULL_WAKEUP_SRC_PA0		MATRIX_COL_PULL
-	#define	PULL_WAKEUP_SRC_PD4		MATRIX_COL_PULL
-
-	//scan pin open input to read gpio level
-	#define PA0_INPUT_ENABLE		1
-	#define PD4_INPUT_ENABLE		1
-
-	#define		KB_MAP_NUM		KB_MAP_NORMAL
-	#define		KB_MAP_FN			KB_MAP_NORMAL
-#endif
 
 
 
@@ -236,32 +211,7 @@ enum{
 #endif  //end of DEBUG_GPIO_ENABLE
 
 
-/**
- *  @brief  Battery_check Configuration
- */
-#if (BATT_CHECK_ENABLE)
-	#if 0//(__PROJECT_8278_BLE_REMOTE__)
-			//use VBAT(8278) , then adc measure this VBAT voltage
-		#define ADC_INPUT_PCHN					VBAT    //corresponding  ADC_InputPchTypeDef in adc.h
-	#else
-		//telink device: you must choose one gpio with adc function to output high level(voltage will equal to vbat), then use adc to measure high level voltage
-		//use PB7(8258) output high level, then adc measure this high level voltage
-		#define GPIO_VBAT_DETECT				GPIO_PB7
-		#define PB7_FUNC						AS_GPIO
-		#define PB7_INPUT_ENABLE				0
-		#define ADC_INPUT_PCHN					B7P    //corresponding  ADC_InputPchTypeDef in adc.h
-	#endif
 
-	#define VBAT_ALRAM_THRES_MV				2000   // 2000 mV low battery alarm
-	//////////////////////////// FEATURE PM GPIO	(EVK board) /////////////////////////////////
-	#define GPIO_WAKEUP_FEATURE				GPIO_PD6   //mcu wakeup module
-	#define	PD6_FUNC							AS_GPIO
-	#define PD6_INPUT_ENABLE					1
-	#define	PD6_OUTPUT_ENABLE					0
-	#define	PD6_DATA_OUT						0
-	#define GPIO_WAKEUP_FEATURE_HIGH				gpio_setup_up_down_resistor(GPIO_WAKEUP_FEATURE, PM_PIN_PULLUP_10K);
-	#define GPIO_WAKEUP_FEATURE_LOW				gpio_setup_up_down_resistor(GPIO_WAKEUP_FEATURE, PM_PIN_PULLDOWN_100K);
-#endif
 
 
 

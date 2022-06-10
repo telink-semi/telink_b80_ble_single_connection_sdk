@@ -1,12 +1,13 @@
 /********************************************************************************************************
- * @file     swire.c
+ * @file	swire.h
  *
- * @brief    This is the source file for BLE SDK
+ * @brief	This is the header file for B80
  *
- * @author	 BLE GROUP
- * @date         12,2021
+ * @author	Driver Group
+ * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -19,12 +20,76 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
+ *
  *******************************************************************************************************/
-
-#include "swire.h"
-#include "timer.h"
+#ifndef _SWIRE_H_
+#define _SWIRE_H_
 #include "gpio.h"
 
+
+/**
+ * @brief     This function resets the SWIRE module.
+ * @return    none
+ */
+static inline void swire_reset(void)
+{
+	 reg_rst0 |= (FLD_RST0_SWIRE);
+	 reg_rst0 &= (~FLD_RST0_SWIRE);
+}
+/**
+ * @brief     This function is used to wait for the completion of writing.
+ * @return    none
+ */
+static inline void swire_wait_wr_done(void)
+{
+	while (reg_swire_ctl & FLD_SWIRE_WR);
+}
+/**
+ * @brief     This function is used to write cmd.
+ * @param[in] cmd 	- cmd value.
+ * @return    none
+ */
+static inline void swire_master_write_cmd(unsigned char cmd)
+{
+	reg_swire_data = cmd;
+	reg_swire_ctl = (FLD_SWIRE_CMD | FLD_SWIRE_WR );
+	swire_wait_wr_done();
+}
+/**
+ * @brief     This function is used to write data.
+ * @param[in] data 	- data value.
+ * @return    none
+ */
+static inline void swire_master_write_data(unsigned char data)
+{
+	reg_swire_data = data;
+	reg_swire_ctl =  FLD_SWIRE_WR ;
+	swire_wait_wr_done();
+}
+/**
+ * @brief     This function is to disable fifo mode.
+ *			  The default is this mode. When multi-byte reads and writes, the address will automatically increase by 1.
+ *			  For example, for write instructions, the address is 1, and the data is 0x11, 0x22,
+ *			  then 0x11 will be written to address 1, and 0x22 will be written to address 2.
+ * @return    none
+ */
+static inline void swire_fifo_mode_dis(void)
+{
+	BM_CLR(reg_swire_id, FLD_SWIRE_FIFO_MODE);
+
+}
+/**
+ * @brief     This function is to enable fifo mode.
+ *			  When multi-byte read and write, the address will not be automatically incremented by 1,
+ *			  but the value is written to the same address.
+ *			  For example, if you want to operate the fifo register on the slave side, you will use this function.
+ * @return    none
+ */
+static inline void swire_fifo_mode_en(void)
+{
+	BM_SET(reg_swire_id, FLD_SWIRE_FIFO_MODE);
+
+}
 /**
  * @brief     This function is to send a specific timing to reset the status of the slave device.
  * 			  When the master device connects the DP pin of the slave device, this function must be called first,
@@ -35,58 +100,18 @@
  * @param[in] dp_through_swire_en - If the master is connected to the DP pin of the slave device, this parameter needs to be set to 1.
  * @return	  none.
  */
-void swire_sync (GPIO_PinTypeDef gpio_swm,unsigned char dp_through_swire_en)
-{
-	swire_reset();
-	//gpio output
-	gpio_set_input_en(gpio_swm,0);
-	gpio_set_output_en(gpio_swm, 1); 		//enable output
-	gpio_set_func(gpio_swm ,AS_GPIO);
-    if (dp_through_swire_en) {
-        gpio_write(gpio_swm,0);
-		sleep_ms (40);		//wait 40ms
-		gpio_write(gpio_swm,1);
-		sleep_ms (80);		//wait 80ms
-		gpio_write(gpio_swm,0);
-		sleep_ms (40);		//wait 40ms
-		gpio_write(gpio_swm,1);
-		sleep_ms (20);		//wait 20ms
-	}
-	gpio_write(gpio_swm,1);
-	sleep_us (10);
-	int i;
-	for (i=0; i<12; i++) {
-		gpio_write(gpio_swm,0);
-		sleep_us (4);
-		gpio_write(gpio_swm,1);
-		sleep_us (1);
-	}
-	swire_set_swm_en(gpio_swm);
-}
+void swire_sync (GPIO_PinTypeDef gpio_swm,unsigned char dp_through_swire_en);
 /**
- * @brief     This function is to set gpio as the swm function.
+ * @brief     This function is to set gpio the swm function.
  * @param[in] gpio_swm - the swm pin needs to enable.
  * @return	  none.
  */
-
-void swire_set_swm_en(GPIO_PinTypeDef gpio_swm)
-{
-	gpio_set_func(gpio_swm,SWM);
-    gpio_set_input_en(gpio_swm,1);
-}
-
+void swire_set_swm_en(GPIO_PinTypeDef gpio_swm);
 /**
  * @brief     This function is to set GPIO_PA3 as the sws function.
  * @return	  none.
  */
-
-void swire_set_sws_en(void)
-{
-	unsigned char bit = GPIO_SWS & 0xff;
-	reg_gpio_func_mux(GPIO_SWS)= reg_gpio_func_mux(GPIO_SWS) & 0x00;
-	BM_CLR(reg_gpio_func(GPIO_SWS), bit);
-	gpio_set_input_en(GPIO_SWS,1);
-}
+void swire_set_sws_en(void);
 
 /**
  * @brief     This function is to set the clock of the swire module,
@@ -94,13 +119,10 @@ void swire_set_sws_en(void)
  * 			  swire_clock cannot be greater than sys_clk.(div cannot be 0)
  * 			  Whether the chip as a master or slave, clock source are the following principles:
  * 			  the clock for sending data is swire_clock, and the clock for detecting received data is sys_clk.
- * @param     div_clock - swire_div
+ * @div_clock - swire_div
  * @return	  none.
  */
-void swire_set_clk(unsigned char div_clock)
-{
-	reg_swire_ctl2 = (div_clock & 0x7f);
-}
+void swire_set_clk(unsigned char div_clock);
 
 /**
  * @brief     This function is used to set the ID of the slave.
@@ -108,10 +130,7 @@ void swire_set_clk(unsigned char div_clock)
  * @param[in] id	- slave id.The setting range is 0~0x1f.
  * @return	  none.
  */
-void swire_set_slave_id(unsigned char id)
-{
-	reg_swire_id = ((reg_swire_id & (~FLD_SWIRE_ID_VALID))|( id & FLD_SWIRE_ID_VALID));
-}
+void swire_set_slave_id(unsigned char id);
 /**
  * @brief     This function is used by the master device to write data to the slave device.
  *			  The swire protocol is to send the address first and then send the data.
@@ -126,21 +145,8 @@ void swire_set_slave_id(unsigned char id)
  * @param[in] data_len	- data length.
  * @return	  none.
  */
-void swire_master_write(unsigned char slave_id,unsigned char *addr, unsigned char addr_len,unsigned char *data,unsigned int data_len)
-{
-	unsigned int i;
-	swire_reset();
-	swire_master_write_cmd(0xff);
-	swire_master_write_cmd(0x5a);
-	for(i=0;i<addr_len;i++){
-		swire_master_write_data(addr[addr_len-1-i]);
-	}
-	swire_master_write_data(slave_id & 0x1f);//bit7:0 for write;bit4~bit0 :slave id
-	for(i=0;i<data_len;i++){
-		swire_master_write_data(data[i]);//0 for write
-	}
-	swire_master_write_cmd(0xff);
-}
+
+void swire_master_write(unsigned char slave_id,unsigned char *addr, unsigned char addr_len,unsigned char *data,unsigned int data_len);
 /**
  * @brief      This function is used by the master device to read data to the slave device.
  *			   The swire protocol is to send the address first and then wait to read the data returned by the slave.
@@ -155,34 +161,6 @@ void swire_master_write(unsigned char slave_id,unsigned char *addr, unsigned cha
  * @param[in]  data_len	 - data length.
  * @return	   0:read timeout  1:read success.
  */
-unsigned char  swire_master_read (unsigned char slave_id,unsigned char *addr, unsigned char addr_len,unsigned char *data,unsigned int data_len)
-{
-	unsigned int i;
-	swire_reset();
-	swire_master_write_cmd(0xff);
-	swire_master_write_cmd(0x5a);
-	for(i=0;i<addr_len;i++){
-		swire_master_write_data(addr[addr_len-1-i]);
-	}
-	swire_master_write_data(0x80 | (slave_id & 0x1f));//bit7: 1 for read;bit4~bit0 :slave id
-	for(i=0;i<data_len;i++){
-		reg_swire_ctl =  FLD_SWIRE_RD ;
-		unsigned long t =  clock_time();
-		while ( clock_time() - t < 300000){
-			if (!(reg_swire_ctl & FLD_SWIRE_RD)) {
-				data[i] = reg_swire_data;
-				break;
-			}
-		}
-	}
-	swire_master_write_cmd(0xff);
-	if(i<data_len){
-		return 0;
-	}else{
-		return 1;
-	}
+unsigned char  swire_master_read (unsigned char slave_id,unsigned char *addr, unsigned char addr_len,unsigned char *data,unsigned int data_len);
 
-}
-
-
-
+#endif

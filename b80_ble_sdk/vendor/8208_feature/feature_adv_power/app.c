@@ -118,7 +118,7 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
  * @param[in]  n - data length of event
  * @return     none
  */
-_attribute_ram_code_ void task_suspend_exit (u8 e, u8 *p, int n)
+void task_suspend_exit (u8 e, u8 *p, int n)
 {
 	rf_set_power_level_index (MY_RF_POWER_INDEX);
 }
@@ -363,7 +363,8 @@ void user_init_normal(void)
 	/* SMP Initialization may involve flash write/erase(when one sector stores too much information,
 	 *   is about to exceed the sector threshold, this sector must be erased, and all useful information
 	 *   should re_stored) , so it must be done after battery check */
-	blc_smp_setSecurityLevel(No_Security);
+	 
+	 blc_smp_setSecurityLevel(No_Security);
 
 	//////////// Host Initialization  End /////////////////////////
 

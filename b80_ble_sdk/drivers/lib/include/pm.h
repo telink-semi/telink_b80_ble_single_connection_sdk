@@ -1,12 +1,13 @@
 /********************************************************************************************************
- * @file     pm.h
+ * @file	pm.h
  *
- * @brief    This is the header file for BLE SDK
+ * @brief	This is the header file for B80
  *
- * @author	 BLE GROUP
- * @date         12,2021
+ * @author	Driver Group
+ * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -19,8 +20,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
+ *
  *******************************************************************************************************/
-
 #pragma once
 
 #include "bsp.h"
@@ -37,8 +38,8 @@ volatile unsigned int ana_32k_tick;
 
 #define PM_LONG_SUSPEND_EN					1
 
-#ifndef PM_TIM_RECOVER_MODE
-#define PM_TIM_RECOVER_MODE			    	0
+#ifndef PM_CUMULATIVE_ERROR_ELIMINATE_ENABLE
+#define PM_CUMULATIVE_ERROR_ELIMINATE_ENABLE			    	0
 #endif
 
 
@@ -189,7 +190,7 @@ typedef struct{
 
 extern _attribute_aligned_(4) pm_para_t	pmParam;
 
-#if (PM_TIM_RECOVER_MODE)
+#if (PM_CUMULATIVE_ERROR_ELIMINATE_ENABLE)
 
 typedef struct{
 	unsigned int   tick_sysClk;
@@ -197,7 +198,7 @@ typedef struct{
 	unsigned int   recover_flag;
 }pm_tim_recover_t;
 
-extern _attribute_aligned_(4) pm_tim_recover_t			pm_timRecover;
+extern _attribute_aligned_(4) pm_tim_recover_t			pm_timCalib;
 #endif
 
 

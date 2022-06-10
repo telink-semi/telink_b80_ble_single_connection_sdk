@@ -23,8 +23,6 @@
 
 #ifdef MCU_STARTUP_FLASH
 
-#define SRAM_SIZE_16K_EN		    	    1/*defaut sram size=16k*/
-#define FLASH_CODE_EN						1/*default flash code, run otp code need cahnge to 0.*/
 
 #define  FLL_STK_EN           			0
 #define  ZERO_IC_TAG_EN		  			1
@@ -77,7 +75,6 @@ __start:					@ MUST,  referenced by boot.link
 	.extern  _ramcode_size_align_256_
 	.extern  _ictag_start_
 	.extern  _ictag_end_
-	.extern  tl_multi_addr
 	.org 0x0
 	tj	__reset
 @	.word	(firmwareVersion)
@@ -85,11 +82,8 @@ __start:					@ MUST,  referenced by boot.link
 	.word	(0x544c4e4b)
 	@Boot will write the value here to the digital register 0x602, mainly the difference of 0x602[4],
 	@write 1 to fetch instructions from otp, and write 0 to fetch instructions from flash;
-#if FLASH_CODE_EN
 	.word	(0x00880000 + _ramcode_size_div_16_align_256_)
-#else
-	.word	(0x00980000 + _ramcode_size_div_16_align_256_)
-#endif
+
 
 	.org 0x10
 	tj		__irq
@@ -193,38 +187,19 @@ __reset:
 	tstorerb	r0, [r1, #1]	@0x800583  PB output
 #endif
 
-/*
-
 SET_BOOT:
-	tmov        r2, #20
-	tloadrb     r1, [r2]		@read form core_840014
-
-	tmov     	r0, #90    @5A
+	tmov        r2, #4
+	tloadrb     r1, [r2]		@read form core_840004
+	tmov     	r0, #165    	@A5
 	tcmp        r0, r1
-	tjne		SET_BOOT_END
+	tjne		SET_BOOT_END	@wakeup from not from retention.
 
-	tmov        r2, #21
-	tloadrb     r1, [r2]		@read form core_840015
-
-	tmov     	r0, #165    @A5
-	tcmp        r0, r1
-	tjne		SET_BOOT_END
-
-	tmov        r2, #22
-	tloadrb     r1, [r2]		@read form core_840016
-	tloadrb		r0,	BOOT_SEL_D
+	tmov        r2, #5
+	tloadrb     r1, [r2]		@read form core_840005
+	tloadr     	r0, BOOT_SEL_D
 	tstorerb	r1, [r0, #0]
-
-	tmov        r2, #23
-	tloadrb     r1, [r2]		@read form core_840017
-	tstorerb	r1, [r0, #1]
-
 SET_BOOT_END:
 
-*/
-
-
-#if FLASH_CODE_EN
 	@when running the flash program, let the otp enter the deep standby mode to reduce the power consumption of the chip.
 	tloadr		r3, OTP_CTRL	  @0x800010	otp ctrl
 	tloadrb		r1, [r3, #0]
@@ -236,15 +211,7 @@ SET_BOOT_END:
 	tmovs		r0, #207		  @0b 11001111 mc icct1
 	tand		r1, r0
  	tstorerb	r1, [r3, #1]	  @pdstb = 0  pldo = 0
-#else
-	/*
-	 * When running the otp program, after the retention sleep wakes up, the otp ack enablement will be lost, causing the program to freeze,
-	 * and you need to re-enable otp ack, add by junhui.hu, confirmed by jianzhi 20211021.
-	 */
-	tloadr		r1, MC_ICCT1
-	tmovs		r0, #1		  	  @0b 00000001
-	tstorerb	r0, [r1, #0]	  @otp ack = 1
-#endif
+
 
 #if FLASH_WAKEUP_EN
 
@@ -266,14 +233,6 @@ FLASH_WAKEUP_END:
 
 #endif
 
-@ efuse load need delay about 18us
-	tmov 	r2,#0
-	tmov 	r3,#110
-EFUSE_DELAY:
-	tadd 	r2,#1
-	tcmp 	r2,r3
-	tjle 	EFUSE_DELAY
-EFUSE_DELAY_END:
 
 @********************************************************************************************************
 @                              		 FILL .DATA AND .BSS WITH 0xFF
@@ -354,6 +313,7 @@ SET_IC_END:
 @********************************************************************************************************
 @                                    DCDC INITIALIZATION FOR FLASH
 @********************************************************************************************************
+
 	/*system on*/
 	tloadr      r0,DATA_I+32                @0x00800060
 	tloadr      r1,DATA_I+36                @0xff000000
@@ -389,19 +349,15 @@ RANA_REG_END:
 	/*if ana_reg_0x7e==0x00 retention data initiate after waking up from deep*/
 #if MULTI_ADDRESS_START
 	tjeq		MULTI_ADDRESS_END
-MULTI_ADDRESS_BEGIN:
-	tloadr      r0, MULTI_ADDRESS_DATA			@0x0080063e
-	tloadr		r1, MULTI_ADDRESS_DATA+4		@tl_multi_addr
-	tloadr      r2, [r1,#0]
-	tstorerh    r2, [r0,#0]
+
 #if COPY_DATA_EN
 	tj			COPY_DATA                   @deep wakeup with retention
 #else
 	tj          COPY_DATA_END
 #endif
+
 MULTI_ADDRESS_END:
 #endif
-
 
 @********************************************************************************************************
 @                                    RETENTION DATA INITIALIZATION
@@ -440,14 +396,6 @@ COPY_DATA_END:
 
 
 
-#if 0
-SETSPISPEED:
-	tloadr     	r1, DAT0 + 36
-	tmov		r0, #0xbb		@0x0b for fast read; 0xbb for dual dat/adr
-	tstorerb	r0, [r1, #0]
-	tmov		r0, #3			@3 for dual dat/adr
-	tstorerb	r0, [r1, #1]
-#endif
 
 ENTER_MAIN:
 	tjl	main
@@ -458,11 +406,7 @@ DAT0:
 	.word	0x12			    		@0		IRQ
 	.word	0x13			    		@4		SVC
 	.word	(irq_stk + IRQ_STK_SIZE)	@8
-#if  SRAM_SIZE_16K_EN
 	.word	(0x844000)		    		@12  	stack end
-#else
-	.word	(0x850000)		    		@12  	stack end
-#endif
 	.word	(_start_bss_)               @16
 	.word	(_end_bss_)                 @20
 	.word	(0x80060c)                  @24
@@ -499,20 +443,11 @@ MC_ICCT1:
 FLL_D:
 	.word	0xffffffff                	@0
 	.word	(_start_data_)    			@4
-#if  SRAM_SIZE_16K_EN
 	.word	(0x844000)		    		@12  	stack end
-#else
-	.word	(0x850000)		    		@12  	stack end
-#endif
-
 	.word   _ramcode_size_div_256_      @12
 
-@BOOT_SEL_D:
-@	.word	(0x80063e)
-
-MULTI_ADDRESS_DATA:
-	.word	(0x0080063e)				@0
-	.word   tl_multi_addr				@4
+BOOT_SEL_D:
+	.word	(0x80063e)
 
 	.align 4
 __irq:

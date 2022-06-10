@@ -44,6 +44,7 @@
 
 
 
+
 #define 		PHYTEST_MODE_THROUGH_2_WIRE_UART		1   //Direct Test Mode through a 2-wire UART interface
 #define 		PHYTEST_MODE_OVER_HCI_WITH_UART			2   //Direct Test Mode over HCI(UART hardware interface)
 

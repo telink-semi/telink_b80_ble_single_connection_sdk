@@ -138,8 +138,6 @@ int 		blc_hci_sendACLData2Host (u16 handle, u8 *p);
 int 		blc_hci_send_data (u32 h, u8 *para, int n);
 
 
-
-
 /**
  * @brief      this function is used to process HCI data
  * @param[in]  *p - the pointer of HCI data
@@ -155,12 +153,16 @@ int 		blc_hci_handler (u8 *p, int n);
  * @return     0
  */
 ble_sts_t blc_phy_setReceiverTest (u8 rx_chn);
+
+
 /**
  * @brief      this function is used to process HCI data
  * @param[in]  *pkt_num - the pointer of HCI data
  * @return     0
  */
 ble_sts_t blc_phy_setPhyTestEnd (u8 *pkt_num);
+
+
 /**
  * @brief      this function is used to process HCI data
  * @param[in]  tx_chn - the pointer of HCI data

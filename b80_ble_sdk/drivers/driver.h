@@ -1,12 +1,13 @@
 /********************************************************************************************************
- * @file     driver.h
+ * @file	driver.h
  *
- * @brief    This is the header file for BLE SDK
+ * @brief	This is the header file for B80
  *
- * @author	 BLE GROUP
- * @date         12,2021
+ * @author	Driver Group
+ * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -19,17 +20,18 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
+ *
  *******************************************************************************************************/
-
 #pragma once
 
 #include "driver_func_cfg.h"
 
-#include "emi.h"
-#include "pm.h"
-#include "random.h"
-#include "rf_drv.h"
-#include "swire.h"
+#include "lib/include/emi.h"
+#include "lib/include/pm.h"
+#include "lib/include/random.h"
+#include "lib/include/rf_drv.h"
+#include "lib/include/swire.h"
+#include "lib/include/otp/otp.h"
 
 #include "bsp.h"
 #include "aes.h"
@@ -54,7 +56,6 @@
 #include "timer.h"
 #include "s7816.h"
 #include "printf.h"
-#include "otp.h"
 #include "usbhw.h"
 #include "ir_learn.h"
 #include "qdec.h"

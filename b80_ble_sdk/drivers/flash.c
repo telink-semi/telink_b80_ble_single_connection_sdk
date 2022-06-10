@@ -1,12 +1,13 @@
 /********************************************************************************************************
- * @file     flash.c
+ * @file	flash.c
  *
- * @brief    This is the source file for BLE SDK
+ * @brief	This is the source file for B80
  *
- * @author	 BLE GROUP
- * @date         12,2021
+ * @author	Driver Group
+ * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -19,8 +20,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
+ *
  *******************************************************************************************************/
-
 #include "flash.h"
 #include "spi_i.h"
 #include "irq.h"
@@ -30,9 +31,10 @@
 /*
  *	If add flash type, need pay attention to the read uid command and the bit number of status register
 	Flash Type	uid CMD			MID		Company		Sector Erase Time(MAX)
-	P25D40L		0x4b		0x136085	PUYA		20ms
+	GD25LD10C	0x4b(AN)	0x1160C8	GD			500ms
+	GD25LD40C	0x4b		0x1360C8	GD			500ms
  */
-unsigned int flash_support_mid[] = {0x136085};
+unsigned int flash_support_mid[] = {0x1160c8,0x1360c8};
 const unsigned int FLASH_CNT = sizeof(flash_support_mid)/sizeof(*flash_support_mid);
 
 flash_hander_t flash_read_page = flash_read_data;

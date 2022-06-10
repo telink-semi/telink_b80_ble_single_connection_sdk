@@ -1,12 +1,13 @@
 /********************************************************************************************************
- * @file     adc.h
+ * @file	adc.h
  *
- * @brief    This is the header file for BLE SDK
+ * @brief	This is the header file for B80
  *
- * @author	 BLE GROUP
- * @date         12,2021
+ * @author	Driver Group
+ * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -19,8 +20,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
+ *
  *******************************************************************************************************/
-
 #pragma once
 #include "bsp.h"
 #include "analog.h"
@@ -80,7 +81,7 @@ typedef enum {
 	B6N,
 	B7N,
 	C4N,
-	C5N,
+	A3N,
 	PGA0N,
 	PGA1N,
 	TEMSENSORN,
@@ -102,7 +103,7 @@ typedef enum {
 	B6P,
 	B7P,
 	C4P,
-	C5P,
+	A3P,
 	PGA0P,
 	PGA1P,
 	TEMSENSORP,

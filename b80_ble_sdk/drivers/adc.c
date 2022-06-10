@@ -1,12 +1,13 @@
 /********************************************************************************************************
- * @file     adc.c
+ * @file	adc.c
  *
- * @brief    This is the source file for BLE SDK
+ * @brief	This is the source file for B80
  *
- * @author	 BLE GROUP
- * @date         12,2021
+ * @author	Driver Group
+ * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -19,15 +20,15 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
+ *
  *******************************************************************************************************/
-
 #include "adc.h"
 #include "analog.h"
 #include "clock.h"
 #include "dfifo.h"
 #include "timer.h"
 #include "flash.h"
-#include "pm.h"
+#include "lib/include/pm.h"
 _attribute_data_retention_
 adc_vref_ctr_t adc_vref_cfg = {
 	.adc_vref 		= 1175, //default ADC ref voltage (unit:mV)

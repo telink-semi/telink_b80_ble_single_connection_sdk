@@ -28,11 +28,11 @@
 
 #include "app.h"
 #include "app_buffer.h"
-#include "../default_att.h"
+#include "app_att.h"
 
 
 
-#if (FEATURE_TEST_MODE == TEST_FEATURE_BATTERY_CHECK)
+#if (FEATURE_TEST_MODE == TEST_GATT_SECURITY)
 
 
 #define MY_APP_ADV_CHANNEL			BLT_ENABLE_ADV_ALL
@@ -47,7 +47,7 @@
 
 _attribute_data_retention_ u32	advertise_begin_tick;
 
-_attribute_data_retention_	u32	lowBattDet_tick   = 0;
+
 
 
 /**
@@ -71,8 +71,22 @@ const u8	tbl_scanRsp [] = {
 
 
 
+#if( SMP_TEST_MODE == SMP_TEST_LEGACY_PASSKEY_ENTRY_SDMI)
+/**
+ * @brief      callback function of LinkLayer Event "BLT_EV_FLAG_REQ_INPUT_PIN"
+ * @param[in]  e - LinkLayer Event type
+ * @param[in]  p - data pointer of event
+ * @param[in]  n - data length of event
+ * @return     none
+ */
+void task_pincode(u8 e, u8 *p, int n)
+{
+	blc_smp_set_pinCode(1234);		// master side input 001234
 
+	DBG_CHN7_TOGGLE;
+}
 
+#endif
 
 
 /**
@@ -133,7 +147,7 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
  * @param[in]  n - data length of event
  * @return     none
  */
-_attribute_ram_code_ void task_suspend_exit (u8 e, u8 *p, int n)
+void task_suspend_exit (u8 e, u8 *p, int n)
 {
 	rf_set_power_level_index (MY_RF_POWER_INDEX);
 }
@@ -154,12 +168,6 @@ void blt_pm_proc(void)
 			bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
 		#endif
 
-		#if(UI_KEYBOARD_ENABLE)
-			if(scan_pin_need || key_not_released )
-			{
-				bls_pm_setManualLatency(0);
-			}
-		#endif
 	#endif//END of  BLE_APP_PM_ENABLE
 }
 
@@ -178,27 +186,7 @@ void user_init_normal(void)
 	 * When deepSleep retention wakeUp, no need initialize again */
 	random_generator_init();  //this is must
 
-	/*****************************************************************************************
-	 Note: battery check must do before any flash write/erase operation, cause flash write/erase
-		   under a low or unstable power supply will lead to error flash operation
 
-		   Some module initialization may involve flash write/erase, include: OTA initialization,
-				SMP initialization, ..
-				So these initialization must be done after  battery check
-	*****************************************************************************************/
-	#if (BATT_CHECK_ENABLE)  //battery check must do before OTA relative operation
-		u8 battery_check_returnVaule = 0;
-		if(analog_read(USED_DEEP_ANA_REG) & LOW_BATT_FLG){
-			do{
-				battery_check_returnVaule = app_battery_power_check(VBAT_ALRAM_THRES_MV + 200);  //2.2 V
-			}while(battery_check_returnVaule);
-		}
-		else{
-			do{
-				battery_check_returnVaule = app_battery_power_check(VBAT_ALRAM_THRES_MV);  //2.0 V
-			}while(battery_check_returnVaule);
-		}
-	#endif
 
 
 	//////////////////////////// BLE stack Initialization  Begin //////////////////////////////////
@@ -254,16 +242,29 @@ void user_init_normal(void)
 	/* SMP Initialization may involve flash write/erase(when one sector stores too much information,
 	 *   is about to exceed the sector threshold, this sector must be erased, and all useful information
 	 *   should re_stored) , so it must be done after battery check */
-	#if (APP_SECURITY_ENABLE)
+	#if ( SMP_TEST_MODE	== SMP_TEST_NO_SECURITY)
+		bls_smp_enableParing (SMP_PAIRING_DISABLE_TRRIGER );
+	#elif( SMP_TEST_MODE == SMP_TEST_LEGACY_PAIRING_JUST_WORKS)
 		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
 		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is 4, can not bigger than this value
-													    //and this func must call before blc_smp_setSecurityLevel
+													    //and this func must call before bls_smp_enableParing
+		bls_smp_enableParing (SMP_PAIRING_CONN_TRRIGER );
+	#elif( SMP_TEST_MODE == SMP_TEST_SC_PAIRING_JUST_WORKS)
+		blc_smp_enableScFlag(1);
+		blc_smp_setEcdhDebugMode(1);
 
-		blc_smp_peripheral_init();
-		blc_smp_setSecurityLevel(Unauthenticated_Paring_with_Encryption);
-
-	#else
-		blc_smp_setSecurityLevel(No_Security);
+		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
+		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is 4, can not bigger than this value
+													    //and this func must call before bls_smp_enableParing
+		bls_smp_enableParing (SMP_PAIRING_CONN_TRRIGER );
+	#elif( SMP_TEST_MODE == SMP_TEST_LEGACY_PASSKEY_ENTRY_SDMI)
+		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
+		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is 4, can not bigger than this value
+													    //and this func must call before bls_smp_enableParing
+		bls_smp_enableParing (SMP_PAIRING_CONN_TRRIGER );
+		blc_smp_setIoCapability(IO_CAPABILITY_DISPLAY_ONLY);	// if not set, default is : IO_CAPABILITY_NO_INPUT_NO_OUTPUT
+		blc_smp_enableAuthMITM(1,999999);	//default pincode is 999999
+		bls_app_registerEventCallback (BLT_EV_FLAG_REQ_INPUT_PIN, &task_pincode);	//use API to change pincode.
 	#endif
 
 	//////////// Host Initialization  End /////////////////////////
@@ -315,17 +316,6 @@ void user_init_normal(void)
 		bls_pm_setSuspendMask (SUSPEND_DISABLE);
 	#endif
 
-	#if (UI_KEYBOARD_ENABLE)
-		/////////// keyboard gpio wakeup init ////////
-		u32 pin[] = KB_DRIVE_PINS;
-		for (int i=0; i<(sizeof (pin)/sizeof(*pin)); i++)
-		{
-			cpu_set_gpio_wakeup (pin[i], Level_High,1);  //drive pin pad high wakeup deepsleep
-		}
-
-		bls_app_registerEventCallback (BLT_EV_FLAG_GPIO_EARLY_WAKEUP, &proc_keyboard);
-	#endif
-
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -352,116 +342,9 @@ void user_init_deepRetn(void)
 	/* set rf power index, user must set it after every suspend wakeup, cause relative setting will be reset in suspend */
 	rf_set_power_level_index (MY_RF_POWER_INDEX);
 	blc_ll_recoverDeepRetention();
-
-	#if (UI_KEYBOARD_ENABLE)
-		/////////// keyboard gpio wakeup init ////////
-		u32 pin[] = KB_DRIVE_PINS;
-		for (int i=0; i<(sizeof (pin)/sizeof(*pin)); i++)
-		{
-			cpu_set_gpio_wakeup (pin[i], Level_High,1);  //drive pin pad high wakeup deepsleep
-		}
-	#endif
 ////////////////////////////////////////////////////////////////////////////////////////////////
 }
 #endif
-
-
-
-
-
-
-#if (UI_KEYBOARD_ENABLE)
-
-_attribute_data_retention_	int 	key_not_released;
-_attribute_data_retention_	u8 		key_type;
-_attribute_data_retention_	static u32 keyScanTick = 0;
-
-extern u32	scan_pin_need;
-
-#define CONSUMER_KEY   	   		1
-#define KEYBOARD_KEY   	   		2
-
-/**
- * @brief		this function is used to process keyboard matrix status change.
- * @param[in]	none
- * @return      none
- */
-void key_change_proc(void)
-{
-
-	u8 key0 = kb_event.keycode[0];
-	u8 key_buf[8] = {0,0,0,0,0,0,0,0};
-
-	key_not_released = 1;
-	if (kb_event.cnt == 2)   //two key press, do  not process
-	{
-	}
-	else if(kb_event.cnt == 1)
-	{
-		if(key0 >= CR_VOL_UP )  //volume up/down
-		{
-			key_type = CONSUMER_KEY;
-			u16 consumer_key;
-			if(key0 == CR_VOL_UP){  	//volume up
-				consumer_key = MKEY_VOL_UP;
-			}
-			else if(key0 == CR_VOL_DN){ //volume down
-				consumer_key = MKEY_VOL_DN;
-			}
-			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
-		}
-		else
-		{
-			key_type = KEYBOARD_KEY;
-			key_buf[2] = key0;
-			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8);
-		}
-	}
-	else   //kb_event.cnt == 0,  key release
-	{
-		key_not_released = 0;
-		if(key_type == CONSUMER_KEY)
-		{
-			u16 consumer_key = 0;
-			blc_gatt_pushHandleValueNotify ( BLS_CONN_HANDLE,HID_CONSUME_REPORT_INPUT_DP_H, (u8 *)&consumer_key, 2);
-		}
-		else if(key_type == KEYBOARD_KEY)
-		{
-			key_buf[2] = 0;
-			blc_gatt_pushHandleValueNotify (BLS_CONN_HANDLE,HID_NORMAL_KB_REPORT_INPUT_DP_H, key_buf, 8); //release
-		}
-	}
-}
-
-
-
-/**
- * @brief      this function is used to detect if key pressed or released.
- * @param[in]  e - LinkLayer Event type
- * @param[in]  p - data pointer of event
- * @param[in]  n - data length of event
- * @return     none
- */
-
-void proc_keyboard (u8 e, u8 *p, int n)
-{
-	if(clock_time_exceed(keyScanTick, 8000)){
-		keyScanTick = clock_time();
-	}
-	else{
-		return;
-	}
-
-	kb_event.keycode[0] = 0;
-	int det_key = kb_scan_key (0, 1);
-
-	if (det_key){
-		key_change_proc();
-	}
-}
-
-
-#endif  //end of UI_KEYBOARD_ENABLE
 
 
 
@@ -478,12 +361,12 @@ void proc_keyboard (u8 e, u8 *p, int n)
  */
 void app_set_kb_wakeup(u8 e, u8 *p, int n)
 {
-	#if (BLE_APP_PM_ENABLE)
-		if( blc_ll_getCurrentState() == BLS_LINK_STATE_CONN
-			&& ((u32)(bls_pm_getSystemWakeupTick() - clock_time())) > 80 *CLOCK_16M_SYS_TIMER_CLK_1MS ){  //suspend time > 30ms.add gpio wakeup
-			bls_pm_setWakeupSource(PM_WAKEUP_PAD);  //gpio CORE wakeup suspend
-		}
-	#endif
+#if (BLE_APP_PM_ENABLE)
+	if( blc_ll_getCurrentState() == BLS_LINK_STATE_CONN
+		&& ((u32)(bls_pm_getSystemWakeupTick() - clock_time())) > 80 *CLOCK_16M_SYS_TIMER_CLK_1MS ){  //suspend time > 30ms.add gpio wakeup
+		bls_pm_setWakeupSource(PM_WAKEUP_PAD);  //gpio CORE wakeup suspend
+	}
+#endif
 }
 
 
@@ -509,20 +392,6 @@ void main_loop (void)
 	blc_sdk_main_loop();
 
 	////////////////////////////////////// UI entry /////////////////////////////////
-	#if (BATT_CHECK_ENABLE)
-		if(battery_get_detect_enable() && clock_time_exceed(lowBattDet_tick, 500000) ){
-			lowBattDet_tick = clock_time();
-			if(analog_read(USED_DEEP_ANA_REG) & LOW_BATT_FLG){
-				app_battery_power_check(VBAT_ALRAM_THRES_MV + 200);  //2.2 V
-			}
-			else{
-				app_battery_power_check(VBAT_ALRAM_THRES_MV);  //2.0 V
-			}
-		}
-	#endif
-	#if (UI_KEYBOARD_ENABLE)
-		proc_keyboard (0, 0, 0);
-	#endif
 
 
 	////////////////////////////////////// PM Process /////////////////////////////////

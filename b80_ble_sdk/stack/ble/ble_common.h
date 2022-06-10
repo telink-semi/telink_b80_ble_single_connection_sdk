@@ -325,7 +325,16 @@ typedef enum {
  */
 #define		CAL_L2CAP_BUFF_SIZE(n)				(((n + 6) + 3)/4 * 4)
 
-
+/**
+ * @brief      get SDK and Lib version.User should get at least 5 bytes,first 5 bytes show the SDK
+ * 			   version and the rest is reserved for future.
+ * 			   For example, if the number you get is {3,4,0,0,1} after call this API(DEC), it stands for
+ * 			   the SDK version is 3.4.0.0 patch 1.
+ * @param[in]  pbuf - the point of buffer to store version message.
+ * @param[in]  number - the length of version message,should be 5 to 16.
+ * @return     0:success  1:number is invalid
+ */
+unsigned char blc_get_sdk_version(unsigned char *pbuf,unsigned char number);
 
 
 #endif

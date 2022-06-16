@@ -45,7 +45,7 @@
 
 
 
-_attribute_data_retention_ u32	advertise_begin_tick;
+u32	advertise_begin_tick;
 
 
 
@@ -305,6 +305,7 @@ void user_init_normal(void)
 	#if(BLE_APP_PM_ENABLE)
 		blc_ll_initPowerManagement_module();        //pm module:      	 optional
 		#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+			blc_ll_initDeepsleepRetention_module();//Remove it if need save ramcode, and add DeepsleepRetentionEarlyWakeupTiming to 1ms
 			bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
 			blc_pm_setDeepsleepRetentionThreshold(95, 95);
 			blc_pm_setDeepsleepRetentionEarlyWakeupTiming(750);
@@ -342,6 +343,7 @@ void user_init_deepRetn(void)
 	/* set rf power index, user must set it after every suspend wakeup, cause relative setting will be reset in suspend */
 	rf_set_power_level_index (MY_RF_POWER_INDEX);
 	blc_ll_recoverDeepRetention();
+	irq_enable();
 ////////////////////////////////////////////////////////////////////////////////////////////////
 }
 #endif

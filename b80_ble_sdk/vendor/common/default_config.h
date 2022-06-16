@@ -32,13 +32,6 @@
 
 
 
-#ifndef	BLC_PM_DEEP_RETENTION_MODE_EN
-#define	BLC_PM_DEEP_RETENTION_MODE_EN				0
-#endif
-
-
-
-
 #ifndef DEBUG_GPIO_ENABLE
 #define DEBUG_GPIO_ENABLE  								0
 #endif

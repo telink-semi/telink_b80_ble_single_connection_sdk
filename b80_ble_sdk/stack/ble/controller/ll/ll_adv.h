@@ -200,4 +200,12 @@ ble_sts_t 	bls_ll_setAdvFilterPolicy(adv_fp_type_t advFilterPolicy);
  */
 ble_sts_t bls_ll_setAdvChannelMap(u8 adv_channelMap);
 
+/**
+ * @brief      This function is used to reduce broadcast power consumption
+ * @param[in]  0 - disable
+ *             1 - enabled
+ * @return    none
+ */
+void bls_adv_peak_current_optimize (u8 state);
+
 #endif /* LL_ADV_H_ */

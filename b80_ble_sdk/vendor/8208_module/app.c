@@ -44,23 +44,23 @@
 
 
 
-_attribute_data_retention_ u32	advertise_begin_tick;
+u32	advertise_begin_tick;
 
-_attribute_data_retention_ own_addr_type_t app_own_address_type = OWN_ADDRESS_PUBLIC;
+own_addr_type_t app_own_address_type = OWN_ADDRESS_PUBLIC;
 
 //module spp Tx / Rx fifo
 
 
-_attribute_data_retention_  u8 		 	spp_rx_fifo_b[SPP_RXFIFO_SIZE * SPP_RXFIFO_NUM] = {0};
-_attribute_data_retention_	my_fifo_t	spp_rx_fifo = {
+ u8 		 	spp_rx_fifo_b[SPP_RXFIFO_SIZE * SPP_RXFIFO_NUM] = {0};
+my_fifo_t	spp_rx_fifo = {
 												SPP_RXFIFO_SIZE,
 												SPP_RXFIFO_NUM,
 												0,
 												0,
 												spp_rx_fifo_b,};
 
-_attribute_data_retention_  u8 		 	spp_tx_fifo_b[SPP_TXFIFO_SIZE * SPP_TXFIFO_NUM] = {0};
-_attribute_data_retention_	my_fifo_t	spp_tx_fifo = {
+ u8 		 	spp_tx_fifo_b[SPP_TXFIFO_SIZE * SPP_TXFIFO_NUM] = {0};
+my_fifo_t	spp_tx_fifo = {
 												SPP_TXFIFO_SIZE,
 												SPP_TXFIFO_NUM,
 												0,
@@ -84,7 +84,7 @@ const u8	tbl_scanRsp [] = {
 };
 
 
-_attribute_data_retention_	u8 	ui_ota_is_working = 0;
+u8 	ui_ota_is_working = 0;
 
 #if (BLE_MODULE_OTA_ENABLE)
 
@@ -155,20 +155,20 @@ void show_ota_result(int result)
 
 
 
-_attribute_data_retention_	u32 tick_wakeup;
-_attribute_data_retention_	int	mcu_uart_working;
-_attribute_data_retention_	int	module_uart_working;
-_attribute_data_retention_	int module_task_busy;
+u32 tick_wakeup;
+int	mcu_uart_working;
+int	module_uart_working;
+int module_task_busy;
 
 
-_attribute_data_retention_	int	module_uart_data_flg;
-_attribute_data_retention_	u32 module_wakeup_module_tick;
+int	module_uart_data_flg;
+u32 module_wakeup_module_tick;
 
 #define UART_TX_BUSY			( (spp_tx_fifo.rptr != spp_tx_fifo.wptr) || uart_tx_is_busy() )
 #define UART_RX_BUSY			(spp_rx_fifo.rptr != spp_rx_fifo.wptr)
 
 #if (BATT_CHECK_ENABLE)
-_attribute_data_retention_	u32	lowBattDet_tick   = 0;
+u32	lowBattDet_tick   = 0;
 /**
  * @brief		callback function of adjust whether allow enter to pm or not
  * @param[in]	none
@@ -466,6 +466,7 @@ void user_init_normal(void)
 	blc_ll_initPowerManagement_module();        //pm module:      	 optional
 
 	#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+		blc_ll_initDeepsleepRetention_module();//Remove it if need save ramcode, and add DeepsleepRetentionEarlyWakeupTiming to 1ms
 		bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
 		blc_pm_setDeepsleepRetentionThreshold(95, 95);
 		blc_pm_setDeepsleepRetentionEarlyWakeupTiming(750);

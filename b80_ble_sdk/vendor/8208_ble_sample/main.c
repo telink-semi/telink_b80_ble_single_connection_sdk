@@ -46,6 +46,9 @@ _attribute_ram_code_ void irq_handler(void)
  * @param[in]	none
  * @return      none
  */
+#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+_attribute_ram_code_sec_noinline_
+#endif
 int main(void)
 {
 	#if (BLE_APP_PM_ENABLE)

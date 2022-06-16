@@ -27,16 +27,38 @@
 
 #include "../feature_config.h"
 
-#if (FEATURE_TEST_MODE == TEST_FEATURE_DEBUG)
-
+#if (FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_UART)
 ///////////////////////// Feature Configuration////////////////////////////////////////////////
+/**
+ *  @brief  software uart enable and setting
+ *   (The maximum baud rate is 9600)
+ */
+#define  	SOFT_UART_ENABLE                       1
+
+#define 	SOFT_UART_BAUD_RATE                     9600
+#define 	SOFT_UART_TX_IO                   		GPIO_PA4
+#define 	SOFT_UART_RX_IO                   		GPIO_PA5
+
+
+
+#define    TEST_RX_TX_RUN                           1
+#define    TEST_ONLY_TX_RUN                         2
+
+#define    TEST_SOFT_UART_RUN_MODEL                 TEST_ONLY_TX_RUN
+
+
+
+
+
 /**
  *  @brief  Feature select in BLE Sample project
  */
 #define FLASH_SIZE_OPTION							FLASH_SIZE_OPTION_512K //very important, user need confirm !!!
-#define BLE_APP_PM_ENABLE							1
+#define BLE_APP_PM_ENABLE							0
 #define PM_DEEPSLEEP_RETENTION_ENABLE            	0
 #define APP_SECURITY_ENABLE      					0
+
+
 
 
 
@@ -47,24 +69,21 @@
  *  @brief  UI Configuration
  */
 #define UI_LED_ENABLE          	 					1
-#define	UI_KEYBOARD_ENABLE							1
+#define	UI_KEYBOARD_ENABLE							0
 
 
 
 /**
  *  @brief  DEBUG  Configuration
  */
-#define BLE_DEBUG_DISABLE					0
-#define BLE_DEBUG_IO_UART				1
-#define BLE_DEBUG_USB						2
-#define BLE_DEBUG_UART						3
-#define BLE_DEBUG_GPIO						4
+#define DEBUG_GPIO_ENABLE							1
 
-#define BLE_DEBUG_MODE					BLE_DEBUG_UART
+
+
 
 
 ///////////////////////// System Clock  Configuration /////////////////////////////////////////
-#define CLOCK_SYS_CLOCK_HZ      					16000000
+#define CLOCK_SYS_CLOCK_HZ      					48000000
 
 
 #if (CLOCK_SYS_CLOCK_HZ == 16000000)
@@ -172,11 +191,8 @@ enum{
 
 
 
-#if (BLE_DEBUG_MODE==BLE_DEBUG_GPIO)
-	#define DEBUG_GPIO_ENABLE				1
-#else
-	#define DEBUG_GPIO_ENABLE				0
-#endif
+
+
 
 
 /**
@@ -247,6 +263,6 @@ enum{
 
 
 /////////////////// set default   ////////////////
-#include "../common/default_config.h"
+#include "../../common/default_config.h"
 
 #endif //end of (FEATURE_TEST_MODE == xxx)

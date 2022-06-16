@@ -623,10 +623,11 @@ void adc_init(void );
 
 /**
  * @brief This function is used for IO port configuration of ADC IO port voltage sampling.
- * @param[in]  pin - GPIO_PinTypeDef
+ *        This interface can be used to switch sampling IO without reinitializing the ADC.
+ * @param[in]  pin - adc_input_pin_def_e
  * @return none
  */
-void adc_base_pin_init(GPIO_PinTypeDef pin);
+void adc_base_pin_init(adc_input_pin_def_e pin);
 
 /**
  * @brief This function is used for ADC configuration of ADC IO voltage sampling.

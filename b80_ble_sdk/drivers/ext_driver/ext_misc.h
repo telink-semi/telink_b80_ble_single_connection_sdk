@@ -24,7 +24,7 @@
 #ifndef DRIVERS_8208_EXT_MISC_H_
 #define DRIVERS_8208_EXT_MISC_H_
 #include "../register.h"
-#include "../compiler.h"
+#include "compiler.h"
 #include "../driver.h"
 
 #define _attribute_ram_code_ _attribute_ram_code_sec_
@@ -65,12 +65,7 @@ void generateRandomNum(int len, unsigned char *data);
 #define			FLD_RF_IRQ_CRC					FLD_RF_IRQ_RX_CRC_2
 #define			RF_1M_500K_PACKET_CRC_OK		RF_BLE_PACKET_CRC_OK
 #define			rf_ble_set_crc					rf_set_ble_crc
-/**
- * @brief   	This function serves to set RF  ble 1m Register initialization .
- * @param[in]   none.
- * @return  	none.
- */
-void rf_ble_1m_param_init(void);
+
 /******************************* RF_end ********************************************************************/
 
 

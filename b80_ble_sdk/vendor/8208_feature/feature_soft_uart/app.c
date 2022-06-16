@@ -28,12 +28,11 @@
 
 #include "app.h"
 #include "app_buffer.h"
-#include "app_uart.h"
 #include "../default_att.h"
 
 
 
-#if (FEATURE_TEST_MODE == TEST_FEATURE_DEBUG)
+#if (FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_UART)
 
 
 #define MY_APP_ADV_CHANNEL			BLT_ENABLE_ADV_ALL
@@ -43,10 +42,10 @@
 #define MY_RF_POWER_INDEX			RF_POWER_P2p87dBm
 
 
+u32 A_tick = 0;
 
 
-
-_attribute_data_retention_ u32	advertise_begin_tick;
+u32	advertise_begin_tick;
 
 
 
@@ -55,7 +54,7 @@ _attribute_data_retention_ u32	advertise_begin_tick;
  * @brief	BLE Advertising data
  */
 const u8	tbl_advData[] = {
-	 8,  DT_COMPLETE_LOCAL_NAME, 				'f','e','a','t','u','r','e',
+	 9,  DT_COMPLETE_LOCAL_NAME, 				's','o','f','t','u','a','r','t',
 	 2,	 DT_FLAGS, 								0x05, 					// BLE limited discoverable mode and BR/EDR not supported
 	 3,  DT_APPEARANCE, 						0x80, 0x01, 			// 384, Generic Remote Control, Generic category
 	 5,  DT_INCOMPLT_LIST_16BIT_SERVICE_UUID,	0x12, 0x18, 0x0F, 0x18,	// incomplete list of service class UUIDs (0x1812, 0x180F)
@@ -65,14 +64,38 @@ const u8	tbl_advData[] = {
  * @brief	BLE Scan Response Packet data
  */
 const u8	tbl_scanRsp [] = {
-	 8,  DT_COMPLETE_LOCAL_NAME, 				'f','e','a','t','u','r','e',
+	 9,  DT_COMPLETE_LOCAL_NAME, 				's','o','f','t','u','a','r','t',
 };
 
 
 
 
 
+#if(SOFT_UART_ENABLE)
+/**
+ * @brief		this function is used to process rx  data.
+ * @param[in]	none
+ * @return      0 is ok
+ */
+u8 		 	uart_rx_buf[80 * 4] = {0};
+my_fifo_t	uart_rx_fifo = {
+												80,
+												4,
+												0,
+												0,
+												uart_rx_buf,};
 
+int app_soft_rx_uart_cb(void)//UART data send to Master,we will handler the data as CMD or DATA
+{
+	if (((uart_rx_fifo.wptr - uart_rx_fifo.rptr) & 255) < uart_rx_fifo.num) {
+		uart_rx_fifo.wptr++;
+		unsigned char* p = uart_rx_fifo.p + (uart_rx_fifo.wptr & (uart_rx_fifo.num - 1)) * uart_rx_fifo.size;
+		soft_uart_RxSetFifo(p, uart_rx_fifo.size);
+	}
+	return 0;
+}
+
+#endif
 
 
 
@@ -88,14 +111,9 @@ void task_connect(u8 e, u8 *p, int n)
 
 	bls_l2cap_requestConnParamUpdate (CONN_INTERVAL_10MS, CONN_INTERVAL_10MS, 99, CONN_TIMEOUT_4S);  // 1 S
 
+	A_tick = clock_time()|1;
 	#if (UI_LED_ENABLE)
 		gpio_write(GPIO_LED_RED, LED_ON_LEVAL);
-	#endif
-
-	#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
-		uart_tx_printf("task connect,tick:%d\n",clock_time());
-	#else
-		printf("task connect\n");
 	#endif
 }
 
@@ -110,11 +128,6 @@ void task_connect(u8 e, u8 *p, int n)
  */
 void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 {
-	#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
-		uart_tx_printf("task terminate,adv start,tick:%d\n",clock_time());
-	#else
-		printf("task terminate\n");
-	#endif
 	if(*p == HCI_ERR_CONN_TIMEOUT){
 
 	}
@@ -136,23 +149,6 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 	advertise_begin_tick = clock_time();
 }
 
-#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
-/**
- * @brief		enter suspend mode
- * @param[in]	none
- * @return      0 - forbidden enter suspend mode
- *              1 - allow enter suspend mode
- */
-int app_suspend_enter ()
-{
-	if (uart_tx_fifo.rptr != uart_tx_fifo.wptr || !uart_dma_send_flag || uart_rx_fifo.rptr != uart_rx_fifo.wptr)
-	{
-		bls_pm_setSuspendMask(SUSPEND_DISABLE);
-		return 0;
-	}
-	return 1;
-}
-#endif
 
 
 /**
@@ -165,13 +161,6 @@ int app_suspend_enter ()
 void task_suspend_exit (u8 e, u8 *p, int n)
 {
 	rf_set_power_level_index (MY_RF_POWER_INDEX);
-	if(((u32*)p)[0]&WAKEUP_STATUS_TIMER){
-		#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
-			uart_tx_printf("timer wakeup,tick:%d\n",clock_time());
-		#else
-			printf("task suspend exit\n");
-		#endif
-	}
 }
 
 
@@ -183,24 +172,20 @@ void task_suspend_exit (u8 e, u8 *p, int n)
  */
 void blt_pm_proc(void)
 {
-#if(BLE_APP_PM_ENABLE)
-	#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
-	if(uart_tx_fifo.rptr == uart_tx_fifo.wptr &&uart_rx_fifo.rptr == uart_rx_fifo.wptr&& uart_dma_send_flag)
-	#endif
-	{
-	#if (PM_DEEPSLEEP_RETENTION_ENABLE)
-		bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
-	#else
-		bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
-	#endif
-	}
-	#if(UI_KEYBOARD_ENABLE)
-	if(scan_pin_need || key_not_released )
-	{
-		bls_pm_setManualLatency(0);
-	}
-	#endif
-#endif//END of  BLE_APP_PM_ENABLE
+	#if(BLE_APP_PM_ENABLE)
+		#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+			bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
+		#else
+			bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
+		#endif
+
+		#if(UI_KEYBOARD_ENABLE)
+			if(scan_pin_need || key_not_released )
+			{
+				bls_pm_setManualLatency(0);
+			}
+		#endif
+	#endif//END of  BLE_APP_PM_ENABLE
 }
 
 
@@ -324,6 +309,7 @@ void user_init_normal(void)
 	#if(BLE_APP_PM_ENABLE)
 		blc_ll_initPowerManagement_module();        //pm module:      	 optional
 		#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+			blc_ll_initDeepsleepRetention_module();//Remove it if need save ramcode, and add DeepsleepRetentionEarlyWakeupTiming to 1ms
 			bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
 			blc_pm_setDeepsleepRetentionThreshold(95, 95);
 			blc_pm_setDeepsleepRetentionEarlyWakeupTiming(750);
@@ -331,9 +317,6 @@ void user_init_normal(void)
 			bls_pm_setSuspendMask (SUSPEND_ADV | SUSPEND_CONN);
 		#endif
 		bls_app_registerEventCallback (BLT_EV_FLAG_SUSPEND_ENTER, &app_set_kb_wakeup);
-		#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
-			bls_pm_registerFuncBeforeSuspend( &app_suspend_enter );
-		#endif
 	#else
 		bls_pm_setSuspendMask (SUSPEND_DISABLE);
 	#endif
@@ -350,8 +333,12 @@ void user_init_normal(void)
 	#endif
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
-	#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
-		 user_uart_init();
+
+	///////////////////////////////////////software uart init//////////////////////////////////////////////////
+	#if(SOFT_UART_ENABLE)
+		soft_uart_rx_handler(app_soft_rx_uart_cb);
+		soft_uart_RxSetFifo(uart_rx_fifo.p, uart_rx_fifo.size);
+		soft_uart_init();
 	#endif
 
 	advertise_begin_tick = clock_time();
@@ -376,9 +363,7 @@ void user_init_deepRetn(void)
 	/* set rf power index, user must set it after every suspend wakeup, cause relative setting will be reset in suspend */
 	rf_set_power_level_index (MY_RF_POWER_INDEX);
 	blc_ll_recoverDeepRetention();
-	#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
-	 user_uart_init();
-	#endif
+	irq_enable();
 	#if (UI_KEYBOARD_ENABLE)
 		/////////// keyboard gpio wakeup init ////////
 		u32 pin[] = KB_DRIVE_PINS;
@@ -398,9 +383,9 @@ void user_init_deepRetn(void)
 
 #if (UI_KEYBOARD_ENABLE)
 
-_attribute_data_retention_	int 	key_not_released;
-_attribute_data_retention_	u8 		key_type;
-_attribute_data_retention_	static u32 keyScanTick = 0;
+int 	key_not_released;
+u8 		key_type;
+static u32 keyScanTick = 0;
 
 extern u32	scan_pin_need;
 
@@ -519,7 +504,8 @@ void app_set_kb_wakeup(u8 e, u8 *p, int n)
 
 
 
-
+u8 A_buf[256] = {0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1};
+u8 send_buf[10] = {0xaa,0x55,0xaa,0x55,0xaa,0x55,0xaa,0x55,0xaa,0x55};
 
 
 
@@ -538,9 +524,38 @@ void main_loop (void)
 	#if (UI_KEYBOARD_ENABLE)
 		proc_keyboard (0, 0, 0);
 	#endif
-	#if (BLE_DEBUG_MODE==BLE_DEBUG_UART)
-		user_uart_loop();
+
+
+	////////////////////////////////////// software uart /////////////////////////////////
+	#if(SOFT_UART_ENABLE)
+		#if (TEST_RX_TX_RUN == TEST_SOFT_UART_RUN_MODEL)
+			if (uart_rx_fifo.wptr != uart_rx_fifo.rptr) {
+				u8 *p = uart_rx_fifo.p + (uart_rx_fifo.rptr & (uart_rx_fifo.num - 1))
+						* uart_rx_fifo.size;
+
+				soft_uart_send(&p[4], p[0]);
+
+				uart_rx_fifo.rptr++;
+			}
+		#elif   (TEST_ONLY_TX_RUN == TEST_SOFT_UART_RUN_MODEL)
+			soft_uart_send(send_buf, 10);
+		#endif
 	#endif
+
+	#if 0//DLE test
+			if(blc_ll_getCurrentState() == BLS_LINK_STATE_CONN) //enter conn state
+			{
+				if(A_tick && clock_time_exceed(A_tick, 5000*1000))
+				{
+					while (1) {
+						if (BLE_SUCCESS != blc_gatt_pushHandleValueNotify(BLS_CONN_HANDLE,GenericAccess_DeviceName_DP_H, A_buf, 20)) {
+							break;
+						 }
+					}
+				}
+			}
+	#endif
+
 	////////////////////////////////////// PM Process /////////////////////////////////
 	blt_pm_proc();
 

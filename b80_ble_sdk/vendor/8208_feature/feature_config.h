@@ -48,14 +48,14 @@
 #define TEST_GATT_SECURITY							9
 
 
-
-
-#define TEST_FEATURE_DEBUG							11
-
+#define TEST_USER_BLT_SOFT_UART                     10
 
 
 
-#define FEATURE_TEST_MODE							TEST_ADVERTISING_IN_CONN_SLAVE_ROLE
+
+
+
+#define FEATURE_TEST_MODE							TEST_FEATURE_BACKUP
 
 
 

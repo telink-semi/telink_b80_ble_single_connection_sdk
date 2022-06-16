@@ -40,16 +40,18 @@ unsigned char   adc_vbat_divider;
 
 /**
  * @brief This function is used for IO port configuration of ADC IO port voltage sampling.
- * @param[in]  pin - GPIO_PinTypeDef
+ *        This interface can be used to switch sampling IO without reinitializing the ADC.
+ * @param[in]  pin - adc_input_pin_def_e
  * @return none
  */
-void adc_base_pin_init(GPIO_PinTypeDef pin)
+void adc_base_pin_init(adc_input_pin_def_e pin)
 {
 	//ADC GPIO Init
-	gpio_set_func(pin, AS_GPIO);
-	gpio_set_input_en(pin,0);
-	gpio_set_output_en(pin,0);
-	gpio_write(pin,0);
+	gpio_set_func(pin&0xfff, AS_GPIO);
+	gpio_set_input_en(pin&0xfff,0);
+	gpio_set_output_en(pin&0xfff,0);
+	gpio_write(pin&0xfff,0);
+	adc_set_ain_chn_misc(pin >> 12, GND);
 }
 
 
@@ -148,10 +150,7 @@ void adc_init(void){
 void adc_base_init(adc_input_pin_def_e pin)
 {
 	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_OFF);//set Vbat divider select,
-
-	adc_base_pin_init(pin&0xfff);		//ADC GPIO Init
-
-	adc_set_ain_chn_misc(pin >> 12, GND);
+	adc_base_pin_init(pin);
 	adc_set_ain_pre_scaler(ADC_PRESCALER_1F8);//adc scaling factor is 1/8
 }
 

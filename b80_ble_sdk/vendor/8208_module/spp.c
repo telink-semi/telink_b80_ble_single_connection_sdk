@@ -37,10 +37,10 @@ extern my_fifo_t spp_tx_fifo;
 extern void app_suspend_exit ();
 u8  pm_ctrl_flg;
 u8  pairing_end_status;
-_attribute_data_retention_	volatile u8 isUartTxDone = 1;
+volatile u8 isUartTxDone = 1;
 ///////////the code below is just for demonstration of the event callback only////////////
 
-_attribute_data_retention_	u32 spp_cmd_restart_flag;
+u32 spp_cmd_restart_flag;
 
 /**
  * @brief      callback function of LinkLayer Event

@@ -45,15 +45,15 @@
 
 #define	BLE_DEVICE_ADDRESS_TYPE 	BLE_DEVICE_ADDRESS_PUBLIC
 
-_attribute_data_retention_ u32	advertise_begin_tick;
+u32	advertise_begin_tick;
 
 #if (PM_DEEPSLEEP_ENABLE)
-_attribute_data_retention_	int device_in_connection_state;
-_attribute_data_retention_ u8  sendTerminate_before_enterDeep = 0;
-_attribute_data_retention_ u32 latest_user_event_tick;
+int device_in_connection_state;
+u8  sendTerminate_before_enterDeep = 0;
+u32 latest_user_event_tick;
 #endif
 
-_attribute_data_retention_ own_addr_type_t app_own_address_type = OWN_ADDRESS_PUBLIC;
+own_addr_type_t app_own_address_type = OWN_ADDRESS_PUBLIC;
 
 /**
  * @brief	BLE Advertising data
@@ -92,7 +92,7 @@ void app_switch_to_indirect_adv(u8 e, u8 *p, int n)
 }
 
 #if (BATT_CHECK_ENABLE)
-_attribute_data_retention_	u32	lowBattDet_tick   = 0;
+u32	lowBattDet_tick   = 0;
 /**
  * @brief		callback function of adjust whether allow enter to pm or not
  * @param[in]	none
@@ -449,6 +449,7 @@ void user_init_normal(void)
 	#if(BLE_APP_PM_ENABLE)
 		blc_ll_initPowerManagement_module();        //pm module:      	 optional
 		#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+			blc_ll_initDeepsleepRetention_module();//Remove it if need save ramcode, and add DeepsleepRetentionEarlyWakeupTiming to 1ms
 			bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
 			blc_pm_setDeepsleepRetentionThreshold(95, 95);
 			blc_pm_setDeepsleepRetentionEarlyWakeupTiming(750);
@@ -496,7 +497,7 @@ void user_init_deepRetn(void)
 	/* set rf power index, user must set it after every suspend wakeup, cause relative setting will be reset in suspend */
 	rf_set_power_level_index (MY_RF_POWER_INDEX);
 	blc_ll_recoverDeepRetention();
-
+	irq_enable();
 	#if (UI_KEYBOARD_ENABLE)
 		/////////// keyboard gpio wakeup init ////////
 		u32 pin[] = KB_DRIVE_PINS;

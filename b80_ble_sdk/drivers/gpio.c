@@ -277,6 +277,11 @@ void gpio_set_data_strength(GPIO_PinTypeDef pin, unsigned int value)
  * @param[in] gpio - the pin needs to set its pull-up/down resistor, GPIOE group is not supported
  * @param[in] up_down - the type of the pull-up/down resistor
  * @return    none
+ * @note	the following two point need to noticed when using PB0, PB1, PB3, PD4 and PF0 GPIO ports:
+ *  		1. These pins are not recommend to use as wake-up source;
+ *  		2. Since these pins are output functions by default, even if they are configured with pull-up/pull-down retention,
+ *  		when deep/deep Retention is invoked, they can't maintain high/low level and an abnormal level will occur.
+ *  		Therefore, these pins can't be used in applications where a certain level state needs to be maintained all the time.
  */
 void gpio_setup_up_down_resistor(GPIO_PinTypeDef gpio, GPIO_PullTypeDef up_down)
 {

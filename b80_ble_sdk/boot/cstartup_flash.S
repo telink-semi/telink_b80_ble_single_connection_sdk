@@ -187,18 +187,7 @@ __reset:
 	tstorerb	r0, [r1, #1]	@0x800583  PB output
 #endif
 
-SET_BOOT:
-	tmov        r2, #4
-	tloadrb     r1, [r2]		@read form core_840004
-	tmov     	r0, #165    	@A5
-	tcmp        r0, r1
-	tjne		SET_BOOT_END	@wakeup from not from retention.
 
-	tmov        r2, #5
-	tloadrb     r1, [r2]		@read form core_840005
-	tloadr     	r0, BOOT_SEL_D
-	tstorerb	r1, [r0, #0]
-SET_BOOT_END:
 
 	@when running the flash program, let the otp enter the deep standby mode to reduce the power consumption of the chip.
 	tloadr		r3, OTP_CTRL	  @0x800010	otp ctrl
@@ -234,24 +223,7 @@ FLASH_WAKEUP_END:
 #endif
 
 
-@********************************************************************************************************
-@                              		 FILL .DATA AND .BSS WITH 0xFF
-@********************************************************************************************************
-#if FLL_STK_EN
 
-	tloadr	r0, FLL_D						@r0 = 0xffffffff
-	tloadr	r1, FLL_D+4						@r1 = _start_data_
-	tloadr	r2, FLL_D+8						@r2 = 0x850000
-
-FLL_STK:
-	tcmp	r1, r2							@
-	tjge	FLL_STK_END						@r1>=r2 jump to FLL_STK_END
-	tstorer r0, [r1, #0]					@*(unsigned int*)(_start_data_)=0xffffffff
-	tadd    r1, #4							@r1 = r1+4
-	tj		FLL_STK							@jump to FLL_STK
-FLL_STK_END:
-
-#endif
 @********************************************************************************************************
 @                              		 UPDATE SP UNDER IRQ/SVC MODE
 @********************************************************************************************************
@@ -264,20 +236,7 @@ FLL_STK_END:
 	tmcsr	r0								@CPSR=r0
 	tloadr	r0, DAT0 + 12					@r0 = 0x850000
 	tmov	r13, r0  						@r13= r0		update SP under SVC mode
-@********************************************************************************************************
-@                                    .BSS INITIALIZATION FOR 0
-@********************************************************************************************************
-	tmov	r0, #0							@r0 = 0
-	tloadr	r1, DAT0 + 16					@r1 = _start_bss_
-	tloadr	r2, DAT0 + 20					@r2 = _end_bss_
 
-ZERO_BSS_BEGIN:
-	tcmp	r1, r2
-	tjge	ZERO_BSS_END					@r1>=r2 jump to ZERO_BSS_END
-	tstorer	r0, [r1, #0]					@*(unsigned int*)(_start_bss_)=r0=0
-	tadd    r1, #4							@r1 = r1 + 4
-	tj		ZERO_BSS_BEGIN					@jump to ZERO_BSS_BEGIN
-ZERO_BSS_END:
 @********************************************************************************************************
 @                                    IC TAG INITIALIZATION
 @********************************************************************************************************
@@ -314,76 +273,63 @@ SET_IC_END:
 @                                    DCDC INITIALIZATION FOR FLASH
 @********************************************************************************************************
 
-	/*system on*/
-	tloadr      r0,DATA_I+32                @0x00800060
-	tloadr      r1,DATA_I+36                @0xff000000
-	tstorer     r1,[r0,#0]                  @*(unsigned int*)0x800060=0xff000000
-	tshftr      r1,r1,#24					@0x000000ff
-	tstorerb    r1,[r0,#4]					@dig_0x64=0xff
-	tloadr      r1,DATA_I+40				@dig_0x65=0xf7
-	tstorerb    r1,[r0,#5]
+
+SET_BOOT:
+	tmov        r2, #4
+	tloadrb     r1, [r2]		@read form core_840004
+	tmov     	r0, #165    	@A5
+	tcmp        r0, r1			@(840004) == A5?
+	tjne		SET_BOOT_END	@wakeup from not from retention or wakeup.
+
+	tmov        r2, #5
+	tloadrb     r1, [r2]		@read form core_840005
+	tloadr     	r0, BOOT_SEL_D
+	tstorerb	r1, [r0, #0]
+	tj			COPY_DATA_RELOAD
 
 
-    /*check ana_reg_0x7e*/
-	tloadr		r0,DATA_I+24				@0x7e
 
-RANA_REG_BEGIN:
-	tloadr		r1,DATA_I+28			    @0x008000b8
-	tmov		r2,r0						@ana_reg_adr:0x7e
-	tstorerb	r2,[r1,#0]					@*(unsigned int*)0x8000b8=0x7e;
-	tmov   	    r2,#64						@ana_reg_dat:0x40=64
-	tstorerb	r2,[r1,#2]					@*(unsigned int*)0x8000ba=0x40;
-
-RWAIT_REG_FINISH:
-	tloadrb	    r2,[r1,#2]
-	tshftl		r2,r2,#31
-	tshftr		r2,r2,#31
-	tcmp		r2,#1
-	tjeq		RWAIT_REG_FINISH
-	tloadrb	    r2,[r1,#1]
-RANA_REG_END:
-
-	tshftl      r2,r2,#31
-	tshftr		r2,r2,#31
-	tcmp        r2,#0
-	/*if ana_reg_0x7e==0x00 retention data initiate after waking up from deep*/
-#if MULTI_ADDRESS_START
-	tjeq		MULTI_ADDRESS_END
-
-#if COPY_DATA_EN
-	tj			COPY_DATA                   @deep wakeup with retention
-#else
-	tj          COPY_DATA_END
-#endif
-
-MULTI_ADDRESS_END:
-#endif
-
+SET_BOOT_END:
 @********************************************************************************************************
-@                                    RETENTION DATA INITIALIZATION
+@                              		 FILL .DATA AND .BSS WITH 0xFF
 @********************************************************************************************************
-COPY_RET_DATA:
-	tloadr		r1, DATA_I					@ r1 = _rstored_
-	tloadr		r2, DATA_I+4				@ r2 = _retention_data_start_
-	tloadr		r3, DATA_I+8				@ r3 = _retention_data_end_
-COPY_RET_DATA_BEGIN:
-	tcmp		r2, r3						@
-	tjge		COPY_RET_DATA_END			@ r2>=r3 jump to COPY_RET_DATA_END
-	tloadr		r0, [r1, #0]				@ r0 = *(unsigned int*)(_rstored_)
-	tstorer 	r0, [r2, #0]				@ *(unsigned int*)(_retention_data_start_) = r0
-	tadd    	r1, #4						@ r1 = r1 + 4
-	tadd		r2, #4						@ r2 = r2 + 4
-	tj			COPY_RET_DATA_BEGIN			@ jump to COPY_RET_DATA_BEGIN
-COPY_RET_DATA_END:
+#if FLL_STK_EN
 
+	tloadr	r0, FLL_D						@r0 = 0xffffffff
+	tloadr	r1, FLL_D+4						@r1 = _start_data_
+	tloadr	r2, FLL_D+8						@r2 = 0x850000
+
+FLL_STK:
+	tcmp	r1, r2							@
+	tjge	FLL_STK_END						@r1>=r2 jump to FLL_STK_END
+	tstorer r0, [r1, #0]					@*(unsigned int*)(_start_data_)=0xffffffff
+	tadd    r1, #4							@r1 = r1+4
+	tj		FLL_STK							@jump to FLL_STK
+FLL_STK_END:
+
+#endif
+@********************************************************************************************************
+@                                    .BSS INITIALIZATION FOR 0
+@********************************************************************************************************
+	tmov	r0, #0							@r0 = 0
+	tloadr	r1, DAT0 + 16					@r1 = _start_bss_
+	tloadr	r2, DAT0 + 20					@r2 = _end_bss_
+
+ZERO_BSS_BEGIN:
+	tcmp	r1, r2
+	tjge	ZERO_BSS_END					@r1>=r2 jump to ZERO_BSS_END
+	tstorer	r0, [r1, #0]					@*(unsigned int*)(_start_bss_)=r0=0
+	tadd    r1, #4							@r1 = r1 + 4
+	tj		ZERO_BSS_BEGIN					@jump to ZERO_BSS_BEGIN
+ZERO_BSS_END:
 
 @********************************************************************************************************
 @                                    DATA INITIALIZATION
 @********************************************************************************************************
 COPY_DATA:
-	tloadr		r1, DATA_I+12				@ r1 = _dstored_
-	tloadr		r2, DATA_I+16				@ r2 = _start_data_
-	tloadr		r3, DATA_I+20				@ r3 = _end_data_
+	tloadr		r1, DATA_I				@ r1 = _dstored_
+	tloadr		r2, DATA_I+4				@ r2 = _start_data_
+	tloadr		r3, DATA_I+8				@ r3 = _end_data_
 COPY_DATA_BEGIN:
 	tcmp		r2, r3						@
 	tjge		COPY_DATA_END				@ r2>=r3 jump to COPY_DATA_END
@@ -394,6 +340,22 @@ COPY_DATA_BEGIN:
 	tj			COPY_DATA_BEGIN				@ jump to COPY_DATA_BEGIN
 COPY_DATA_END:
 
+@********************************************************************************************************
+@                                    DATA INITIALIZATION
+@********************************************************************************************************
+COPY_DATA_RELOAD:
+	tloadr		r1, DATA_I+12				@ r1 = _rstored_
+	tloadr		r2, DATA_I+16				@ r2 = _data_reload_start_
+	tloadr		r3, DATA_I+20				@ r3 = _data_reload_end_
+COPY_DATA_RELOAD_BEGIN:
+	tcmp		r2, r3						@
+	tjge		COPY_DATA_RELOAD_END				@ r2>=r3 jump to COPY_DATA_RELOAD_END
+	tloadr		r0, [r1, #0]				@ r0 = *(unsigned int*)(_dstored_)
+	tstorer 	r0, [r2, #0]				@ *(unsigned int*)(_start_data_) = r0
+	tadd    	r1, #4						@ r1 = r1 + 4
+	tadd		r2, #4						@ r2 = r2 + 4
+	tj			COPY_DATA_RELOAD_BEGIN				@ jump to COPY_DATA_BEGIN
+COPY_DATA_RELOAD_END:
 
 
 
@@ -418,12 +380,12 @@ DAT0:
 	.word	_ramcode_size_align_256_    @40
 
 DATA_I:	
-	.word   (_rstored_)                 @0
-	.word   (_retention_data_start_)    @4
-    .word   (_retention_data_end_)      @8
-	.word	_dstored_					@12
-	.word	_start_data_				@16
-	.word	_end_data_					@20
+	.word   (_dstored_)                 @0
+	.word	_start_data_				@4
+	.word	_end_data_					@8
+	.word   (_rstored_)                 @12
+	.word	_data_reload_start_		@16
+	.word	_data_reload_end_			@20
     .word	(0x0000007e)                @24
 	.word	(0x008000b8)                @28
 	.word	(0x00800060)                @32

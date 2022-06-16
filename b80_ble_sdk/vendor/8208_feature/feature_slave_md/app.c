@@ -45,11 +45,11 @@
 
 
 
-_attribute_data_retention_ u32	advertise_begin_tick;
+u32	advertise_begin_tick;
 
-_attribute_data_retention_ int write_data_test_tick = 0;
+int write_data_test_tick = 0;
 
-_attribute_data_retention_	u8	app_test_data[TEST_DATA_LEN]={0x00,0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,
+u8	app_test_data[TEST_DATA_LEN]={0x00,0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,
 															  0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,0x11,0x11,0x11};
 
 
@@ -305,6 +305,7 @@ void user_init_normal(void)
 	#if(BLE_APP_PM_ENABLE)
 		blc_ll_initPowerManagement_module();        //pm module:      	 optional
 		#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+			blc_ll_initDeepsleepRetention_module();//Remove it if need save ramcode, and add DeepsleepRetentionEarlyWakeupTiming to 1ms
 			bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
 			blc_pm_setDeepsleepRetentionThreshold(95, 95);
 			blc_pm_setDeepsleepRetentionEarlyWakeupTiming(750);
@@ -353,7 +354,7 @@ void user_init_deepRetn(void)
 	/* set rf power index, user must set it after every suspend wakeup, cause relative setting will be reset in suspend */
 	rf_set_power_level_index (MY_RF_POWER_INDEX);
 	blc_ll_recoverDeepRetention();
-
+	irq_enable();
 	#if (UI_KEYBOARD_ENABLE)
 		/////////// keyboard gpio wakeup init ////////
 		u32 pin[] = KB_DRIVE_PINS;
@@ -373,9 +374,9 @@ void user_init_deepRetn(void)
 
 #if (UI_KEYBOARD_ENABLE)
 
-_attribute_data_retention_	int 	key_not_released;
-_attribute_data_retention_	u8 		key_type;
-_attribute_data_retention_	static u32 keyScanTick = 0;
+int 	key_not_released;
+u8 		key_type;
+static u32 keyScanTick = 0;
 
 extern u32	scan_pin_need;
 
@@ -531,7 +532,7 @@ void main_loop (void)
 
 }
 
-_attribute_data_retention_  u8 seq_num_next = 0;
+ u8 seq_num_next = 0;
 
 int myC2SWrite(void * p)
 {

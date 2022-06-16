@@ -26,10 +26,9 @@
 #include "stack/ble/ble.h"
 
 #include "app.h"
-#include "app_uart.h"
 
 
-#if (FEATURE_TEST_MODE == TEST_FEATURE_DEBUG)
+#if (FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_UART)
 
 
 /**
@@ -40,9 +39,10 @@
 _attribute_ram_code_ void irq_handler(void)
 {
 	blc_sdk_irq_handler();
-	#if	(BLE_DEBUG_MODE==BLE_DEBUG_UART)
-		uart_irq_handler();
-	#endif
+
+#if (SOFT_UART_ENABLE)
+	soft_uart_irq_handler();
+#endif
 }
 
 
@@ -54,6 +54,9 @@ _attribute_ram_code_ void irq_handler(void)
  * @param[in]	none
  * @return      none
  */
+#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+_attribute_ram_code_sec_noinline_
+#endif
 int main(void)
 {
 	#if (BLE_APP_PM_ENABLE)

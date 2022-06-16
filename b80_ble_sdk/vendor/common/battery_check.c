@@ -27,9 +27,9 @@
 #include "battery_check.h"
 #if (BATT_CHECK_ENABLE)
 
-_attribute_data_retention_	u8 		lowBattDet_enable = 1;
+u8 		lowBattDet_enable = 1;
 							u8      adc_hw_initialized = 0;   //note: can not be retention variable
-_attribute_data_retention_  u16     batt_vol_mv;
+ u16     batt_vol_mv;
 
 
 
@@ -40,7 +40,7 @@ _attribute_data_retention_  u16     batt_vol_mv;
 
 
 
-_attribute_data_retention_	volatile unsigned int adc_dat_buf[ADC_SAMPLE_NUM];  //size must 16 byte aligned(16/32/64...)
+volatile unsigned int adc_dat_buf[ADC_SAMPLE_NUM];  //size must 16 byte aligned(16/32/64...)
 
 /**
  * @brief		set lowBattery detect enable
@@ -79,7 +79,7 @@ void adc_vbat_detect_init(void)
 	/******power off sar adc********/
 	adc_power_on_sar_adc(0);
 
-	#if	1
+	#if (ADC_INPUT_PCHN!=VBAT)
 		gpio_set_output_en(GPIO_VBAT_DETECT, 1);
 		gpio_write(GPIO_VBAT_DETECT, 1);
 	#endif

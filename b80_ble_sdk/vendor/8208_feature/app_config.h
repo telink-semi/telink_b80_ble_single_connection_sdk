@@ -45,10 +45,10 @@
 	#include "feature_phy_test/app_config.h"
 #elif(FEATURE_TEST_MODE == TEST_EMI)
 	#include "feature_emi_test/app_config.h"
+#elif(FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_UART)
+	#include "feature_soft_uart/app_config.h"
 #elif(FEATURE_TEST_MODE == TEST_GATT_SECURITY)
 	#include "feature_gatt_security/app_config.h"
-#elif(FEATURE_TEST_MODE == TEST_FEATURE_DEBUG)
-	#include "feature_debug/app_config.h"
 #endif
 
 

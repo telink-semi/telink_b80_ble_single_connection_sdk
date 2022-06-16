@@ -27,7 +27,7 @@
 
 #include "app_config.h"
 
-#if (FEATURE_TEST_MODE == TEST_FEATURE_DEBUG)
+#if (FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_UART)
 
 /**
  * @brief		user initialization when MCU power on or wake_up from deepSleep mode

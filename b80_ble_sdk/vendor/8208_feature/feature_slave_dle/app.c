@@ -41,25 +41,25 @@
 
 #define MY_RF_POWER_INDEX			RF_POWER_P2p87dBm
 
-_attribute_data_retention_	u32 connect_event_occurTick = 0;
-_attribute_data_retention_  u32 mtuExchange_check_tick = 0;
+u32 connect_event_occurTick = 0;
+ u32 mtuExchange_check_tick = 0;
 
-_attribute_data_retention_ 	int  dle_started_flg = 0;
+	int  dle_started_flg = 0;
 
-_attribute_data_retention_ 	int  mtuExchange_started_flg = 0;
+	int  mtuExchange_started_flg = 0;
 
 
-_attribute_data_retention_	u16  final_MTU_size = 23;
+u16  final_MTU_size = 23;
 
 #define TEST_DATA_LEN		255
 
-_attribute_data_retention_	u8	app_test_data[TEST_DATA_LEN];
+u8	app_test_data[TEST_DATA_LEN];
 
-_attribute_data_retention_	u32 app_test_data_tick = 0;
+u32 app_test_data_tick = 0;
 
 
 
-_attribute_data_retention_ u32	advertise_begin_tick;
+u32	advertise_begin_tick;
 
 
 
@@ -328,6 +328,7 @@ void user_init_normal(void)
 	#if(BLE_APP_PM_ENABLE)
 		blc_ll_initPowerManagement_module();        //pm module:      	 optional
 		#if (PM_DEEPSLEEP_RETENTION_ENABLE)
+			blc_ll_initDeepsleepRetention_module();//Remove it if need save ramcode, and add DeepsleepRetentionEarlyWakeupTiming to 1ms
 			bls_pm_setSuspendMask (SUSPEND_ADV | DEEPSLEEP_RETENTION_ADV | SUSPEND_CONN | DEEPSLEEP_RETENTION_CONN);
 			blc_pm_setDeepsleepRetentionThreshold(95, 95);
 			blc_pm_setDeepsleepRetentionEarlyWakeupTiming(750);
@@ -376,7 +377,7 @@ void user_init_deepRetn(void)
 	/* set rf power index, user must set it after every suspend wakeup, cause relative setting will be reset in suspend */
 	rf_set_power_level_index (MY_RF_POWER_INDEX);
 	blc_ll_recoverDeepRetention();
-
+	irq_enable();
 	#if (UI_KEYBOARD_ENABLE)
 		/////////// keyboard gpio wakeup init ////////
 		u32 pin[] = KB_DRIVE_PINS;
@@ -396,9 +397,9 @@ void user_init_deepRetn(void)
 
 #if (UI_KEYBOARD_ENABLE)
 
-_attribute_data_retention_	int 	key_not_released;
-_attribute_data_retention_	u8 		key_type;
-_attribute_data_retention_	static u32 keyScanTick = 0;
+int 	key_not_released;
+u8 		key_type;
+static u32 keyScanTick = 0;
 
 extern u32	scan_pin_need;
 

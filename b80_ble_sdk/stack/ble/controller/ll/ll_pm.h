@@ -62,6 +62,13 @@ typedef 	void (*pm_appWakeupLowPower_callback_t)(int);
 void 		blc_ll_initPowerManagement_module(void);
 
 /**
+ * @brief	for user to initialize deep sleep retention
+ * @param	none
+ * @return	none
+ */
+void 		blc_ll_initDeepsleepRetention_module(void);
+
+/**
  * @brief	for user to set low power mode mask
  * @param	mask - low power mode mask
  * @return	none

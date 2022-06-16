@@ -32,7 +32,7 @@
 
 
 
-_attribute_data_retention_	blt_soft_timer_t	blt_timer;
+blt_soft_timer_t	blt_timer;
 
 /**
  * @brief		This function is used to Sort the timers according

@@ -30,18 +30,7 @@
 #include "flash.h"
 #define PM_DEBUG							0
 
-
-#if(PM_DEBUG)
-volatile unsigned char debug_pm_info;
-volatile unsigned int ana_32k_tick;
-#endif
-
 #define PM_LONG_SUSPEND_EN					1
-
-#ifndef PM_CUMULATIVE_ERROR_ELIMINATE_ENABLE
-#define PM_CUMULATIVE_ERROR_ELIMINATE_ENABLE			    	0
-#endif
-
 
 #define XTAL_READY_CHECK_TIMING_OPTIMIZE	1
 
@@ -123,7 +112,7 @@ typedef enum {
 
 	SHUTDOWN_MODE						= 0x40,
 
-	DEEPSLEEP_MODE_RET_SRAM_LOW16K  	= 0x01,  //for boot from sram   different with B87.
+	DEEPSLEEP_MODE_RET_SRAM_LOW16K  	= 0x01,  //for boot from sram   different with vulture.
 
 	//not available mode
 	DEEPSLEEP_RETENTION_FLAG			= 0x0F,
@@ -189,17 +178,6 @@ typedef struct{
 }pm_para_t;
 
 extern _attribute_aligned_(4) pm_para_t	pmParam;
-
-#if (PM_CUMULATIVE_ERROR_ELIMINATE_ENABLE)
-
-typedef struct{
-	unsigned int   tick_sysClk;
-	unsigned int   tick_32k;
-	unsigned int   recover_flag;
-}pm_tim_recover_t;
-
-extern _attribute_aligned_(4) pm_tim_recover_t			pm_timCalib;
-#endif
 
 
 typedef int (*suspend_handler_t)(void);
@@ -319,7 +297,7 @@ unsigned int cpu_stall(int WakeupSrc, unsigned int IntervalUs,unsigned int syscl
 
 /**
  * @brief      This function configures a GPIO pin as the wakeup pin.
- * @param[in]  pin - the pin needs to be configured as wakeup pin
+ * @param[in]  pin - the pins can be set to all GPIO except PB0, PB1, PB3, PD4, PF0 and GPIOE groups.
  * @param[in]  pol - the wakeup polarity of the pad pin(0: low-level wakeup, 1: high-level wakeup)
  * @param[in]  en  - enable or disable the wakeup function for the pan pin(1: Enable, 0: Disable)
  * @return     none
@@ -373,7 +351,6 @@ extern  pm_tim_recover_handler_t pm_tim_recover;
 
 /**
  * @brief      This function serves to set the working mode of MCU based on 32k rc,e.g. suspend mode, deepsleep mode, deepsleep with SRAM retention mode and shutdown mode.
- 				This chip use 1.5V power supply,the 32k rc ppm about 2000,if need the accuracy higher,need use software to improve it. 
  * @param[in]  sleep_mode - sleep mode type select.
  * @param[in]  wakeup_src - wake up source select.
  * @param[in]  wakeup_tick - the time of short sleep, which means MCU can sleep for less than 5 minutes.
@@ -402,9 +379,8 @@ extern 	cpu_pm_handler_t  		 cpu_sleep_wakeup;
 static inline void blc_pm_select_internal_32k_crystal(void)
 {
 	cpu_sleep_wakeup 	 	= cpu_sleep_wakeup_32k_rc;
-#if (BLC_PM_DEEP_RETENTION_MODE_EN)
 	pm_tim_recover  	 	= pm_tim_recover_32k_rc;
-#endif
+
 	blt_miscParam.pm_enter_en 	= 1; // allow enter pm, 32k rc does not need to wait for 32k clk to be stable
 }
 
@@ -419,9 +395,8 @@ static inline void blc_pm_select_external_32k_crystal(void)
 {
 	cpu_sleep_wakeup 	 	= cpu_sleep_wakeup_32k_xtal;
 	pm_check_32k_clk_stable = check_32k_clk_stable;
-#if (BLC_PM_DEEP_RETENTION_MODE_EN)
 	pm_tim_recover		 	= pm_tim_recover_32k_xtal;
-#endif
+
 	blt_miscParam.pad32k_en 	= 1; // set '1': 32k clk src use external 32k crystal
 }
 /**

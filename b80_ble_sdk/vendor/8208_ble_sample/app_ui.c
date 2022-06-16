@@ -33,9 +33,9 @@
 
 #if (UI_KEYBOARD_ENABLE)
 
-_attribute_data_retention_	int 	key_not_released;
-_attribute_data_retention_	u8 		key_type;
-_attribute_data_retention_	static u32 keyScanTick = 0;
+int 	key_not_released;
+u8 		key_type;
+static u32 keyScanTick = 0;
 
 extern u32	scan_pin_need;
 
@@ -152,7 +152,7 @@ void app_set_kb_wakeup(u8 e, u8 *p, int n)
 /*----------------------------------------------------------------------------*/
 #if (BLE_OTA_SERVER_ENABLE)
 
-_attribute_data_retention_ int 	ota_is_working = 0;
+int 	ota_is_working = 0;
 
 /**
  * @brief      this function is used to register the function for OTA start.

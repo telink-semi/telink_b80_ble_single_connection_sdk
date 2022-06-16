@@ -24,9 +24,7 @@
 #ifndef VENDOR_B80_BLE_SAMPLE_APP_BUFFER_H_
 #define VENDOR_B80_BLE_SAMPLE_APP_BUFFER_H_
 
-
-
-#if (FEATURE_TEST_MODE == TEST_FEATURE_DEBUG)
+#if (FEATURE_TEST_MODE == TEST_USER_BLT_SOFT_UART)
 
 
 
@@ -63,7 +61,7 @@
  * 2. at least 4; recommended value: 8, 16
  */
 #define ACL_RX_FIFO_SIZE				CAL_LL_ACL_RX_FIFO_SIZE(ACL_CONN_MAX_RX_OCTETS)
-#define ACL_RX_FIFO_NUM					8	// must be: 2^n
+#define ACL_RX_FIFO_NUM					4	// must be: 2^n
 
 
 /**
@@ -78,7 +76,7 @@
  * 2. at least 8; recommended value: 8, 16, 32; other value not allowed.
  */
 #define ACL_TX_FIFO_SIZE				CAL_LL_ACL_TX_FIFO_SIZE(ACL_CONN_MAX_TX_OCTETS)
-#define ACL_TX_FIFO_NUM					16
+#define ACL_TX_FIFO_NUM					8
 
 
 
@@ -86,9 +84,6 @@
 extern	u8	app_acl_rxfifo[];
 extern	u8	app_acl_txfifo[];
 /******************** ACL connection LinkLayer TX & RX data FIFO allocation, End ***************************************************/
-
-
-
 
 
 

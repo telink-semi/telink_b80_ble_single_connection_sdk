@@ -30,18 +30,16 @@
 
 
 
-//_attribute_data_retention_
 							u8 		 	hci_rx_fifo_b[HCI_RXFIFO_SIZE * HCI_RXFIFO_NUM] = {0};
-_attribute_data_retention_	my_fifo_t	hci_rx_fifo = {
+my_fifo_t	hci_rx_fifo = {
 												HCI_RXFIFO_SIZE,
 												HCI_RXFIFO_NUM,
 												0,
 												0,
 												hci_rx_fifo_b,};
 
-//_attribute_data_retention_
 							u8 		 	hci_tx_fifo_b[HCI_TXFIFO_SIZE * HCI_TXFIFO_NUM] = {0};
-_attribute_data_retention_	my_fifo_t	hci_tx_fifo = {
+my_fifo_t	hci_tx_fifo = {
 												HCI_TXFIFO_SIZE,
 												HCI_TXFIFO_NUM,
 												0,

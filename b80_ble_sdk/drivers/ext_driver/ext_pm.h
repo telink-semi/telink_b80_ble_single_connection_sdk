@@ -24,12 +24,35 @@
 #ifndef DRIVERS_8208_EXT_PM_H_
 #define DRIVERS_8208_EXT_PM_H_
 
+#ifndef PM_CUMULATIVE_ERROR_ELIMINATE_ENABLE
+#define PM_CUMULATIVE_ERROR_ELIMINATE_ENABLE			    	0
+#endif
+
+#if (PM_CUMULATIVE_ERROR_ELIMINATE_ENABLE)
+
+typedef struct{
+	unsigned int   tick_sysClk;
+	unsigned int   tick_32k;
+	unsigned int   recover_flag;
+}pm_tim_recover_t;
+
+extern _attribute_aligned_(4) pm_tim_recover_t			pm_timCalib;
+#endif
 
 extern unsigned int ota_program_bootAddr;
 extern unsigned int ota_program_offset;
 extern unsigned int ota_firmware_size_k;
 
-
+/**
+ * @brief   This function serves to initialize MCU, run in ramcode.
+ * @param   xtal - set crystal for different application.
+ * 			In version A0, the chip cannot be lower than 2.2V when it is powered on for the first time,
+ * 	 	    after calling this function, g_chip_version is the version number recorded.
+ *
+ * @return  none
+ */
+typedef void (*pm_wakeup_init_t)(XTAL_TypeDef);
+extern pm_wakeup_init_t pm_wakeup_init;
 /**
  * @brief		This function is used to enable the external crystal capacitor
  * @param[in]	en - enable the external crystal capacitor

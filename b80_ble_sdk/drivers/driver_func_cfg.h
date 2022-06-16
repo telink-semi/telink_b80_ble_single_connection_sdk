@@ -25,12 +25,21 @@
 #ifndef DRIVER_FUNCTION_CONFIG_H_
 #define DRIVER_FUNCTION_CONFIG_H_
 
-//When pengcheng.xu tested the SRAM program, he found that the suspend sleep current was too large when the program was downloaded immediately after being active;
-//after debugging, it was found that the MCU was stalled because the chip boot did not finish running, and the otp was not turned off, so the sleep current was too large.
-//If it is a ram program SRAM_OTP_FLASH_HANDLE needs to be set to 1, then the driver processing is:
-//in active mode, the power of the OTP flash is present to ensure that the otp flash function can be used normally,
-//but the current at this time will be higher (Compared to the normal OTP or flash program), the specific data is as follows:
-//In sleep mode, the otp will enter deep, and the flash will be powered off to ensure that the sleep current is normal
+/**
+ * @brief	The program is not burned into OTP/Flash, but is directly downloaded into sram through the tool for execution (that is, the scene that the jig and BDT tool will use).
+ * 			The reasons are as follows:
+ * 			When using the tool download the program to the sram, the tool will first send the instruction to stall the mcu, and then load the program to the sram for execution.
+ * 			The stall operation is very fast, so it may stop in the boot program of the chip.
+ *
+ * 			This may will cause the following effects:
+ * 			 1. OTP is not turned off (will cause the current to increase);
+ * 			 2. The flag bit identification of the otp program or the flash program is incorrect, resulting in abnormal flash function, so added the processing of SRAM_OTP_FLASH_HANDLE;
+ * 			In order to ensure that the following functions of the jig program are normal, sleep current test and OTP/flash programming, the processing method here is as follows:
+ * 			 1. Ensure that both flash and OTP are in a working state during initialization.
+ * 			 2. Flash and OTP will be turned off before sleep, and turned on after suspend wake up, this will introduce another problem, that is, the working current will be larger,
+ * 			 but the jig application does not care about the working current, so we ignore this effect.
+ * 			 When the program is running, the specific current data when OTP and FLASH are turned off and turned on are as follows:
+ */
 /////////////////////////////////////////////////////////////////////////////////////////////
 // 		  				otp active mode	    otp deep standby mode
 // open flash ldo 			6.80mA					5.35mA

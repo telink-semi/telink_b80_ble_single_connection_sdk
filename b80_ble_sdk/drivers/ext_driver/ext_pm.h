@@ -43,16 +43,8 @@ extern unsigned int ota_program_bootAddr;
 extern unsigned int ota_program_offset;
 extern unsigned int ota_firmware_size_k;
 
-/**
- * @brief   This function serves to initialize MCU, run in ramcode.
- * @param   xtal - set crystal for different application.
- * 			In version A0, the chip cannot be lower than 2.2V when it is powered on for the first time,
- * 	 	    after calling this function, g_chip_version is the version number recorded.
- *
- * @return  none
- */
-typedef void (*pm_wakeup_init_t)(XTAL_TypeDef);
-extern pm_wakeup_init_t pm_wakeup_init;
+
+
 /**
  * @brief		This function is used to enable the external crystal capacitor
  * @param[in]	en - enable the external crystal capacitor

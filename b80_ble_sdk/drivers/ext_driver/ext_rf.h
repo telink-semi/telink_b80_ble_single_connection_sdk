@@ -53,19 +53,6 @@ static inline void rf_trigle_codedPhy_accesscode(void)
 }
 
 
-/**
- * @brief   	This function serves to set RF  ble 1m Register initialization . Text Code.
- * @param[in]   none.
- * @return  	none.
- */
-void rf_ble_1m_param_init_text();
-/**
- * @brief   	This function serves to set RF  ble 1m Register initialization . Ram Code.
- * @param[in]   none.
- * @return  	none.
- */
-void rf_ble_1m_param_init_ram();
-
 typedef void (*rf_1m_init_t)(void);
 extern rf_1m_init_t rf_ble_1m_param_init;
 

@@ -30,6 +30,11 @@
 #include "flash.h"
 #define PM_DEBUG							0
 
+#if(PM_DEBUG)
+volatile unsigned char debug_pm_info;
+volatile unsigned int ana_32k_tick;
+#endif
+
 #define PM_LONG_SUSPEND_EN					1
 
 #define XTAL_READY_CHECK_TIMING_OPTIMIZE	1
@@ -412,6 +417,7 @@ extern  unsigned char 		    tl_24mrc_cal;
 extern 	unsigned int 			tick_32k_calib;
 extern  unsigned int 			tick_cur;
 extern  unsigned int 			tick_32k_cur;
+extern  unsigned char       	pm_long_suspend;
 
 void sleep_start(void);
 

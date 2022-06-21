@@ -107,16 +107,7 @@ enum{
  *  @brief  Battery_check Configuration
  */
 #if (BATT_CHECK_ENABLE)
-	#if 0 //use VBAT , then adc measure this VBAT voltage
-		#define ADC_INPUT_PCHN					VBAT    //corresponding  ADC_InputPchTypeDef in adc.h
-	#else
-		//telink device: you must choose one gpio with adc function to output high level(voltage will equal to vbat), then use adc to measure high level voltage
-		//use PB7 output high level, then adc measure this high level voltage
-		#define GPIO_VBAT_DETECT				GPIO_PB7
-		#define PB7_FUNC						AS_GPIO
-		#define PB7_INPUT_ENABLE				0
-		#define ADC_INPUT_PCHN					B7P    //corresponding  ADC_InputPchTypeDef in adc.h
-	#endif
+	#define ADC_INPUT_PCHN					VBAT    //corresponding  ADC_InputPchTypeDef in adc.h
 
 	#define VBAT_ALRAM_THRES_MV				2000   // 2000 mV low battery alarm
 	//////////////////////////// FEATURE PM GPIO	(EVK board) /////////////////////////////////

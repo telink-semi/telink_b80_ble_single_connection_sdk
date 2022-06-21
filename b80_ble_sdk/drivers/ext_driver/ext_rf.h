@@ -54,7 +54,7 @@ static inline void rf_trigle_codedPhy_accesscode(void)
 
 
 typedef void (*rf_1m_init_t)(void);
-extern rf_1m_init_t rf_ble_1m_param_init;
+extern rf_1m_init_t rf_ble_1m_param_init; ///This function serves to set RF  ble 1m Register initialization.
 
 typedef enum{
 	FSM_BTX 	= 0x81,
@@ -74,6 +74,13 @@ typedef enum{
  */
 void rf_start_fsm(fsm_mode_e mode, void* tx_addr, unsigned int tick);
 
+/**
+ * @brief     	This function serves to RF trigger RF state machine.
+ * @param[in] 	WakeupSrc  - wakeup source.
+ * @param[in] 	rf_mask  - rf irq mask
+ * @param[in] 	tick  - system timer irq tick
+ * @return	   	wakeup source.
+ */
 unsigned int cpu_stall_WakeUp_By_RF_SystemTick(int WakeupSrc, unsigned short rf_mask, unsigned int tick);
 
 #define		rf_receiving_flag				is_rf_receiving_pkt ///static inline

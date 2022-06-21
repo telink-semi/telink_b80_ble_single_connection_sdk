@@ -67,80 +67,6 @@ int battery_get_detect_enable (void)
 	return lowBattDet_enable;
 }
 
-
-/**
- * @brief		vbat detect init
- * @param[in]	none
- * @return      none
- */
-//_attribute_ram_code_ 
-void adc_vbat_detect_init(void)
-{
-	/******power off sar adc********/
-	adc_power_on_sar_adc(0);
-
-	#if (ADC_INPUT_PCHN!=VBAT)
-		gpio_set_output_en(GPIO_VBAT_DETECT, 1);
-		gpio_write(GPIO_VBAT_DETECT, 1);
-	#endif
-
-	/******set adc sample clk as 4MHz******/
-	adc_set_sample_clk(5); //adc sample clk= 24M/(1+5)=4M
-
-	//set misc channel en,  and adc state machine state cnt 2( "set" stage and "capture" state for misc channel)
-	adc_set_chn_enable_and_max_state_cnt(ADC_MISC_CHN, 2);  	//set total length for sampling state machine and channel
-
-	//set "capture state" length for misc channel: 240
-	//set "set state" length for misc channel: 10
-	//adc state machine  period  = 24M/250 = 96K, T = 10.4 uS
-	adc_set_state_length(240, 10);  	//set R_max_mc,R_max_c,R_max_s
-
-
-	#if 1  //optimize, for saving time
-		//set misc channel use differential_mode,
-		//set misc channel resolution 14 bit,  misc channel differential mode
-		//notice that: in differential_mode MSB is sign bit, rest are data,  here BIT(13) is sign bit
-		analog_write (anareg_adc_res_m, RES14 | FLD_ADC_EN_DIFF_CHN_M);
-		adc_set_ain_chn_misc(ADC_INPUT_PCHN, GND);
-	#else
-	////set misc channel use differential_mode,
-		adc_set_ain_channel_differential_mode(ADC_INPUT_PCHN, GND);
-
-		//set misc channel resolution 14 bit
-		//notice that: in differential_mode MSB is sign bit, rest are data,  here BIT(13) is sign bit
-		adc_set_resolution(RES14);
-	#endif
-
-
-	//set misc channel vref 1.2V
-	adc_set_ref_voltage(ADC_VREF_1P2V);
-
-
-	//set misc t_sample 6 cycle of adc clock:  6 * 1/4M
-	#if 1   //optimize, for saving time
-		adc_set_tsample_cycle_chn_misc(SAMPLING_CYCLES_6);  	//Number of ADC clock cycles in sampling phase
-	#else
-		adc_set_tsample_cycle(SAMPLING_CYCLES_6);   	//Number of ADC clock cycles in sampling phase
-	#endif
-
-	//set Analog input pre-scal.ing 1/8
-	adc_set_ain_pre_scaler(ADC_PRESCALER_1F8);
-
-
-	/******power on sar adc********/
-	//note: this setting must be set after all other settings
-	adc_power_on_sar_adc(1);
-
-
-	//set Analog input pre-scal.ing 1/8
-	adc_set_ain_pre_scaler(ADC_PRESCALER_1F8);
-
-
-	/******power on sar adc********/
-	//note: this setting must be set after all other settings
-	adc_power_on_sar_adc(1);
-}
-
 /**
  * @brief		This is battery check function
  * @param[in]	alram_vol_mv - input battery calue
@@ -155,7 +81,9 @@ int app_battery_power_check(u16 alram_vol_mv)
 	//when MCU powered up or wakeup from deep/deep with retention, adc need be initialized
 	if(!adc_hw_initialized){
 		adc_hw_initialized = 1;
-		adc_vbat_detect_init();
+		adc_init();
+		adc_vbat_channel_init();
+		adc_power_on_sar_adc(1);
 	}
 
 
@@ -240,14 +168,12 @@ int app_battery_power_check(u16 alram_vol_mv)
 	#endif
 
 
-
-
-//////////////// adc sample data convert to voltage(mv) ////////////////
-	//                          (Vref, 1/8 scaler)   (BIT<12~0> valid data)
-	//			 =  adc_result * Vref * 8 / 0x2000
-	//           =  adc_result * Vref >>10
-	batt_vol_mv  = (adc_result * adc_vref_cfg.adc_vref)>>10;
-
+	 //////////////// adc sample data convert to voltage(mv) ////////////////
+	//                          (Vref, adc_pre_scale)   (BIT<12~0> valid data)
+	//			 =  adc_result * Vref * adc_pre_scale / 0x2000
+	//           =  adc_result * Vref*adc_pre_scale >>13
+	extern unsigned char   adc_pre_scale;
+	batt_vol_mv  = (adc_vbat_divider*adc_result*adc_pre_scale*adc_vref_cfg.adc_vref)>>13;
 
 	if(batt_vol_mv < alram_vol_mv){
 		return 0;

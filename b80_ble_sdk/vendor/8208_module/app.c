@@ -523,7 +523,7 @@ _attribute_ram_code_ void user_init_deepRetn(void)
 	uart_recbuff_init( (unsigned char *)uart_rx_addr, spp_rx_fifo.size);
 
 
-	uart_gpio_set(GPIO_PB4, GPIO_PB5);
+	uart_gpio_set(UART_TX_PIN, UART_RX_PIN);
 
 	uart_reset();  //will reset uart digital registers from 0x90 ~ 0x9f, so uart setting must set after this reset
 

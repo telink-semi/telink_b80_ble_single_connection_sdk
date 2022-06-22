@@ -157,10 +157,6 @@ void			blt_crypto_alg_prand(u8 prand[3]);
  */
 void			blt_crypto_alg_ah(const u8 irk[16], u8 r[3], u8 out[3]);
 
-#define	tn_crypto_f5    blt_smp_alg_f5
-#define	tn_crypto_f6    blt_smp_alg_f6
-
-
 
 #endif /* SMP_ALG_H_ */
 

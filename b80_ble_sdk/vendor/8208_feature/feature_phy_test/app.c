@@ -196,7 +196,6 @@ void app_phytest_irq_proc(void)
 	if (reg_uart_status1 & FLD_UART_TX_DONE) {
 
 		Tr_SetUartTxDone();
-		uart_clr_tx_done();
 	}
 
 

@@ -42,9 +42,7 @@
 #include "service/uuid.h"
 
 
-#include "algorithm/aes_ccm/aes_ccm.h"
-#include "algorithm/ecc/ecc_ll.h"
-#include "algorithm/ecc/sw_ecc.h"
+
 
 
 

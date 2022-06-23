@@ -169,22 +169,6 @@ u32 module_wakeup_module_tick;
 
 #if (BATT_CHECK_ENABLE)
 u32	lowBattDet_tick   = 0;
-/**
- * @brief		callback function of adjust whether allow enter to pm or not
- * @param[in]	none
- * @return      0 forbidden enter cpu_sleep_wakeup, 1 allow enter cpu_sleep_wakeup
- */
-int app_suspend_enter_low_battery (void)
-{
-	if (!gpio_read(GPIO_WAKEUP_FEATURE)) //gpio low level
-	{
-		analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)|LOW_BATT_FLG);  //mark
-		return 1;//allow enter cpu_sleep_wakeup
-	}
-
-	analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)&(~LOW_BATT_FLG));  //clr
-	return 0; //forbidden enter cpu_sleep_wakeup
-}
 #endif
 
 /**
@@ -314,8 +298,8 @@ void user_init_normal(void)
 				}
 			#endif
 
+			analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)|LOW_BATT_FLG);  //mark
 			GPIO_WAKEUP_FEATURE_LOW;
-			bls_pm_registerFuncBeforeSuspend( &app_suspend_enter_low_battery );
 
 			cpu_set_gpio_wakeup (GPIO_WAKEUP_FEATURE, Level_High, 1);  //drive pin pad high wakeup deepsleep
 
@@ -584,8 +568,8 @@ void main_loop (void)
 				}
 			#endif
 
+			analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)|LOW_BATT_FLG);  //mark
 			GPIO_WAKEUP_FEATURE_LOW;
-			bls_pm_registerFuncBeforeSuspend( &app_suspend_enter_low_battery );
 
 			cpu_set_gpio_wakeup (GPIO_WAKEUP_FEATURE, Level_High, 1);  //drive pin pad high wakeup deepsleep
 

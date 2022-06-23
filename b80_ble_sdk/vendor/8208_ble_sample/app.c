@@ -53,6 +53,10 @@ u8  sendTerminate_before_enterDeep = 0;
 u32 latest_user_event_tick;
 #endif
 
+#if (BATT_CHECK_ENABLE)
+u32	lowBattDet_tick   = 0;
+#endif
+
 own_addr_type_t app_own_address_type = OWN_ADDRESS_PUBLIC;
 
 /**
@@ -91,25 +95,7 @@ void app_switch_to_indirect_adv(u8 e, u8 *p, int n)
 	bls_ll_setAdvEnable(BLC_ADV_ENABLE);  //must: set adv enable
 }
 
-#if (BATT_CHECK_ENABLE)
-u32	lowBattDet_tick   = 0;
-/**
- * @brief		callback function of adjust whether allow enter to pm or not
- * @param[in]	none
- * @return      0 forbidden enter cpu_sleep_wakeup, 1 allow enter cpu_sleep_wakeup
- */
-int app_suspend_enter_low_battery (void)
-{
-	if (!gpio_read(GPIO_WAKEUP_FEATURE)) //gpio low level
-	{
-		analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)|LOW_BATT_FLG);  //mark
-		return 1;//allow enter cpu_sleep_wakeup
-	}
 
-	analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)&(~LOW_BATT_FLG));  //clr
-	return 0; //forbidden enter cpu_sleep_wakeup
-}
-#endif
 
 /**
  * @brief      callback function of LinkLayer Event "BLT_EV_FLAG_CONNECT"
@@ -284,9 +270,8 @@ void user_init_normal(void)
 					sleep_us(200000);
 				}
 			#endif
-
+			analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG) | LOW_BATT_FLG);  //mark
 			GPIO_WAKEUP_FEATURE_LOW;
-			bls_pm_registerFuncBeforeSuspend( &app_suspend_enter_low_battery );
 
 			cpu_set_gpio_wakeup (GPIO_WAKEUP_FEATURE, Level_High, 1);  //drive pin pad high wakeup deepsleep
 
@@ -538,9 +523,8 @@ void main_loop (void)
 						sleep_us(200000);
 					}
 				#endif
-
+				analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG) | LOW_BATT_FLG);  //mark
 				GPIO_WAKEUP_FEATURE_LOW;
-				bls_pm_registerFuncBeforeSuspend( &app_suspend_enter_low_battery );
 
 				cpu_set_gpio_wakeup (GPIO_WAKEUP_FEATURE, Level_High, 1);  //drive pin pad high wakeup deepsleep
 

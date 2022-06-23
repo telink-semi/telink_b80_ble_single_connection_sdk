@@ -39,7 +39,7 @@
 /* Power Management */
 #define BLE_APP_PM_ENABLE							1
 #define PM_DEEPSLEEP_ENABLE            				0 		//test connection power, should disable deepSleep
-#define PM_DEEPSLEEP_RETENTION_ENABLE               0
+#define PM_DEEPSLEEP_RETENTION_ENABLE               1
 
 
 /**

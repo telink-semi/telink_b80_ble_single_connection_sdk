@@ -71,22 +71,6 @@ const u8	tbl_scanRsp [] = {
 
 
 
-#if( SMP_TEST_MODE == SMP_TEST_LEGACY_PASSKEY_ENTRY_SDMI)
-/**
- * @brief      callback function of LinkLayer Event "BLT_EV_FLAG_REQ_INPUT_PIN"
- * @param[in]  e - LinkLayer Event type
- * @param[in]  p - data pointer of event
- * @param[in]  n - data length of event
- * @return     none
- */
-void task_pincode(u8 e, u8 *p, int n)
-{
-	blc_smp_set_pinCode(1234);		// master side input 001234
-
-	DBG_CHN7_TOGGLE;
-}
-
-#endif
 
 
 /**
@@ -172,7 +156,101 @@ void blt_pm_proc(void)
 }
 
 
+/**
+ * @brief      callback function of Host Event
+ * @param[in]  h - Host Event type
+ * @param[in]  para - data pointer of event
+ * @param[in]  n - data length of event
+ * @return     0
+ */
+int app_host_event_callback (u32 h, u8 *para, int n)
+{
+	u8 event = h & 0xFF;
 
+	switch(event)
+	{
+		case GAP_EVT_SMP_PAIRING_BEGIN:
+		{
+			printf("Pairing begin\n");
+
+			#if (SMP_TEST_MODE == SMP_TEST_SC_PASSKEY_ENTRY_MDSI || SMP_TEST_MODE == SMP_TEST_SC_PASSKEY_ENTRY_MISI || \
+				 SMP_TEST_MODE == SMP_TEST_LEGACY_PASSKEY_ENTRY_MISI || SMP_TEST_MODE == SMP_TEST_LEGACY_PASSKEY_ENTRY_MDSI)
+				digital_key_cnt = 0;//clr
+			#endif
+		}
+		break;
+
+		case GAP_EVT_SMP_PAIRING_SUCCESS:
+		{
+			gap_smp_pairingSuccessEvt_t* p = (gap_smp_pairingSuccessEvt_t*)para;
+			printf("Pairing success:bond flg %s\n", p->bonding ?"true":"false");
+
+			if(p->bonding_result){
+				printf("save smp key succ\n");
+			}
+			else{
+				printf("save smp key failed\n");
+			}
+		}
+		break;
+
+		case GAP_EVT_SMP_PAIRING_FAIL:
+		{
+			gap_smp_pairingFailEvt_t* p = (gap_smp_pairingFailEvt_t*)para;
+			printf("Pairing failed:rsn:0x%x\n", p->reason);
+		}
+		break;
+
+		case GAP_EVT_SMP_CONN_ENCRYPTION_DONE:
+		{
+			gap_smp_connEncDoneEvt_t* p = (gap_smp_connEncDoneEvt_t*)para;
+			printf("Connection encryption done\n");
+
+			if(p->re_connect == SMP_STANDARD_PAIR){  //first pairing
+
+			}
+			else if(p->re_connect == SMP_FAST_CONNECT){  //auto connect
+
+			}
+		}
+		break;
+
+		case GAP_EVT_SMP_TK_DISPALY:
+		{
+			char pc[7];
+			u32 pinCode = *(u32*)para;
+			sprintf(pc, "%d", pinCode);
+			printf("TK display:%s\n", pc);
+		}
+		break;
+
+		case GAP_EVT_SMP_TK_REQUEST_PASSKEY:
+		{
+			printf("TK Request passkey\n");
+		}
+		break;
+
+		case GAP_EVT_SMP_TK_REQUEST_OOB:
+		{
+			printf("TK Request OOB\n");
+		}
+		break;
+
+		case GAP_EVT_SMP_TK_NUMERIC_COMPARE:
+		{
+			char pc[7];
+			u32 pinCode = *(u32*)para;
+			sprintf(pc, "%d", pinCode);
+			printf("TK numeric comparison:%s\n", pc);
+		}
+		break;
+
+		default:
+		break;
+	}
+
+	return 0;
+}
 
 
 /**
@@ -242,30 +320,90 @@ void user_init_normal(void)
 	/* SMP Initialization may involve flash write/erase(when one sector stores too much information,
 	 *   is about to exceed the sector threshold, this sector must be erased, and all useful information
 	 *   should re_stored) , so it must be done after battery check */
-	#if ( SMP_TEST_MODE	== SMP_TEST_NO_SECURITY)
-		bls_smp_enableParing (SMP_PAIRING_DISABLE_TRRIGER );
-	#elif( SMP_TEST_MODE == SMP_TEST_LEGACY_PAIRING_JUST_WORKS)
-		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
-		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is 4, can not bigger than this value
-													    //and this func must call before bls_smp_enableParing
-		bls_smp_enableParing (SMP_PAIRING_CONN_TRRIGER );
-	#elif( SMP_TEST_MODE == SMP_TEST_SC_PAIRING_JUST_WORKS)
-		blc_smp_enableScFlag(1);
-		blc_smp_setEcdhDebugMode(1);
+#if ( SMP_TEST_MODE	== LE_SECURITY_MODE_1_LEVEL_1)
 
-		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
-		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is 4, can not bigger than this value
-													    //and this func must call before bls_smp_enableParing
-		bls_smp_enableParing (SMP_PAIRING_CONN_TRRIGER );
-	#elif( SMP_TEST_MODE == SMP_TEST_LEGACY_PASSKEY_ENTRY_SDMI)
-		blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING);
-		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is 4, can not bigger than this value
-													    //and this func must call before bls_smp_enableParing
-		bls_smp_enableParing (SMP_PAIRING_CONN_TRRIGER );
-		blc_smp_setIoCapability(IO_CAPABILITY_DISPLAY_ONLY);	// if not set, default is : IO_CAPABILITY_NO_INPUT_NO_OUTPUT
-		blc_smp_enableAuthMITM(1,999999);	//default pincode is 999999
-		bls_app_registerEventCallback (BLT_EV_FLAG_REQ_INPUT_PIN, &task_pincode);	//use API to change pincode.
-	#endif
+	blc_smp_setSecurityLevel(No_Authentication_No_Encryption);  // LE_Security_Mode_1_Level_1	//Smp Initialization may involve flash write/erase(when one sector stores too much information,
+
+#elif ( SMP_TEST_MODE == LE_SECURITY_MODE_1_LEVEL_2  )
+
+	blc_smp_param_setBondingDeviceMaxNumber(4);    //if not set, default is : SMP_BONDING_DEVICE_MAX_NUM
+
+	//set security level: "LE_Security_Mode_1_Level_2"
+	blc_smp_setSecurityLevel(Unauthenticated_Pairing_with_Encryption);  //if not set, default is : LE_Security_Mode_1_Level_2(Unauthenticated_Pairing_with_Encryption)
+	blc_smp_setBondingMode(Bondable_Mode);	// if not set, default is : Bondable_Mode
+	blc_smp_setIoCapability(IO_CAPABLITY_NO_IN_NO_OUT);	// if not set, default is : IO_CAPABILITY_NO_INPUT_NO_OUTPUT
+
+	//Smp Initialization may involve flash write/erase(when one sector stores too much information,
+	//   is about to exceed the sector threshold, this sector must be erased, and all useful information
+	//   should re_stored) , so it must be done after battery check
+	//Notice:if user set smp parameters: it should be called after usr smp settings
+	blc_smp_peripheral_init();
+
+	blc_smp_configSecurityRequestSending(SecReq_IMM_SEND, SecReq_PEND_SEND, 1000); //if not set, default is:  send "security request" immediately after link layer connection established(regardless of new connection or reconnection )
+
+	//host(GAP/SMP/GATT/ATT) event process: register host event callback and set event mask
+	blc_gap_registerHostEventHandler( app_host_event_callback );
+	blc_gap_setEventMask( GAP_EVT_MASK_SMP_PAIRING_BEGIN 			|  \
+						  GAP_EVT_MASK_SMP_PAIRING_SUCCESS   		|  \
+						  GAP_EVT_MASK_SMP_PAIRING_FAIL				|  \
+						  GAP_EVT_MASK_SMP_CONN_ENCRYPTION_DONE );
+
+
+#elif ( SMP_TEST_MODE == LE_SECURITY_MODE_1_LEVEL_3  )
+
+	blc_smp_param_setBondingDeviceMaxNumber(4);    //if not set, default is : SMP_BONDING_DEVICE_MAX_NUM
+
+	//set security level: "LE_Security_Mode_1_Level_3"
+	blc_smp_setSecurityLevel(Authenticated_pairing_with_Encryption);  //if not set, default is : LE_Security_Mode_1_Level_2(Unauthenticated_Pairing_with_Encryption)
+	blc_smp_enableAuthMITM(1);
+	blc_smp_setBondingMode(Bondable_Mode);	// if not set, default is : Bondable_Mode
+	blc_smp_setIoCapability(IO_CAPABILITY_DISPLAY_ONLY);	// if not set, default is : IO_CAPABILITY_NO_INPUT_NO_OUTPUT
+
+	//Smp Initialization may involve flash write/erase(when one sector stores too much information,
+	//   is about to exceed the sector threshold, this sector must be erased, and all useful information
+	//   should re_stored) , so it must be done after battery check
+	//Notice:if user set smp parameters: it should be called after usr smp settings
+	blc_smp_peripheral_init();
+
+	blc_smp_configSecurityRequestSending(SecReq_IMM_SEND, SecReq_PEND_SEND, 1000); //if not set, default is:  send "security request" immediately after link layer connection established(regardless of new connection or reconnection )
+
+	//host(GAP/SMP/GATT/ATT) event process: register host event callback and set event mask
+	blc_gap_registerHostEventHandler( app_host_event_callback );
+	blc_gap_setEventMask( GAP_EVT_MASK_SMP_PAIRING_BEGIN 			|  \
+						  GAP_EVT_MASK_SMP_PAIRING_SUCCESS   		|  \
+						  GAP_EVT_MASK_SMP_PAIRING_FAIL				|  \
+						  GAP_EVT_MASK_SMP_TK_DISPALY				|  \
+						  GAP_EVT_MASK_SMP_CONN_ENCRYPTION_DONE     |  \
+						  GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE);
+
+#elif ( SMP_TEST_MODE == LE_SECURITY_MODE_1_LEVEL_4  )
+
+	blc_smp_param_setBondingDeviceMaxNumber(4);    //if not set, default is : SMP_BONDING_DEVICE_MAX_NUM
+
+	//set security level: "LE_Security_Mode_1_Level_4"
+	blc_smp_setSecurityLevel(Authenticated_LE_Secure_Connection_pairing_with_Encryption);  //if not set, default is : LE_Security_Mode_1_Level_2(Unauthenticated_Pairing_with_Encryption)
+	blc_smp_setpairingMethods(LE_Secure_Connection);
+	blc_smp_setSecurityParamters(Bondable_Mode, 1, 0, 0, IO_CAPABILITY_DISPLAY_ONLY);
+	blc_smp_setEcdhDebugMode(debug_mode); //use debug mode for sniffer decryption
+
+	//Smp Initialization may involve flash write/erase(when one sector stores too much information,
+	//   is about to exceed the sector threshold, this sector must be erased, and all useful information
+	//   should re_stored) , so it must be done after battery check
+	//Notice:if user set smp parameters: it should be called after usr smp settings
+	blc_smp_peripheral_init();
+
+	blc_smp_configSecurityRequestSending(SecReq_IMM_SEND, SecReq_PEND_SEND, 1000); //if not set, default is:  send "security request" immediately after link layer connection established(regardless of new connection or reconnection )
+
+	//host(GAP/SMP/GATT/ATT) event process: register host event callback and set event mask
+	blc_gap_registerHostEventHandler( app_host_event_callback );
+	blc_gap_setEventMask( GAP_EVT_MASK_SMP_PAIRING_BEGIN 			|  \
+						  GAP_EVT_MASK_SMP_PAIRING_SUCCESS   		|  \
+						  GAP_EVT_MASK_SMP_PAIRING_FAIL				|  \
+						  GAP_EVT_MASK_SMP_TK_DISPALY				|  \
+						  GAP_EVT_MASK_SMP_CONN_ENCRYPTION_DONE     |  \
+						  GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE);
+
+#endif
 
 	//////////// Host Initialization  End /////////////////////////
 

@@ -1,5 +1,5 @@
 /********************************************************************************************************
- * @file     gap_event.hh
+ * @file     gap_event.h
  *
  * @brief    This is the header file for BLE SDK
  *

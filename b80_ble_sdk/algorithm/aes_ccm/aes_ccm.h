@@ -35,6 +35,7 @@ enum {
     AES_FAIL,
 };
 
+
 typedef struct {
 	u32		pkt;
 	u8		dir;
@@ -51,6 +52,7 @@ typedef struct {
 	u8					enable;			//1: slave enable; 2: master enable
 	u8					mic_fail;
 } ble_crypt_para_t;
+
 
 struct CCM_FLAGS_TAG {
     union {
@@ -77,6 +79,26 @@ typedef struct {
     u8 newAstr[AES_BLOCK_SIZE];
 } aes_enc_t;
 
+
+enum{
+	CRYPT_NONCE_TYPE_ACL = 0,
+	CRYPT_NONCE_TYPE_CIS = 1,
+	CRYPT_NONCE_TYPE_BIS = 2,
+};
+
+typedef union {
+	struct{
+		u8 enEncFlg:1; //enable encryption
+		u8 noneType:2; //ACL, CIS, BIS
+		u8 decMicFail:1;//Decryption status
+		u8 role:1;     //ll_ccm_enc: Master role must use 1, Slave role must use 0;
+        			   //ll_ccm_dec: Master role must use 0, Slave role must use 1;
+		u8 rsvd:3;     //Rsvd
+	};
+	u8 cryptBitsInfo;
+}cryptBitsInfo_t;
+
+
 /**
  * @brief   	this function is used to encrypt the plaintext
  * @param[in]	*key - aes key: 128 bit key for the encryption of the data, little--endian.
@@ -86,6 +108,7 @@ typedef struct {
  * @Note		Input data requires strict Word alignment
  */
 void aes_ll_encryption(u8 *key, u8 *plaintext, u8 *result);
+
 
 /**
  * @brief   	this function is used to initialize the aes_ccm initial value
@@ -99,6 +122,7 @@ void aes_ll_encryption(u8 *key, u8 *plaintext, u8 *result);
  */
 void aes_ll_ccm_encryption_init (u8 *ltk, u8 *skdm, u8 *skds, u8 *ivm, u8 *ivs, ble_crypt_para_t *pd);
 
+
 /**
  * @brief   	this function is used to encrypt the aes_ccm value
  * @param[in]   pkt - plaint_text
@@ -110,6 +134,7 @@ void aes_ll_ccm_encryption_init (u8 *ltk, u8 *skdm, u8 *skds, u8 *ivm, u8 *ivs, 
 void aes_ll_ccm_encryption(u8 *pkt, int master, ble_crypt_para_t *pd);
 
 
+
 /**
  * @brief   	this function is used to decrypt the aes_ccm value
  * @param[in]   pkt - plaint_text
@@ -118,6 +143,11 @@ void aes_ll_ccm_encryption(u8 *pkt, int master, ble_crypt_para_t *pd);
  * @param[in]   pd - Reference structure ble_crypt_para_t
  * @return  	0: decryption succeeded; 1: decryption failed
  */
-int aes_ll_ccm_decryption(u8 *pkt, int master, ble_crypt_para_t *pd);		//OK return 0
+int  aes_ll_ccm_decryption(u8 *pkt, int master, ble_crypt_para_t *pd);
+
+
+
+
+
 
 

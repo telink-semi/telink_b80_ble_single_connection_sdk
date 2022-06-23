@@ -45,41 +45,58 @@
 #define 	SMP_TEST_NO_SECURITY				1
 
 
-// LE_Security_Mode_1_Level_2, unauthenticated paring with encryption
+// LE_Security_Mode_1_Level_2, unauthenticated pairing with encryption
 #define 	SMP_TEST_LEGACY_PAIRING_JUST_WORKS	2 //JustWorks
 #define 	SMP_TEST_SC_PAIRING_JUST_WORKS		3 //JustWorks
 
-// LE_Security_Mode_1_Level_3, authenticated paring with encryption
+// LE_Security_Mode_1_Level_3, authenticated pairing with encryption
 #define 	SMP_TEST_LEGACY_PASSKEY_ENTRY_SDMI	4 //PK_Resp_Dsply_Init_Input
+#define 	SMP_TEST_LEGACY_PASSKEY_ENTRY_MDSI	5 //PK_Init_Dsply_Resp_Input
+#define 	SMP_TEST_LEGACY_PASSKEY_ENTRY_MISI	6 //PK_BOTH_INPUT, not test
+#define 	SMP_TEST_LEGACY_PASSKEY_ENTRY_OOB	7 //OOB_Authentication, not test
+
+// LE_Security_Mode_1_Level_4, authenticated pairing with encryption
+#define 	SMP_TEST_SC_NUMERIC_COMPARISON		8 //Numric_Comparison
+#define 	SMP_TEST_SC_PASSKEY_ENTRY_SDMI		9 //PK_Resp_Dsply_Init_Input
+#define 	SMP_TEST_SC_PASSKEY_ENTRY_MDSI		10//PK_Init_Dsply_Resp_Input
+#define 	SMP_TEST_SC_PASSKEY_ENTRY_MISI		11//PK_BOTH_INPUT, not test
+#define 	SMP_TEST_SC_PASSKEY_ENTRY_OOB		12//OOB_Authentication, not test
 
 // LE security mode select
 #define 	LE_SECURITY_MODE_1_LEVEL_1			SMP_TEST_NO_SECURITY
-#define 	LE_SECURITY_MODE_1_LEVEL_2			SMP_TEST_LEGACY_PAIRING_JUST_WORKS//SMP_TEST_SC_PAIRING_JUST_WORKS
+#define 	LE_SECURITY_MODE_1_LEVEL_2			SMP_TEST_LEGACY_PAIRING_JUST_WORKS
 #define 	LE_SECURITY_MODE_1_LEVEL_3			SMP_TEST_LEGACY_PASSKEY_ENTRY_SDMI
+#define 	LE_SECURITY_MODE_1_LEVEL_4			SMP_TEST_SC_PASSKEY_ENTRY_SDMI
 
 
-#define     SMP_TEST_MODE						LE_SECURITY_MODE_1_LEVEL_3
+#define     SMP_TEST_MODE						LE_SECURITY_MODE_1_LEVEL_2
 
 //use lightblue or nrf connect app, after connected, enable notify, write some data into characteristic Telink SPP:Phone->Module
 
 //client to server RX character permission
 //refer to core5.0 Vol3,Part C, Table 10.2 for more information
 #if (SMP_TEST_MODE == LE_SECURITY_MODE_1_LEVEL_1)
-	#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_RDWR
-	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_ENCRYPT_RDWR
-	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_AUTHEN_RDWR
-	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_SECURE_CONN_RDWR
-#elif(SMP_TEST_MODE == LE_SECURITY_MODE_1_LEVEL_2)
 	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_RDWR
 	#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_ENCRYPT_RDWR
 	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_AUTHEN_RDWR
 	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_SECURE_CONN_RDWR
-#elif(SMP_TEST_MODE == LE_SECURITY_MODE_1_LEVEL_3)
+#elif(SMP_TEST_MODE == LE_SECURITY_MODE_1_LEVEL_2)
 	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_RDWR
 	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_ENCRYPT_RDWR
 	#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_AUTHEN_RDWR
 	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_SECURE_CONN_RDWR
+#elif(SMP_TEST_MODE == LE_SECURITY_MODE_1_LEVEL_3)
+	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_RDWR
+	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_ENCRYPT_RDWR
+	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_AUTHEN_RDWR
+	#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_SECURE_CONN_RDWR
+#elif(SMP_TEST_MODE == LE_SECURITY_MODE_1_LEVEL_4)
+	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_RDWR
+	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_ENCRYPT_RDWR
+	//#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_AUTHEN_RDWR
+	#define     SPP_C2S_ATT_PERMISSIONS_RDWR        ATT_PERMISSIONS_SECURE_CONN_RDWR
 #endif
+
 
 /**
  *  @brief  UI Configuration
@@ -91,7 +108,7 @@
 /**
  *  @brief  DEBUG  Configuration
  */
-#define DEBUG_GPIO_ENABLE							1
+#define DEBUG_GPIO_ENABLE							0
 
 
 

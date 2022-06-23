@@ -87,7 +87,7 @@
 	#define	CFG_ADR_MAC		   									CFG_ADR_MAC_128K_FLASH			//can not change this value
 	#define	CFG_ADR_CALIBRATION		   							CFG_ADR_CALIBRATION_128K_FLASH	//can not change this value
 
-/* SMP pairing and key information area */
+/* SMP Pairing and key information area */
 	#ifndef FLASH_ADR_SMP_PAIRING
 	#define FLASH_ADR_SMP_PAIRING         						0x1C000
 	#endif

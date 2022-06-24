@@ -278,7 +278,12 @@ void user_init_normal(void)
 	 *   is about to exceed the sector threshold, this sector must be erased, and all useful information
 	 *   should re_stored) , so it must be done after battery check */
 	#if (APP_SECURITY_ENABLE)
+		bls_smp_configpairingSecurityInfoStorageAddr(FLASH_ADR_SMP_PAIRING);
+		blc_smp_param_setBondingDeviceMaxNumber(4);  	//default is 4, can not bigger than this value
+
 		blc_smp_peripheral_init();
+		blc_smp_setSecurityLevel(Unauthenticated_Pairing_with_Encryption);
+
 	#else
 		blc_smp_setSecurityLevel(No_Security);
 	#endif

@@ -80,7 +80,7 @@
  * 			FLASH_ADR_SMP_PAIRING:
  * 								  use 8K flash for SMP pairing information storage.
  * 									First 4K is for normal use, second 4K is a backup to guarantee SMP information never lose.
- * 									use API blc_smp_configPairingSecurityInfoStorageAddress(FLASH_ADR_SMP_PAIRING) to set the address.
+ * 									use API bls_smp_configpairingSecurityInfoStorageAddr(FLASH_ADR_SMP_PAIRING) to set the address.
  */
 #if(FLASH_SIZE_OPTION == FLASH_SIZE_OPTION_128K)
 	/* MAC and calibration data area */

@@ -6,6 +6,7 @@ stages:
   - plainPW_check
   - cov
   - fossid
+  - release_sdk_s1_s2_s3
 
 genLicense:
   variables:
@@ -113,5 +114,61 @@ fossid:
   artifacts:
     paths:
     - fossid*.txt
+  when: manual
+
+test_release_sdk_customized_S1:
+  variables:
+    VERSION: "S1"
+    TAR_SDK_NAME: ${CI_PROJECT_NAME}_$VERSION
+  stage: release_sdk_s1_s2_s3
+  tags:
+    - windows_tc32_test
+
+  script:
+    - echo $TAG_NAME
+    - ./ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $TAG_NAME $SRC_COMMIT_ID
+
+  artifacts:
+    name: "$TAR_SDK_NAME"
+    paths:
+    - "./b80_ble_sdk"
+    - "./README.md"
+  when: manual
+
+test_release_sdk_customized_S2:
+  variables:
+    VERSION: "S2"
+    TAR_SDK_NAME: ${CI_PROJECT_NAME}_$VERSION
+  stage: release_sdk_s1_s2_s3
+  tags:
+    - windows_tc32_test
+
+  script:
+    # - echo "tag: $TAG_NAME"
+    - ./ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $TAG_NAME $SRC_COMMIT_ID
+
+  artifacts:
+    name: "$TAR_SDK_NAME"
+    paths:
+    - "./b80_ble_sdk"
+    - "./README.md"
+  when: manual
+
+test_release_sdk_customized_S3:
+  variables:
+    VERSION: "S3"
+    TAR_SDK_NAME: ${CI_PROJECT_NAME}_$VERSION
+  stage: release_sdk_s1_s2_s3
+  tags:
+    - windows_tc32_test
+
+  script:
+    - ./ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $TAG_NAME $SRC_COMMIT_ID
+
+  artifacts:
+    name: "$TAR_SDK_NAME"
+    paths:
+    - "./b80_ble_sdk"
+    - "./README.md"
   when: manual
 

@@ -126,7 +126,7 @@ test_release_sdk_customized_S1:
 
   script:
     - echo $TAG_NAME
-    - ./ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $TAG_NAME $SRC_COMMIT_ID
+    - ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $TAG_NAME $SRC_COMMIT_ID
 
   artifacts:
     name: "$TAR_SDK_NAME"
@@ -145,7 +145,7 @@ test_release_sdk_customized_S2:
 
   script:
     # - echo "tag: $TAG_NAME"
-    - ./ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $TAG_NAME $SRC_COMMIT_ID
+    - ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $TAG_NAME $SRC_COMMIT_ID
 
   artifacts:
     name: "$TAR_SDK_NAME"
@@ -163,7 +163,7 @@ test_release_sdk_customized_S3:
     - windows_tc32_test
 
   script:
-    - ./ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $TAG_NAME $SRC_COMMIT_ID
+    - ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $TAG_NAME $SRC_COMMIT_ID
 
   artifacts:
     name: "$TAR_SDK_NAME"

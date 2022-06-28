@@ -169,6 +169,26 @@ extern void timer_start(TIMER_TypeDef type);
 extern void timer_stop(TIMER_TypeDef type);
 
 /**
+ * @brief		This function servers to set timer irq mask.
+ * @param[in]	mask - variable of enum to select the timer interrupt status source.
+ * @return		none.
+ */
+static inline void timer_set_irq_mask(tmr_sta_e mask)
+{
+	reg_irq_mask |= mask;
+}
+
+/**
+ * @brief		This function servers to clear timer irq mask.
+ * @param[in]	mask - variable of enum to select the timer interrupt status source.
+ * @return		none.
+ */
+static inline void timer_clr_irq_mask(tmr_sta_e mask)
+{
+	reg_irq_mask &= (~mask);
+}
+
+/**
  * @brief     This fuction servers to clear the timer interrupt status.
  * @param[in] status  - variable of enum to select the timer interrupt status source.
  * @return	  none.

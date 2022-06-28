@@ -30,10 +30,17 @@
 #include "flash.h"
 #include "lib/include/pm.h"
 _attribute_data_retention_
-adc_vref_ctr_t adc_vref_cfg = {
-	.adc_vref 		= 1175, //default ADC ref voltage (unit:mV)
-	.adc_calib_en	= 1, 	//default disable
-};
+volatile unsigned short g_adc_vref = 1175;//ADC calibration value voltage (unit:mV).
+_attribute_data_retention_
+volatile signed char g_adc_vref_offset = 0;//ADC calibration value voltage offset (unit:mV).
+_attribute_data_retention_
+unsigned short g_adc_gpio_calib_vref = 1175;//ADC gpio calibration value voltage (unit:mV)(used for gpio voltage sample).
+_attribute_data_retention_
+signed char g_adc_gpio_calib_vref_offset = 0;//ADC gpio calibration value voltage offset (unit:mV)(used for gpio voltage sample).
+_attribute_data_retention_
+unsigned short g_adc_vbat_calib_vref = 1175;//ADC vbat calibration value voltage (unit:mV)(used for internal voltage sample).
+_attribute_data_retention_
+signed char g_adc_vbat_calib_vref_offset = 0;//ADC vbat calibration value voltage offset (unit:mV)(used for vbat voltage sample).
 volatile unsigned short	adc_code;
 unsigned char   adc_pre_scale;
 unsigned char   adc_vbat_divider;
@@ -143,6 +150,29 @@ void adc_init(void){
 }
 
 /**
+ * @brief This function is used to calib ADC 1.2V vref for GPIO.
+ * @param[in] vref - GPIO sampling calibration value.
+ * @param[in] offset - GPIO sampling two-point calibration value offset.
+ * @return none
+ */
+void adc_set_gpio_calib_vref(unsigned short vref,signed char offset)
+{
+	g_adc_gpio_calib_vref = vref;
+	g_adc_gpio_calib_vref_offset = offset;
+}
+/**
+ * @brief This function is used to calib ADC 1.2V vref for Vbat.
+ * @param[in] vref - Vbat channel sampling calibration value.
+ * @param[in] offset - Vbat channel sampling two-point calibration value offset.
+ * @return none
+ */
+void adc_set_vbat_calib_vref(unsigned short vref,signed char offset)
+{
+	g_adc_vbat_calib_vref = vref;
+	g_adc_vbat_calib_vref_offset = offset;
+}
+
+/**
  * @brief This function is used for ADC configuration of ADC IO voltage sampling.
  * @param[in]   pin - GPIO_PinTypeDef
  * @return none
@@ -183,6 +213,12 @@ void adc_temp_init(void)
  */
 void adc_vbat_channel_init(void)
 {
+	/**
+		 * Add Vref calibrate operation.
+		 * add by jiarong.20220418.
+	*/
+	g_adc_vref = g_adc_vbat_calib_vref;//set adc_vref as adc_vbat_calib_vref
+	g_adc_vref_offset = g_adc_vbat_calib_vref_offset;//set adc_vref_offset as adc_vbat_calib_vref_offset
 	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_1F4);
 
 	adc_set_ain_chn_misc(VBAT, GND);
@@ -256,12 +292,17 @@ unsigned int adc_sample_and_get_result(void)
 #endif
 	adc_code=adc_result = adc_average;
 
-	 //////////////// adc sample data convert to voltage(mv) ////////////////
-	//                          (Vref, adc_pre_scale)   (BIT<12~0> valid data)
-	//			 =  adc_result * Vref * adc_pre_scale / 0x2000
-	//           =  adc_result * Vref*adc_pre_scale >>13
-	adc_vol_mv  = (adc_vbat_divider*adc_result*adc_pre_scale*adc_vref_cfg.adc_vref)>>13;
-
+	//When the code value is 0, the returned voltage value should be 0.
+	if(adc_result == 0){
+		return 0;
+	}
+	else{
+		//////////////// adc sample data convert to voltage(mv) ////////////////
+		//                          (Vref, adc_pre_scale)   (BIT<12~0> valid data)
+		//			 =  adc_result * Vref * adc_pre_scale / 0x2000 + offset
+		//           =  adc_result * Vref*adc_pre_scale >>13 + offset
+		adc_vol_mv  = ((adc_vbat_divider*adc_result*adc_pre_scale*g_adc_vref)>>13) + g_adc_vref_offset;
+	}
 	return adc_vol_mv;
 }
 

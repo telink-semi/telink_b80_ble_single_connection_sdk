@@ -168,12 +168,14 @@ int app_battery_power_check(u16 alram_vol_mv)
 	#endif
 
 
-	 //////////////// adc sample data convert to voltage(mv) ////////////////
-	//                          (Vref, adc_pre_scale)   (BIT<12~0> valid data)
-	//			 =  adc_result * Vref * adc_pre_scale / 0x2000
-	//           =  adc_result * Vref*adc_pre_scale >>13
+		//////////////// adc sample data convert to voltage(mv) ////////////////
+		//                          (Vref, adc_pre_scale)   (BIT<12~0> valid data)
+		//			 =  adc_result * Vref * adc_pre_scale / 0x2000 + offset
+		//           =  adc_result * Vref*adc_pre_scale >>13 + offset
 	extern unsigned char   adc_pre_scale;
-	batt_vol_mv  = (adc_vbat_divider*adc_result*adc_pre_scale*adc_vref_cfg.adc_vref)>>13;
+	extern unsigned short g_adc_vref;
+	extern signed char g_adc_vref_offset;
+	batt_vol_mv  = ((adc_vbat_divider*adc_result*adc_pre_scale*g_adc_vref)>>13) + g_adc_vref_offset;
 
 	if(batt_vol_mv < alram_vol_mv){
 		return 0;

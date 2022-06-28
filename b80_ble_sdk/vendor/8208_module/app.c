@@ -164,7 +164,7 @@ int module_task_busy;
 int	module_uart_data_flg;
 u32 module_wakeup_module_tick;
 
-#define UART_TX_BUSY			( (spp_tx_fifo.rptr != spp_tx_fifo.wptr) || uart_tx_is_busy() )
+#define UART_TX_BUSY			( (spp_tx_fifo.rptr != spp_tx_fifo.wptr) || Tr_isUartTxDone() )
 #define UART_RX_BUSY			(spp_rx_fifo.rptr != spp_rx_fifo.wptr)
 
 #if (BATT_CHECK_ENABLE)
@@ -194,6 +194,8 @@ void app_suspend_exit ()
 	GPIO_WAKEUP_MODULE_HIGH;  //module enter working state
 	bls_pm_setSuspendMask(SUSPEND_DISABLE);
 	tick_wakeup = clock_time () | 1;
+	rf_set_power_level_index (MY_RF_POWER_INDEX);
+
 }
 
 /**

@@ -153,22 +153,29 @@ static inline void blc_app_loadCustomizedParameters(void)
 		}
 	}
 
-	unsigned char adc_vref_calib_value_rd[4] = {0};
-	//load adc vref value from flash
-	if(adc_vref_cfg.adc_calib_en)
-	{
-		flash_read_page(CFG_ADR_CALIBRATION+CALIB_OFFSET_ADC_VREF, 4, adc_vref_calib_value_rd);
-		if((adc_vref_calib_value_rd[2] != 0xff) || (adc_vref_calib_value_rd[3]  != 0xff ))
-		{
-			/******Method of calculating calibration Flash_vbat_Vref value: ********/
-			/******Vref = [1175 +First_Byte-255+Second_Byte] mV =  [920 + First_Byte + Second_Byte] mV  ********/
-			adc_vref_cfg.adc_vref = 920 + adc_vref_calib_value_rd[2] + adc_vref_calib_value_rd[3];
-		}
-		//else use the value init in efuse
-	}
 }
 
+/**
+* @brief		This function is used to load customized ADC calibration from flash sector for application
+* @param[in]	none
+* @return      none
+*/
+static inline void blc_app_loadADCParameters(void)
+{
+	unsigned short vbat_calib_vref = 1175;
+	signed char vbat_calib_vref_offset = 0;
+	unsigned char adc_vref_calib_value_rd[4] = {0};
+	flash_read_page(CFG_ADR_CALIBRATION+CALIB_OFFSET_ADC_VREF, 4, adc_vref_calib_value_rd);
+	if(adc_vref_calib_value_rd[3] != 0xff)	//tmp_adc_cali[2] maybe 0xff
+	{
+		/******Method of calculating calibration Flash_vbat_Vref value: ********/
+		/******Vref = [1175 +First_Byte-255+Second_Byte] mV =  [920 + First_Byte + Second_Byte] mV  ********/
+		vbat_calib_vref = adc_vref_calib_value_rd[2] + 1000;
+		vbat_calib_vref_offset = adc_vref_calib_value_rd[3] - 20;
+		adc_set_vbat_calib_vref(vbat_calib_vref, vbat_calib_vref_offset);
+	}
 
+}
 
 
 /**

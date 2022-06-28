@@ -36,16 +36,6 @@
  *  3:Resolution:8/10/12/14.
  *  4:input mode,just has differential
  */
-
-//ADC reference voltage cfg
-typedef struct {
-	unsigned short adc_vref;     //default: 1175 mV
-	unsigned short adc_calib_en;
-}adc_vref_ctr_t;
-
-extern adc_vref_ctr_t adc_vref_cfg;
-
-extern GPIO_PinTypeDef ADC_GPIO_tab[10];
 extern unsigned char   adc_vbat_divider;
 /**
  *  ADC reference voltage
@@ -64,7 +54,9 @@ typedef enum{
 typedef enum{
 	ADC_VBAT_DIVIDER_OFF = 0,
 	ADC_VBAT_DIVIDER_1F4=1,
+#if ADC_INTER_TEST
 	ADC_VBAT_DIVIDER_1F3=2,
+#endif
 }ADC_VbatDivTypeDef;
 
 /**
@@ -202,15 +194,6 @@ typedef enum{
 	ADC_GPIO_PA3 = GPIO_PA3 | (0xa<<12),
 }adc_input_pin_def_e;
 
-/**
- * @brief       This function enable adc reference voltage calibration
- * @param[in] en - 1 enable  0 disable
- * @return     none.
- */
-static inline void	adc_calib_vref_enable(unsigned char en)
-{
-	adc_vref_cfg.adc_calib_en = en;
-}
 
 
 /**
@@ -628,6 +611,20 @@ void adc_init(void );
  * @return none
  */
 void adc_base_pin_init(adc_input_pin_def_e pin);
+/**
+ * @brief This function is used to calib ADC 1.2V vref for GPIO.
+ * @param[in] vref - GPIO sampling calibration value.
+ * @param[in] offset - GPIO sampling two-point calibration value offset.
+ * @return none
+ */
+void adc_set_gpio_calib_vref(unsigned short vref,signed char offset);
+/**
+ * @brief This function is used to calib ADC 1.2V vref for Vbat.
+ * @param[in] vref - Vbat channel sampling calibration value.
+ * @param[in] offset - Vbat channel sampling two-point calibration value offset.
+ * @return none
+ */
+void adc_set_vbat_calib_vref(unsigned short vref,signed char offset);
 
 /**
  * @brief This function is used for ADC configuration of ADC IO voltage sampling.

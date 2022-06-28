@@ -198,6 +198,7 @@ int tx_to_uart_cb(void) {
 void app_uart_irq_handler(void) {
 	if (reg_uart_status1 & FLD_UART_TX_DONE) {
 		Tr_SetUartTxDone();
+		uart_clr_tx_done();
 	}
 	if (dma_chn_irq_status_get() & FLD_DMA_CHN_UART_RX) {
 		dma_chn_irq_status_clr(FLD_DMA_CHN_UART_RX);

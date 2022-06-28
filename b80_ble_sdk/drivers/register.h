@@ -1116,7 +1116,7 @@ enum{
 #define reg_irq_pri				REG_ADDR32(0x644)
 #define reg_irq_src				REG_ADDR32(0x648)
 #define reg_irq_src3			REG_ADDR8(0x64a)
-enum{
+typedef enum{
 	FLD_IRQ_TMR0_EN =			BIT(0),
 	FLD_IRQ_TMR1_EN =			BIT(1),
 	FLD_IRQ_TMR2_EN =			BIT(2),
@@ -1146,7 +1146,7 @@ enum{
 
 	FLD_IRQ_EN =				BIT_RNG(24,31),
 	FLD_IRQ_ALL           =     0XFFFFFFFF,
-};
+}irq_list_e;
 #define reg_irq_en				REG_ADDR8(0x643)
 
 

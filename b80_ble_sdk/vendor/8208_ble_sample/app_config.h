@@ -46,14 +46,14 @@
  *  @brief  UI Configuration
  */
 #if (TEST_CONN_CURRENT_ENABLE)
-	#define UI_LED_ENABLE          	 					0
-	#define	UI_KEYBOARD_ENABLE					0
+	#define UI_LED_ENABLE          	 				0
+	#define	UI_KEYBOARD_ENABLE						0
 #else
-	#define UI_LED_ENABLE          	 					1
-	#define	UI_KEYBOARD_ENABLE					1
+	#define UI_LED_ENABLE          	 				1
+	#define	UI_KEYBOARD_ENABLE						1
 #endif
 
-#define BATT_CHECK_ENABLE       			0   //enable or disable battery voltage detection
+#define BATT_CHECK_ENABLE       					0   //enable or disable battery voltage detection
 
 /**
  *  @brief  DEBUG  Configuration

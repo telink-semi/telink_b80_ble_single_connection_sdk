@@ -36,7 +36,7 @@
  * usage limitation:
  * 1. should be in range of 27 ~ 251
  */
-#define ACL_CONN_MAX_RX_OCTETS			27
+#define ACL_CONN_MAX_RX_OCTETS			251
 
 
 /**

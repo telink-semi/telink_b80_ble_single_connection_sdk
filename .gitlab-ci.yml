@@ -13,6 +13,8 @@ genLicense:
     CODE_COMPILE_ARCH: 'TC32'
     COV_PF_CATALOG: 'BLE'
   stage: genLicense
+  tags:
+    - LINUX
   before_script:
   script:
     - date
@@ -30,6 +32,8 @@ checkLicense:
     CODE_COMPILE_ARCH: 'TC32'
     COV_PF_CATALOG: 'BLE'
   stage: checkLicense
+  tags:
+    - LINUX
   allow_failure: yes
   before_script:
   script:
@@ -76,6 +80,8 @@ clean_build:
   
 plainPW_check:
   stage: plainPW_check 
+  tags:
+    - LINUX
   script:
     - echo "Enter Plain Password checking stage"
     - check_plain_weak_password | tee result.txt
@@ -115,60 +121,72 @@ fossid:
     paths:
     - fossid*.txt
   when: manual
+  
 
-test_release_sdk_customized_S1:
+release_sdk_S1:
   variables:
     VERSION: "S1"
     TAR_SDK_NAME: ${CI_PROJECT_NAME}_$VERSION
+    SDK_TAG_NAME: $TAG_NAME
+    SRC_TAG_NAME: $TAG_NAME
   stage: release_sdk_s1_s2_s3
   tags:
     - windows_tc32_test
 
   script:
-    - echo $TAG_NAME
-    - ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $TAG_NAME $SRC_COMMIT_ID
+    - echo $SDK_TAG_NAME $TAG_NAME
+    - ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $SDK_TAG_NAME $SRC_TAG_NAME
 
   artifacts:
     name: "$TAR_SDK_NAME"
+    expire_in: '3 yrs'
     paths:
     - "./b80_ble_sdk"
     - "./README.md"
   when: manual
 
-test_release_sdk_customized_S2:
+release_sdk_S2:
   variables:
     VERSION: "S2"
     TAR_SDK_NAME: ${CI_PROJECT_NAME}_$VERSION
+    SDK_TAG_NAME: $TAG_NAME
+    SRC_TAG_NAME: $TAG_NAME
   stage: release_sdk_s1_s2_s3
   tags:
     - windows_tc32_test
 
   script:
-    # - echo "tag: $TAG_NAME"
-    - ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $TAG_NAME $SRC_COMMIT_ID
+    - echo $SDK_TAG_NAME $SRC_TAG_NAME
+    - ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $SDK_TAG_NAME $SRC_TAG_NAME
 
   artifacts:
     name: "$TAR_SDK_NAME"
+    expire_in: '3 yrs'
     paths:
     - "./b80_ble_sdk"
     - "./README.md"
   when: manual
 
-test_release_sdk_customized_S3:
+release_sdk_S3:
   variables:
     VERSION: "S3"
     TAR_SDK_NAME: ${CI_PROJECT_NAME}_$VERSION
+    SDK_TAG_NAME: $TAG_NAME
+    SRC_TAG_NAME: $TAG_NAME
   stage: release_sdk_s1_s2_s3
   tags:
     - windows_tc32_test
 
   script:
-    - ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $TAG_NAME $SRC_COMMIT_ID
+    - echo $SDK_TAG_NAME $SRC_TAG_NAME
+    - ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $SDK_TAG_NAME $SRC_TAG_NAME
 
   artifacts:
     name: "$TAR_SDK_NAME"
+    expire_in: '3 yrs'
     paths:
     - "./b80_ble_sdk"
     - "./README.md"
   when: manual
+
 

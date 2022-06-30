@@ -19,7 +19,7 @@
    * RAM:
       - Disable deepsleep retention: 11.8k Byte
       - Enable deepsleep retention: 13.3k Byte
-   * > The values above are obtained by compiling 8208_sample with default configuration. 
+   * > The values above are obtained by compiling 8208_ble_sample with default configuration. 
 ### Dependency Updates
    * telink_b85m_driver_sdk_V1.4.0
 ### Features
@@ -39,4 +39,4 @@
    * RAM:
       - 关闭deepsleep retention: 11.8k Byte
       - 打开deepsleep retention: 13.3k Byte
-   * >以上大小使用默认配置编译8208_sample得到
+   * >以上大小使用默认配置编译8208_ble_sample得到

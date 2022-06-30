@@ -87,10 +87,10 @@ enum{
 
 //////////////////////////// MODULE PM GPIO	/////////////////////////////////
 #define GPIO_WAKEUP_MODULE					GPIO_PD5   //mcu wakeup module
-#define	PB5_FUNC							AS_GPIO
-#define PB5_INPUT_ENABLE					1
-#define	PB5_OUTPUT_ENABLE					0
-#define	PB5_DATA_OUT						0
+#define	PD5_FUNC							AS_GPIO
+#define PD5_INPUT_ENABLE					1
+#define	PD5_OUTPUT_ENABLE					0
+#define	PD5_DATA_OUT						0
 #define GPIO_WAKEUP_MODULE_HIGH				gpio_setup_up_down_resistor(GPIO_WAKEUP_MODULE, PM_PIN_PULLUP_10K);
 #define GPIO_WAKEUP_MODULE_LOW				gpio_setup_up_down_resistor(GPIO_WAKEUP_MODULE, PM_PIN_PULLDOWN_100K);
 

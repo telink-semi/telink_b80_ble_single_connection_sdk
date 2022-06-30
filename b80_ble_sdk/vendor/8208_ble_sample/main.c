@@ -83,6 +83,9 @@ int main(void)
 		else
 	#endif
 		{
+		#if(BATT_CHECK_ENABLE)
+			blc_app_loadADCParameters();
+		#endif
 			user_init_normal ();
 		}
 

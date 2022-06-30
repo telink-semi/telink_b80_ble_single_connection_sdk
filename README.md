@@ -39,4 +39,4 @@
    * RAM:
       - 关闭deepsleep retention: 11.8k Byte
       - 打开deepsleep retention: 13.3k Byte
-   * >以上大小使用默认配置编译8208_sample默认配置得到
+   * >以上大小使用默认配置编译8208_sample得到

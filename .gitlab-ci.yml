@@ -143,6 +143,7 @@ release_sdk_S1:
     paths:
     - "./b80_ble_sdk"
     - "./README.md"
+    - "./doc"
   when: manual
 
 release_sdk_S2:

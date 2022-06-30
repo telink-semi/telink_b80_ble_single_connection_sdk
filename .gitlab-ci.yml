@@ -166,6 +166,7 @@ release_sdk_S2:
     paths:
     - "./b80_ble_sdk"
     - "./README.md"
+    - "./doc"
   when: manual
 
 release_sdk_S3:
@@ -188,6 +189,7 @@ release_sdk_S3:
     paths:
     - "./b80_ble_sdk"
     - "./README.md"
+    - "./doc"
   when: manual
 
 

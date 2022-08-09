@@ -99,6 +99,7 @@
 ./b80_ble_sdk/stack/ble/controller/ble_controller.h			TELINK_APACHE  
 ./b80_ble_sdk/stack/ble/controller/ll/ll.h			TELINK_APACHE  
 ./b80_ble_sdk/stack/ble/controller/ll/ll_adv.h			TELINK_APACHE  
+./b80_ble_sdk/stack/ble/controller/ll/ll_scan.h			TELINK_APACHE  
 ./b80_ble_sdk/stack/ble/controller/ll/ll_conn/ll_conn.h			TELINK_APACHE  
 ./b80_ble_sdk/stack/ble/controller/ll/ll_conn/ll_slave.h			TELINK_APACHE  
 ./b80_ble_sdk/stack/ble/controller/ll/ll_pm.h			TELINK_APACHE  
@@ -143,6 +144,12 @@
 ./b80_ble_sdk/vendor/8208_feature/feature_adv_in_conn/app_buffer.h			TELINK_APACHE  
 ./b80_ble_sdk/vendor/8208_feature/feature_adv_in_conn/app_config.h			TELINK_APACHE  
 ./b80_ble_sdk/vendor/8208_feature/feature_adv_in_conn/main.c			TELINK_APACHE  
+./b80_ble_sdk/vendor/8208_feature/feature_scan_in_adv_and_conn/app.c			TELINK_APACHE  
+./b80_ble_sdk/vendor/8208_feature/feature_scan_in_adv_and_conn/app.h			TELINK_APACHE  
+./b80_ble_sdk/vendor/8208_feature/feature_scan_in_adv_and_conn/app_buffer.c			TELINK_APACHE  
+./b80_ble_sdk/vendor/8208_feature/feature_scan_in_adv_and_conn/app_buffer.h			TELINK_APACHE  
+./b80_ble_sdk/vendor/8208_feature/feature_scan_in_adv_and_conn/app_config.h			TELINK_APACHE  
+./b80_ble_sdk/vendor/8208_feature/feature_scan_in_adv_and_conn/main.c			TELINK_APACHE  
 ./b80_ble_sdk/vendor/8208_feature/feature_adv_power/app.c			TELINK_APACHE  
 ./b80_ble_sdk/vendor/8208_feature/feature_adv_power/app.h			TELINK_APACHE  
 ./b80_ble_sdk/vendor/8208_feature/feature_adv_power/app_buffer.c			TELINK_APACHE  

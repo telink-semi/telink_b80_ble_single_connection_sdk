@@ -90,6 +90,7 @@ unsigned int cpu_stall_WakeUp_By_RF_SystemTick(int WakeupSrc, unsigned short rf_
 
 #define     RF_BLE_RF_PAYLOAD_LENGTH_OK		RF_BLE_PACKET_LENGTH_OK
 #define     RF_BLE_RF_PACKET_CRC_OK			RF_BLE_PACKET_CRC_OK
+#define	RF_BLE_PACKET_VALIDITY_CHECK(p)					(RF_BLE_RF_PAYLOAD_LENGTH_OK(p) && RF_BLE_RF_PACKET_CRC_OK(p))
 
 #define 	reg_rf_ll_cmd_schedule 			REG_ADDR32(0xf18)
 #define 	reg_rf_ll_cmd					REG_ADDR8(0xf00)

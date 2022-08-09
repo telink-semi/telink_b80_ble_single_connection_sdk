@@ -56,5 +56,53 @@ static inline void blc_app_setExternalCrystalCapEnable(unsigned char  en)
 }
 
 
+/**
+ * @brief      This function serves to set the working mode of MCU based on 32k rc,e.g. suspend mode, deepsleep mode, deepsleep with SRAM retention mode and shutdown mode.
+ * 				  This saves size of RAM code but increases operating time and average power consumption.
+ * @param[in]  sleep_mode - sleep mode type select.
+ * @param[in]  wakeup_src - wake up source select.
+ * @param[in]  wakeup_tick - the time of short sleep, which means MCU can sleep for less than 5 minutes.
+ * @return     indicate whether the cpu is wake up successful.
+ */
+int  cpu_sleep_wakeup_32k_rc_text(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
+
+/**
+ * @brief      This function serves to set the working mode of MCU based on 32k crystal,e.g. suspend mode, deepsleep mode, deepsleep with SRAM retention mode and shutdown mode.
+ *  			  This saves size of RAM code but increases operating time and average power consumption.
+ * @param[in]  sleep_mode - sleep mode type select.
+ * @param[in]  wakeup_src - wake up source select.
+ * @param[in]  wakeup_tick - the time of short sleep, which means MCU can sleep for less than 5 minutes.
+ * @return     indicate whether the cpu is wake up successful.
+ */
+int  cpu_sleep_wakeup_32k_xtal_text(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
+
+
+/**
+ * @brief      This function serves to determine whether wake up source is internal 32k RC.This saves size of RAM code but increases operating time and average power consumption.
+ * @param[in]  none.
+ * @return     none.
+ */
+static inline void blc_pm_select_internal_32k_crystal_save_ram(void)
+{
+	cpu_sleep_wakeup 	 	= cpu_sleep_wakeup_32k_rc_text;
+	pm_tim_recover  	 	= pm_tim_recover_32k_rc;
+
+	blt_miscParam.pm_enter_en 	= 1; // allow enter pm, 32k rc does not need to wait for 32k clk to be stable
+}
+
+/**
+ * @brief      This function serves to determine whether wake up source is external 32k crystal.This saves size of RAM code but increases operating time and average power consumption.
+ * @param[in]  none.
+ * @return     none.
+ */
+static inline void blc_pm_select_external_32k_crystal_save_ram(void)
+{
+	cpu_sleep_wakeup 	 	= cpu_sleep_wakeup_32k_xtal_text;
+	pm_check_32k_clk_stable = check_32k_clk_stable;
+	pm_tim_recover		 	= pm_tim_recover_32k_xtal;
+
+	blt_miscParam.pad32k_en 	= 1; // set '1': 32k clk src use external 32k crystal
+}
+
 #endif
 

@@ -31,6 +31,8 @@
 	#include "feature_backup/app_config.h"
 #elif(FEATURE_TEST_MODE == TEST_ADVERTISING_IN_CONN_SLAVE_ROLE)
 	#include "feature_adv_in_conn/app_config.h"
+#elif(FEATURE_TEST_MODE == TEST_SCANNING_IN_ADV_AND_CONN_SLAVE_ROLE)
+	#include "feature_scan_in_adv_and_conn/app_config.h"
 #elif (FEATURE_TEST_MODE == TEST_SDATA_LENGTH_EXTENSION)
 	#include "feature_slave_dle/app_config.h"
 #elif (FEATURE_TEST_MODE == TEST_SLAVE_MD)

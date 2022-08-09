@@ -24,38 +24,32 @@
 #pragma once
 
 
+
+#include "../feature_config.h"
+
+#if (FEATURE_TEST_MODE == TEST_SCANNING_IN_ADV_AND_CONN_SLAVE_ROLE )
+
 ///////////////////////// Feature Configuration////////////////////////////////////////////////
 /**
  *  @brief  Feature select in BLE Sample project
  */
 #define FLASH_SIZE_OPTION							FLASH_SIZE_OPTION_512K //very important, user need confirm !!!
-#define APP_SECURITY_ENABLE      					1
-#define	BLE_OTA_SERVER_ENABLE						0
-#define TEST_CONN_CURRENT_ENABLE					0		//test connection current, disable UI to have a pure power
-#define SAVE_RAM_CODE_ENABLE						0			//Enable it if need save RAM code.
-																				//Note: When this is enabled, the average power consumption increases.If user use deepsleep retention, user need to add DeepsleepRetentionEarlyWakeupTiming.
+#define BLE_APP_PM_ENABLE							0
+#define PM_DEEPSLEEP_RETENTION_ENABLE            	0
+#define APP_SECURITY_ENABLE      					0
 
-/* firmware signature check */
-#define FIRMWARES_SIGNATURE_ENABLE     		 		0
 
-/* Power Management */
-#define BLE_APP_PM_ENABLE							1
-#define PM_DEEPSLEEP_ENABLE            				0 		//test connection power, should disable deepSleep
-#define PM_DEEPSLEEP_RETENTION_ENABLE               1
+
+#define APP_DEFAULT_HID_BATTERY_OTA_ATTRIBUTE_TABLE			1
 
 
 /**
  *  @brief  UI Configuration
  */
-#if (TEST_CONN_CURRENT_ENABLE)
-	#define UI_LED_ENABLE          	 				0
-	#define	UI_KEYBOARD_ENABLE						0
-#else
-	#define UI_LED_ENABLE          	 				1
-	#define	UI_KEYBOARD_ENABLE						1
-#endif
+#define UI_LED_ENABLE          	 					0
+#define	UI_KEYBOARD_ENABLE							0
 
-#define BATT_CHECK_ENABLE       					0   //enable or disable battery voltage detection
+
 
 /**
  *  @brief  DEBUG  Configuration
@@ -63,8 +57,12 @@
 #define DEBUG_GPIO_ENABLE							0
 
 
+
+
+
 ///////////////////////// System Clock  Configuration /////////////////////////////////////////
-#define CLOCK_SYS_CLOCK_HZ      					16000000
+#define CLOCK_SYS_CLOCK_HZ      					48000000
+
 
 #if (CLOCK_SYS_CLOCK_HZ == 16000000)
 	#define SYS_CLK_TYPE  							SYS_CLK_16M_Crystal
@@ -85,19 +83,10 @@ enum{
 };
 
 
-/**
- *  @brief  watchdog enable and timeout setting
- */
-#define MODULE_WATCHDOG_ENABLE						0
-#define WATCHDOG_INIT_TIMEOUT						500  //Unit:ms
 
 
-/**
- *  @brief  software uart enable and setting
- */
-#define 	SOFT_UART_BAUD_RATE                     9600
-#define 	SOFT_UART_TX_IO                   		GPIO_PD5
-#define 	SOFT_UART_RX_IO                   		GPIO_PD6
+
+
 
 
 #if (UI_KEYBOARD_ENABLE)   // if test pure power, kyeScan GPIO setting all disabled
@@ -107,14 +96,19 @@ enum{
 
 	#define	KB_LINE_HIGH_VALID				0   //dirve pin output 0 when keyscan, scanpin read 0 is valid
 
+
+
 	#define			CR_VOL_UP				0xf0
 	#define			CR_VOL_DN				0xf1
+
 
 	/**
 	 *  @brief  Normal keyboard map
 	 */
 	#define		KB_MAP_NORMAL	{	{CR_VOL_UP,		VK_1},	 \
 									{CR_VOL_DN,		VK_2}, }
+
+
 
 	//////////////////// KEY CONFIG (EVK board) ///////////////////////////
 	#define  KB_DRIVE_PINS  {GPIO_PF0, GPIO_PF1}
@@ -149,10 +143,12 @@ enum{
 #endif
 
 
+
+
 #if(UI_LED_ENABLE)
-	/**
-	 *  @brief  Definition gpio for led
-	 */
+		/**
+		 *  @brief  Definition gpio for led
+		 */
 	#define	GPIO_LED_BLUE  	GPIO_PA4
 	#define	GPIO_LED_GREEN	GPIO_PA5
 	#define	GPIO_LED_WHITE	GPIO_PA6
@@ -173,27 +169,9 @@ enum{
 
 
 
-/**
- *  @brief  Battery_check Configuration
- */
-#if (BATT_CHECK_ENABLE)
-	#define ADC_INPUT_PCHN					VBAT    //corresponding  ADC_InputPchTypeDef in adc.h
 
-	#define VBAT_ALRAM_THRES_MV				2000   // 2000 mV low battery alarm
 
-	/////////////////// DEEP SAVE FLG //////////////////////////////////
-	#define USED_DEEP_ANA_REG                   DEEP_ANA_REG0 //u8,can save 8 bit info when deep
-	#define	LOW_BATT_FLG					    BIT(0)
 
-	//////////////////////////// FEATURE PM GPIO	(EVK board) /////////////////////////////////
-	#define GPIO_WAKEUP_FEATURE				GPIO_PB6   //mcu wakeup module
-	#define	PB6_FUNC							AS_GPIO
-	#define PB6_INPUT_ENABLE					1
-	#define	PB6_OUTPUT_ENABLE					0
-	#define	PB6_DATA_OUT						0
-	#define GPIO_WAKEUP_FEATURE_HIGH				gpio_setup_up_down_resistor(GPIO_WAKEUP_FEATURE, PM_PIN_PULLUP_10K);
-	#define GPIO_WAKEUP_FEATURE_LOW				gpio_setup_up_down_resistor(GPIO_WAKEUP_FEATURE, PM_PIN_PULLDOWN_100K);
-#endif
 
 /**
  *  @brief  Definition for gpio debug
@@ -263,5 +241,6 @@ enum{
 
 
 /////////////////// set default   ////////////////
-
 #include "../common/default_config.h"
+
+#endif //end of (FEATURE_TEST_MODE == xxx)

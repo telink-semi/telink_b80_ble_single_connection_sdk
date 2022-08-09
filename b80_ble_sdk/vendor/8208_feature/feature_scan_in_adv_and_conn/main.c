@@ -26,8 +26,9 @@
 #include "stack/ble/ble.h"
 
 #include "app.h"
-#include "app_att.h"
-#include "app_buffer.h"
+
+
+#if (FEATURE_TEST_MODE == TEST_SCANNING_IN_ADV_AND_CONN_SLAVE_ROLE)
 
 
 /**
@@ -41,6 +42,9 @@ _attribute_ram_code_ void irq_handler(void)
 }
 
 
+
+
+
 /**
  * @brief		This is main function
  * @param[in]	none
@@ -52,15 +56,7 @@ _attribute_ram_code_sec_noinline_
 int main(void)
 {
 	#if (BLE_APP_PM_ENABLE)
-		#if (SAVE_RAM_CODE_ENABLE)
-			blc_pm_select_internal_32k_crystal_save_ram();
-		#else
-			blc_pm_select_internal_32k_crystal();
-		#endif
-	#endif
-
-	#if (BLE_OTA_SERVER_ENABLE && (FLASH_SIZE_OPTION == FLASH_SIZE_OPTION_128K))
-		blc_ota_setFirmwareSizeAndBootAddress(48, MULTI_BOOT_ADDR_0x10000);
+		blc_pm_select_internal_32k_crystal();
 	#endif
 
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
@@ -76,10 +72,6 @@ int main(void)
 	/* load customized freq_offset CAP value and TP value. */
 	blc_app_loadCustomizedParameters();
 
-	#if FIRMWARES_SIGNATURE_ENABLE
-		blt_firmware_signature_check();
-	#endif
-
 	#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 		if( deepRetWakeUp ){
 			user_init_deepRetn ();
@@ -87,25 +79,14 @@ int main(void)
 		else
 	#endif
 		{
-		#if(BATT_CHECK_ENABLE)
-			blc_app_loadADCParameters();
-		#endif
 			user_init_normal ();
 		}
-
-	#if (MODULE_WATCHDOG_ENABLE)
-		wd_set_interval_ms(WATCHDOG_INIT_TIMEOUT,CLOCK_SYS_CLOCK_1MS);
-		wd_start();
-	#endif
 
     irq_enable();
 
 	while (1) {
-		#if (MODULE_WATCHDOG_ENABLE)
-			wd_clear(); //clear watch dog
-		#endif
-
 		main_loop ();
 	}
 }
 
+#endif  //end of (FEATURE_TEST_MODE == xxx)

@@ -62,6 +62,13 @@ typedef 	void (*pm_appWakeupLowPower_callback_t)(int);
 void 		blc_ll_initPowerManagement_module(void);
 
 /**
+ * @brief	for user to initialize low power mode. This saves size of RAM code but increases operating time and average power consumption.
+ * @param	none
+ * @return	none
+ */
+void 		blc_ll_initPowerManagement_module_save_ram(void);
+
+/**
  * @brief	for user to initialize deep sleep retention
  * @param	none
  * @return	none

@@ -91,7 +91,7 @@ static inline void uart_reset(void)
 }
 
 /**
- * @brief     This function serves to clear tx down.
+ * @brief     This function serves to clear tx done.
  * @param[in] none
  * @return    none
  */
@@ -101,7 +101,7 @@ static inline void uart_clr_tx_done(void)
 }
 
 /**
- * @brief      	This function is used to enable the rtx function of .
+ * @brief      	This function is used to enable the rtx function.
  * @return     	none.
  */
 static inline void uart_rtx_en()

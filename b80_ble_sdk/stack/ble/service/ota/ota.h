@@ -51,6 +51,8 @@ enum{
  	OTA_TIMEOUT, 		  					//OTA flow total timeout
  	OTA_FW_CHECK_ERR,						//firmware CRC check error
  	OTA_STEP_ERR,
+
+ 	OTA_LOGIC_ERR,							//software logic error, please contact FAE of TeLink
 };
 
 

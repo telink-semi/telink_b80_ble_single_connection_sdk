@@ -37,6 +37,13 @@
 ble_sts_t 	blc_ll_setScanParameter (scan_type_t scan_type, u16 scan_interval, u16 scan_window, own_addr_type_t  ownAddrType, scan_fp_type_t scanFilter_policy);
 
 /**
+ * @brief      This function is used to initialize scanning.
+ * @param[in]  none.
+ * @return     Status - 0x00: BLE success; 0x01-0xFF: fail
+ */
+ble_sts_t	blt_ll_initScanState(void);
+
+/**
  * @brief      This function is used to add scan state in advertise state of slave role.
  * @param[in]  none.
  * @return     Status - 0x00: BLE success; 0x01-0xFF: fail

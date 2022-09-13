@@ -50,10 +50,13 @@ enum{
 
 	//special cmd
 	FLASH_WRITE_STATUS_CMD_LOWBYTE		=	0x01,
-	FLASH_WRITE_STATUS_CMD_HIGHBYTE		=	0x31,
+	FLASH_WRITE_STATUS_CMD_HIGHBYTE		=	0x31,    // Flash Type = P25Q40SU for write status register-1;
+	FLASH_WRITE_CONFIGURE_CMD_1         =   0x31,
+	FLASH_WRITE_CONFIGURE_CMD_2         =   0x11,    // Flash Type = P25Q40SU for write configure register;
 
 	FLASH_READ_STATUS_CMD_LOWBYTE		=	0x05,
 	FLASH_READ_STATUS_CMD_HIGHBYTE		=	0x35,
+	FLASH_READ_CONFIGURE_CMD            =   0x15,
 
 	FLASH_WRITE_DISABLE_CMD 			= 	0x04,
 	FLASH_WRITE_ENABLE_CMD 				= 	0x06,
@@ -79,6 +82,11 @@ typedef enum{
 	FLASH_SONOS_TH  	= 0x020060EB,	// 60EB
 	FLASH_SST_TH  		= 0x040060CD,	// 60CD		bit[26]:SST:  Byte Program Time != Page Programming Time
 }flash_vendor_e;
+
+typedef enum{
+	FLASH_ETOX_ARCH  	= 0x01000000,
+	FLASH_SONOS_ARCH  	= 0x02000000,
+}flash_architecture_e;
 
 /**
  * @brief	flash capacity definition
@@ -115,7 +123,8 @@ typedef enum {
 typedef void (*flash_hander_t)(unsigned long, unsigned long, unsigned char*);
 extern _attribute_data_retention_ flash_hander_t flash_read_page;
 extern _attribute_data_retention_ flash_hander_t flash_write_page;
-
+extern unsigned int  flash_type;
+extern unsigned int  get_flash_mid;
 /*******************************************************************************************************************
  *												Primary interface
  ******************************************************************************************************************/

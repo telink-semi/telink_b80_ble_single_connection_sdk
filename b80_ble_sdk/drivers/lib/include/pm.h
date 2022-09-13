@@ -271,34 +271,18 @@ static inline int pm_get_wakeup_src(void)
 void pm_set_suspend_power_cfg(pm_suspend_power_cfg_e value, unsigned char on_off);
 
 /**
- * @brief   This function serves to wake up cpu from stall mode by timer0.
- * @param   tick - capture value of timer0.
- * @return  none.
+ * @brief		This function will put the cpu into the stall state, and then wake up by the specified wakeup source.
+ * 				All interrupt sources can wake the CPU from stall mode.
+ * 				Depending on the configuration, the execution flow after waking up will be different:
+ * 				If the bit corresponding to the wake-up source in the register reg_irq_mask is enabled and the total interrupt is turned on,
+ * 				the CPU will be interrupted first after waking up from the stall state, and then continue to execute.
+ * 				If the bit corresponding to the wake-up source in the register reg_irq_mask is disabled,
+ * 				the CPU will continue to execute after waking up from the stall state.
+ * 				No matter which execution flow is taken after wake-up, the interrupt flag corresponding to the wake-up source needs to be clear after wake-up.
+ * @param[in]	irq_mask - interrupt source for wake up.
+ * @return		none.
  */
-void cpu_stall_wakeup_by_timer0(unsigned int tick);
-
-/**
- * @brief   This function serves to wake up cpu from stall mode by timer1.
- * @param   tick - capture value of timer1.
- * @return  none.
- */
-void cpu_stall_wakeup_by_timer1(unsigned int tick);
-
-/**
- * @brief   This function serves to wake up cpu from stall mode by timer2.
- * @param   tick - capture value of timer2.
- * @return  none.
- */
-void cpu_stall_wakeup_by_timer2(unsigned int tick);
-
-/**
- * @brief   This function serves to wake up cpu from stall mode by timer1 or RF TX done irq.
- * @param   WakeupSrc  - timer1.
- * @param   IntervalUs - capture value of timer1.
- * @param   sysclktick - tick value of per us based on system clock.
- * @return  none.
- */
-unsigned int cpu_stall(int WakeupSrc, unsigned int IntervalUs,unsigned int sysclktick);
+void cpu_stall_wakeup(irq_list_e irq_mask);
 
 /**
  * @brief      This function configures a GPIO pin as the wakeup pin.

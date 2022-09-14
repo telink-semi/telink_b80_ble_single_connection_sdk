@@ -6,7 +6,7 @@ stages:
   - plainPW_check
   - cov
   - fossid
-  - release_sdk_s1_s2_s3
+  - release_customize_sdk
 
 genLicense:
   variables:
@@ -121,75 +121,55 @@ fossid:
     paths:
     - fossid*.txt
   when: manual
-  
+
+.release_sdk_template: &release_sdk_template
+  variables:
+    PACK_NAME: "release_sdk_template"
+  stage: release_customize_sdk	
+  tags:
+    - windows_tc32_test
+  script:
+    - sdk_release_customize.sh ./release_sdk_config
+  artifacts:
+    name: "$PACK_NAME"
+    expire_in: '3 yrs'
+    paths:
+    - "./b80_ble_sdk"
+    - "./README.md"
+    - "./doc"
+  when: manual
 
 release_sdk_S1:
+  <<: *release_sdk_template
   variables:
-    VERSION: "S1"
-    TAR_SDK_NAME: ${CI_PROJECT_NAME}_$VERSION
-    SDK_TAG_NAME: $TAG_NAME
-    SRC_TAG_NAME: $TAG_NAME
-  stage: release_sdk_s1_s2_s3
-  tags:
-    - windows_tc32_test
-
-  script:
-    - echo $SDK_TAG_NAME $TAG_NAME
-    - ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $SDK_TAG_NAME $SRC_TAG_NAME
-
-  artifacts:
-    name: "$TAR_SDK_NAME"
-    expire_in: '3 yrs'
-    paths:
-    - "./b80_ble_sdk"
-    - "./README.md"
-    - "./doc"
-  when: manual
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.0_patch0001_S1"
 
 release_sdk_S2:
+  <<: *release_sdk_template
   variables:
-    VERSION: "S2"
-    TAR_SDK_NAME: ${CI_PROJECT_NAME}_$VERSION
-    SDK_TAG_NAME: $TAG_NAME
-    SRC_TAG_NAME: $TAG_NAME
-  stage: release_sdk_s1_s2_s3
-  tags:
-    - windows_tc32_test
-
-  script:
-    - echo $SDK_TAG_NAME $SRC_TAG_NAME
-    - ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $SDK_TAG_NAME $SRC_TAG_NAME
-
-  artifacts:
-    name: "$TAR_SDK_NAME"
-    expire_in: '3 yrs'
-    paths:
-    - "./b80_ble_sdk"
-    - "./README.md"
-    - "./doc"
-  when: manual
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.0_patch0001_S2"
 
 release_sdk_S3:
+  <<: *release_sdk_template
   variables:
-    VERSION: "S3"
-    TAR_SDK_NAME: ${CI_PROJECT_NAME}_$VERSION
-    SDK_TAG_NAME: $TAG_NAME
-    SRC_TAG_NAME: $TAG_NAME
-  stage: release_sdk_s1_s2_s3
-  tags:
-    - windows_tc32_test
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.0_patch0001_S3"
 
-  script:
-    - echo $SDK_TAG_NAME $SRC_TAG_NAME
-    - ble_b80_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $SDK_TAG_NAME $SRC_TAG_NAME
+release_sdk_custom_made_S0:
+  <<: *release_sdk_template
+  variables:
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.0_patch0001_custom_made_S0"
 
-  artifacts:
-    name: "$TAR_SDK_NAME"
-    expire_in: '3 yrs'
-    paths:
-    - "./b80_ble_sdk"
-    - "./README.md"
-    - "./doc"
-  when: manual
+release_sdk_custom_made_S1:
+  <<: *release_sdk_template
+  variables:
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.0_patch0001_custom_made_S1"
 
+release_sdk_custom_made_S2:
+  <<: *release_sdk_template
+  variables:
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.0_patch0001_custom_made_S2"
 
+release_sdk_custom_made_S3:
+  <<: *release_sdk_template
+  variables:
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.0_patch0001_custom_made_S3"

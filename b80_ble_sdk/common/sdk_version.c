@@ -1,12 +1,13 @@
 /********************************************************************************************************
- * @file     version.h
+ * @file	sdk_version.c
  *
- * @brief    This is the header file for BLE SDK
+ * @brief	This is the header file for BLE SDK
  *
- * @author	 BLE GROUP
- * @date         12,2021
+ * @author	BLE GROUP
+ * @date	2022
  *
- * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -19,11 +20,14 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
+ *
  *******************************************************************************************************/
+#include "sdk_version.h"
+/*
+ * Release Tool need to change this macro to match the release version,
+ * the replace rules is: "$$$B85m_driver_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
+ * will replace with this macro value.
+ */
+volatile __attribute__((section(".sdk_version"))) unsigned char sdk_version[] = {SDK_VERSION(SDK_VERSION_NUM)};
 
-#ifndef VERSION_H_
-#define VERSION_H_
 
-#define RELEASE_VERSION        V3.4.1.1
-
-#endif /* VERSION_H_ */

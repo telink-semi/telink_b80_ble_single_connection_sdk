@@ -152,7 +152,7 @@ void app_set_kb_wakeup(u8 e, u8 *p, int n)
 /*----------------------------------------------------------------------------*/
 #if (BLE_OTA_SERVER_ENABLE)
 
-int 	ota_is_working = 0;
+_attribute_data_retention_ int 	ota_is_working = 0;
 
 /**
  * @brief      this function is used to register the function for OTA start.

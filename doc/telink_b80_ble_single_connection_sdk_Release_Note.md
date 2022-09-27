@@ -1,42 +1,60 @@
-## V3.4.1.0
+## V3.4.1.1
 
 ### Dependency Updates
-   * telink_b85m_driver_sdk_V1.4.0
+   * telink_b85m_driver_sdk_V1.5.0
 ### Features
-   * Work on B80 A0/A1 version
-   * Support BLE4.2 ACL slave related function
-   * Support 128/512K Flash and related OTA function
-   * Support Low Power with suspend, deepsleep retention and deepsleep mode
-   * Support 1M & 2M PHY
-
+   * Support passive scanning in slave connection
+   * Support passive scanning in advertising
+   * Add APIs of saving RAM, but these APIs increase power consumption when called
+   * Fix the issue that the pointer to packet is null when callback of BLT_EV_FLAG_CONNECT is triggered
+   * Add Puya Flash
+   * Add version information at the end of bin file.
+   
 ### BREAKING CHANGES
    * N/A
 
 ### CodeSize
    * Flash:
-      - Disable deepsleep retention: 37.6k Byte
-      - Enable deepsleep retention: 38.8k Byte
+      - Disable deepsleep retention: 39.4k Byte
+      - Enable deepsleep retention: 40.3k Byte
    * RAM:
-      - Disable deepsleep retention: 11.8k Byte
-      - Enable deepsleep retention: 13.3k Byte
+      - Disable deepsleep retention: 12.5k Byte
+      - Enable deepsleep retention: 13.7k Byte
    * > The values above are obtained by compiling 8208_ble_sample with default configuration. 
-### Dependency Updates
-   * telink_b85m_driver_sdk_V1.4.0
-### Features
-   * 支持 B80 A0/A1 芯片
-   * 支持 BLE4.2 ACL slave相关功能
-   * 支持 128/512K Flash 及相应的OTA功能
-   * 支持 Suspend、deepsleep retention和deepsleep 低功耗模式
-   * 支持 1M & 2M PHY.
 
+   * Flash:
+      - Disable deepsleep retention: 39.3k Byte
+      - Enable deepsleep retention: 39.7k Byte
+   * RAM:
+      - Disable deepsleep retention: 10.5k Byte
+      - Enable deepsleep retention: 11.2k Byte
+   * The values above are obtained by compiling 8208_ble_sample with calling APIs of saving RAM
+### Dependency Updates
+   * telink_b85m_driver_sdk_V1.5.0
+### Features
+   * 支持在连接中被动扫描
+   * 支持在广播中被动扫描
+   * 增加api来节省RAM，在调用时会增加平均功耗
+   * 修复了触发BLT_EV_FLAG_CONNECT事件回调时指向数据包的指针为空的问题
+   * 适配Puya Flash
+   * bin文件末尾增加版本信息
+   
 ### BREAKING CHANGES
    * N/A
 
 ### CodeSize
    * Flash:
-      - 关闭deepsleep retention: 37.6k Byte
-      - 打开deepsleep retention: 38.8k Byte
+      - 关闭deepsleep retention: 39.4k Byte
+      - 打开deepsleep retention: 40.3k Byte
    * RAM:
-      - 关闭deepsleep retention: 11.8k Byte
-      - 打开deepsleep retention: 13.3k Byte
+      - 关闭deepsleep retention: 12.5k Byte
+      - 打开deepsleep retention: 13.7k Byte
    * >以上大小使用默认配置编译8208_ble_sample得到
+
+   * Flash:
+      - 关闭deepsleep retention: 39.3k Byte
+      - 打开deepsleep retention: 39.7k Byte
+   * RAM:
+      - 关闭deepsleep retention: 10.5k Byte
+      - 打开deepsleep retention: 11.2k Byte
+   * 以上大小时是调用节省ram的API后得到

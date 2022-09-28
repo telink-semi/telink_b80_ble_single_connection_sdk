@@ -275,19 +275,26 @@ SET_IC_END:
 
 
 SET_BOOT:
-	tmov        r2, #4
-	tloadrb     r1, [r2]		@read form core_840004
-	tmov     	r0, #165    	@A5
-	tcmp        r0, r1			@(840004) == A5?
-	tjne		SET_BOOT_END	@wakeup from not from retention or wakeup.
-
 	tmov        r2, #5
 	tloadrb     r1, [r2]		@read form core_840005
+	tmov		r0, #240		@0xf0
+	tand		r1, r0			@(84005)&0xf0 == 0xA0,from deepret
+	tmov     	r0, #160    	@A0
+	tcmp        r0, r1			@(840004) == A0?
+	tjne		SET_BOOT_END	@wakeup from not from retention or wakeup.
+
+	tmov        r2, #4
+	tloadrb     r1, [r2]		@read form core_840004
 	tloadr     	r0, BOOT_SEL_D
 	tstorerb	r1, [r0, #0]
+	tmov        r2, #5
+	tloadrb     r1, [r2]		@read form core_840005
+@	tloadr     	r0, BOOT_SEL_D+4
+	tstorerb	r1, [r0, #1]
 	tj			COPY_DATA_RELOAD
 
-
+WHILE:
+	tj	WHILE
 
 SET_BOOT_END:
 @********************************************************************************************************
@@ -410,6 +417,7 @@ FLL_D:
 
 BOOT_SEL_D:
 	.word	(0x80063e)
+	.word	(0x80063f)
 
 	.align 4
 __irq:

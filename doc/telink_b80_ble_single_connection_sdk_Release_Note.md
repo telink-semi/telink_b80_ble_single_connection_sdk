@@ -18,15 +18,15 @@
       - Disable deepsleep retention: 39.4k Byte
       - Enable deepsleep retention: 40.3k Byte
    * RAM:
-      - Disable deepsleep retention: 12.5k Byte
-      - Enable deepsleep retention: 13.7k Byte
-   * > The values above are obtained by compiling 8208_ble_sample with default configuration. 
+      - Disable deepsleep retention: 12.4k Byte
+      - Enable deepsleep retention: 13.6k Byte
+   * The values above are obtained by compiling 8208_ble_sample with default configuration. 
 
    * Flash:
       - Disable deepsleep retention: 39.3k Byte
       - Enable deepsleep retention: 39.7k Byte
    * RAM:
-      - Disable deepsleep retention: 10.5k Byte
+      - Disable deepsleep retention: 10.4k Byte
       - Enable deepsleep retention: 11.2k Byte
    * The values above are obtained by compiling 8208_ble_sample with calling APIs of saving RAM
 ### Dependency Updates
@@ -47,14 +47,14 @@
       - 关闭deepsleep retention: 39.4k Byte
       - 打开deepsleep retention: 40.3k Byte
    * RAM:
-      - 关闭deepsleep retention: 12.5k Byte
-      - 打开deepsleep retention: 13.7k Byte
-   * >以上大小使用默认配置编译8208_ble_sample得到
+      - 关闭deepsleep retention: 12.4k Byte
+      - 打开deepsleep retention: 13.6k Byte
+   * 以上大小使用默认配置编译8208_ble_sample得到
 
    * Flash:
       - 关闭deepsleep retention: 39.3k Byte
       - 打开deepsleep retention: 39.7k Byte
    * RAM:
-      - 关闭deepsleep retention: 10.5k Byte
+      - 关闭deepsleep retention: 10.4k Byte
       - 打开deepsleep retention: 11.2k Byte
    * 以上大小时是调用节省ram的API后得到

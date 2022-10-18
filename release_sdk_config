@@ -15,7 +15,7 @@ LIB_OBJ             ./ble_lt_b80/8208_ble_sample/drivers/lib
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/drivers/ext_driver
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/stack
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/algorithm
-REPLACED_LIB_PATH   ./b80_ble_sdk/proj_lib/liblt_8208.a
+REPLACED_LIB_PATH   ./telink_b80_ble_single_connection_sdk_v3.4.1.1_Patch/0001_20221018_Solve_crystal_oscillator_stability/proj_lib/liblt_8208.a
 
 [release_sdk_S1_end]
 
@@ -36,7 +36,7 @@ LIB_OBJ             ./ble_lt_b80/8208_ble_sample/drivers/lib
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/drivers/ext_driver
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/stack
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/algorithm
-REPLACED_LIB_PATH   ./b80_ble_sdk/proj_lib/liblt_8208.a
+REPLACED_LIB_PATH   ./telink_b80_ble_single_connection_sdk_v3.4.1.1_Patch/0001_20221018_Solve_crystal_oscillator_stability/proj_lib/liblt_8208.a
 
 [release_sdk_S2_end]
 
@@ -57,7 +57,7 @@ LIB_OBJ             ./ble_lt_b80/8208_ble_sample/drivers/lib
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/drivers/ext_driver
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/stack
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/algorithm
-REPLACED_LIB_PATH   ./b80_ble_sdk/proj_lib/liblt_8208.a
+REPLACED_LIB_PATH   ./telink_b80_ble_single_connection_sdk_v3.4.1.1_Patch/0001_20221018_Solve_crystal_oscillator_stability/proj_lib/liblt_8208.a
 
 [release_sdk_S3_end]
 
@@ -79,7 +79,7 @@ LIB_OBJ             ./ble_lt_b80/8208_ble_sample/drivers/lib
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/drivers/ext_driver
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/stack
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/algorithm
-REPLACED_LIB_PATH   ./b80_ble_sdk/proj_lib/liblt_8208.a
+REPLACED_LIB_PATH   ./telink_b80_ble_single_connection_sdk_v3.4.1.1_Patch/0001_20221018_Solve_crystal_oscillator_stability/proj_lib/liblt_8208.a
 
 [release_sdk_custom_made_S0_end]
 
@@ -101,7 +101,7 @@ LIB_OBJ             ./ble_lt_b80/8208_ble_sample/drivers/lib
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/drivers/ext_driver
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/stack
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/algorithm
-REPLACED_LIB_PATH   ./b80_ble_sdk/proj_lib/liblt_8208.a
+REPLACED_LIB_PATH   ./telink_b80_ble_single_connection_sdk_v3.4.1.1_Patch/0001_20221018_Solve_crystal_oscillator_stability/proj_lib/liblt_8208.a
 
 [release_sdk_custom_made_S1_end]
 
@@ -123,7 +123,7 @@ LIB_OBJ             ./ble_lt_b80/8208_ble_sample/drivers/lib
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/drivers/ext_driver
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/stack
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/algorithm
-REPLACED_LIB_PATH   ./b80_ble_sdk/proj_lib/liblt_8208.a
+REPLACED_LIB_PATH   ./telink_b80_ble_single_connection_sdk_v3.4.1.1_Patch/0001_20221018_Solve_crystal_oscillator_stability/proj_lib/liblt_8208.a
 
 [release_sdk_custom_made_S2_end]
 
@@ -145,6 +145,6 @@ LIB_OBJ             ./ble_lt_b80/8208_ble_sample/drivers/lib
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/drivers/ext_driver
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/stack
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/algorithm
-REPLACED_LIB_PATH   ./b80_ble_sdk/proj_lib/liblt_8208.a
+REPLACED_LIB_PATH   ./telink_b80_ble_single_connection_sdk_v3.4.1.1_Patch/0001_20221018_Solve_crystal_oscillator_stability/proj_lib/liblt_8208.a
 
 [release_sdk_custom_made_S3_end]

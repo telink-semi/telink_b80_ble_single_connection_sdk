@@ -209,6 +209,12 @@ typedef enum{
 	MULTI_BOOT_ADDR_0x20000 	= 0x20000,	//128 K
 	MULTI_BOOT_ADDR_0x40000		= 0x40000,  //256 K
 }multi_boot_addr_e;
+
+#ifndef PM_RETENTION_FUNCTION_EN
+#define PM_RETENTION_FUNCTION_EN			1/**< 0:only Support sleep modes:suspend/deep */
+											 /**< 1:support all sleep modes:suspend/deep/deep retention */
+#endif
+
 /******************************* other ********************************************************************/
 
 #endif

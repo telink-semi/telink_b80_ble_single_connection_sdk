@@ -117,6 +117,12 @@ ble_sts_t   bls_ll_setAdvDuration (u32 duration_us, u8 duration_en);
 void 		blc_ll_setAdvCustomedChannel (u8 chn0, u8 chn1, u8 chn2);
 
 
+/**
+ * @brief      this function is used to set whether to continue sending broadcast packets when receiving scan request in the current adv interval.
+ * @param[in]  enable - enable:continue sending broadcast packets when receiving scan request.
+ * @return     none.
+ */
+void bls_ll_continue_adv_after_scan_req(u8 enable);
 
 
 /**

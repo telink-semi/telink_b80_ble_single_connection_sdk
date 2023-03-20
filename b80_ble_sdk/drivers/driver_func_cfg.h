@@ -64,10 +64,6 @@
 											 /**< 1:support 32K internal and external Crystal */
 #endif
 
-#ifndef PM_RETENTION_FUNCTION_EN
-#define PM_RETENTION_FUNCTION_EN			1/**< 0:only Support sleep modes:suspend/deep */
-											 /**< 1:support all sleep modes:suspend/deep/deep retention */
-#endif
 
 
 #endif /* DRIVER_FUNCTION_CONFIG_H_ */

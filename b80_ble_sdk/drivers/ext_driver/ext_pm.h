@@ -30,6 +30,28 @@
 
 #if (PM_CUMULATIVE_ERROR_ELIMINATE_ENABLE)
 
+/**
+ * @brief	early wakeup time
+ */
+typedef struct {
+	unsigned short  suspend;	/*< suspend_early_wakeup_time_us >*/
+	unsigned short  deep_ret;	/*< deep_ret_early_wakeup_time_us >*/
+	unsigned short  deep;		/*< deep_early_wakeup_time_us >*/
+	unsigned short  min;		/*< sleep_min_time_us >*/
+	unsigned short	loopnum;	/*< the number of cycles for the crystal oscillator to be checked stably, 40us one time. >*/
+}pm_early_wakeup_time_us_s;
+
+extern volatile pm_early_wakeup_time_us_s g_pm_early_wakeup_time_us;
+
+/**
+ * @brief	hardware delay time
+ */
+typedef struct {
+	unsigned short  deep_r_delay_cycle ;			/**< hardware delay time, deep_r_delay_us = (deep_r_delay_cycle+1) * 1/16k */
+	unsigned short  suspend_ret_r_delay_cycle ;		/**< hardware delay time, suspend_ret_r_delay_us = (suspend_ret_r_delay_cycle+1) * 1/16k */
+}pm_r_delay_cycle_s;
+
+extern volatile pm_r_delay_cycle_s g_pm_r_delay_cycle;
 typedef struct{
 	unsigned int   tick_sysClk;
 	unsigned int   tick_32k;
@@ -64,7 +86,7 @@ static inline void blc_app_setExternalCrystalCapEnable(unsigned char  en)
  * @param[in]  wakeup_tick - the time of short sleep, which means MCU can sleep for less than 5 minutes.
  * @return     indicate whether the cpu is wake up successful.
  */
-int  cpu_sleep_wakeup_32k_rc_text(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
+int  cpu_sleep_wakeup_32k_rc_text(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, pm_wakeup_tick_type_e wakeup_tick_type, unsigned int  wakeup_tick);
 
 /**
  * @brief      This function serves to set the working mode of MCU based on 32k crystal,e.g. suspend mode, deepsleep mode, deepsleep with SRAM retention mode and shutdown mode.
@@ -74,7 +96,7 @@ int  cpu_sleep_wakeup_32k_rc_text(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_
  * @param[in]  wakeup_tick - the time of short sleep, which means MCU can sleep for less than 5 minutes.
  * @return     indicate whether the cpu is wake up successful.
  */
-int  cpu_sleep_wakeup_32k_xtal_text(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
+int  cpu_sleep_wakeup_32k_xtal_text(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, pm_wakeup_tick_type_e wakeup_tick_type, unsigned int  wakeup_tick);
 
 
 /**
@@ -84,10 +106,9 @@ int  cpu_sleep_wakeup_32k_xtal_text(SleepMode_TypeDef sleep_mode,  SleepWakeupSr
  */
 static inline void blc_pm_select_internal_32k_crystal_save_ram(void)
 {
-	cpu_sleep_wakeup 	 	= cpu_sleep_wakeup_32k_rc_text;
-	pm_tim_recover  	 	= pm_tim_recover_32k_rc;
-
-	blt_miscParam.pm_enter_en 	= 1; // allow enter pm, 32k rc does not need to wait for 32k clk to be stable
+	cpu_sleep_wakeup_and_longsleep 	= cpu_sleep_wakeup_32k_rc_text;
+	pm_tim_recover  	 			= pm_tim_recover_32k_rc;
+	blt_miscParam.pm_enter_en 		= 1; // allow enter pm, 32k rc does not need to wait for 32k clk to be stable
 }
 
 /**
@@ -97,12 +118,16 @@ static inline void blc_pm_select_internal_32k_crystal_save_ram(void)
  */
 static inline void blc_pm_select_external_32k_crystal_save_ram(void)
 {
-	cpu_sleep_wakeup 	 	= cpu_sleep_wakeup_32k_xtal_text;
-	pm_check_32k_clk_stable = check_32k_clk_stable;
-	pm_tim_recover		 	= pm_tim_recover_32k_xtal;
-
-	blt_miscParam.pad32k_en 	= 1; // set '1': 32k clk src use external 32k crystal
+	cpu_sleep_wakeup_and_longsleep 	= cpu_sleep_wakeup_32k_xtal_text;
+	pm_check_32k_clk_stable 		= check_32k_clk_stable;
+	pm_tim_recover		 			= pm_tim_recover_32k_xtal;
+	blt_miscParam.pad32k_en 		= 1; // set '1': 32k clk src use external 32k crystal
 }
+
+/*********************************************************/
+//Remove when file merge to SDK //
+typedef void (*pm_wakeup_init_t)(XTAL_TypeDef);
+extern pm_wakeup_init_t pm_wakeup_init;
 
 #endif
 

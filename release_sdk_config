@@ -1,7 +1,7 @@
 [release_sdk_S1]
 
-TAG_NAME            V3.4.1.1
-PACKAGE_NAME        telink_b80_ble_single_connection_sdk_V3.4.1.1_S1
+TAG_NAME            V3.4.1.2
+PACKAGE_NAME        telink_b80_ble_single_connection_sdk_V3.4.1.2_S1
 SRC_GIT_URL         http://192.168.48.36/src/ble/telink_b80_ble_single_connection_src.git
 
 #                   .cproject                                project_name                    			module
@@ -15,14 +15,14 @@ LIB_OBJ             ./ble_lt_b80/8208_ble_sample/drivers/lib
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/drivers/ext_driver
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/stack
 LIB_OBJ             ./ble_lt_b80/8208_ble_sample/algorithm
-REPLACED_LIB_PATH   ./telink_b80_ble_single_connection_sdk_v3.4.1.1_Patch/0001_20221018_Solve_crystal_oscillator_stability/proj_lib/liblt_8208.a
+REPLACED_LIB_PATH   ./b80_ble_sdk/proj_lib/liblt_8208.a
 
 [release_sdk_S1_end]
 
 [release_sdk_S2]
 
-TAG_NAME            V3.4.1.1
-PACKAGE_NAME        telink_b80_ble_single_connection_sdk_V3.4.1.1_S2
+TAG_NAME            V3.4.1.2
+PACKAGE_NAME        telink_b80_ble_single_connection_sdk_V3.4.1.2_S2
 SRC_GIT_URL         http://192.168.48.36/src/ble/telink_b80_ble_single_connection_src.git
 
 #                   .cproject                                project_name                    			module

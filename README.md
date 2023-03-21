@@ -1,4 +1,4 @@
-# V3.4.1.2 (Public release)
+# V3.4.1.2
 
 ### Features
    * Normalizes the naming of content related to private schemas

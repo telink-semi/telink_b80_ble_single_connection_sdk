@@ -37,6 +37,8 @@
 ./b80_ble_sdk/drivers/dma.h			TELINK_APACHE  
 ./b80_ble_sdk/drivers/driver.h			TELINK_APACHE  
 ./b80_ble_sdk/drivers/driver_func_cfg.h			TELINK_APACHE  
+./b80_ble_sdk/drivers/emi.c			TELINK_APACHE  
+./b80_ble_sdk/drivers/emi.h			TELINK_APACHE  
 ./b80_ble_sdk/drivers/ext_driver/driver_ext.h			TELINK_APACHE  
 ./b80_ble_sdk/drivers/ext_driver/ext_misc.h			TELINK_APACHE  
 ./b80_ble_sdk/drivers/ext_driver/ext_pm.h			TELINK_APACHE  
@@ -66,7 +68,6 @@
 ./b80_ble_sdk/drivers/ir_learn.h			TELINK_APACHE  
 ./b80_ble_sdk/drivers/keyscan.c			TELINK_APACHE  
 ./b80_ble_sdk/drivers/keyscan.h			TELINK_APACHE  
-./b80_ble_sdk/drivers/lib/include/emi.h			TELINK_APACHE  
 ./b80_ble_sdk/drivers/lib/include/otp/otp.h			TELINK_APACHE  
 ./b80_ble_sdk/drivers/lib/include/otp/otp_base.h			TELINK_APACHE  
 ./b80_ble_sdk/drivers/lib/include/otp/otp_margin_read.h			TELINK_APACHE  

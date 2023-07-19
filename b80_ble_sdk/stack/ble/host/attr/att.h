@@ -159,6 +159,20 @@ void bls_att_registerHandleValueConfirmCb(att_handleValueConfirm_callback_t cb);
  */
 u16  blc_att_getEffectiveMtuSize(void);
 
+/**
+ * @brief	This function is used to set effective ATT MTU size
+ * @param	connHandle - connect handle
+ * @param	effective_mtu - bltAtt.effective_MTU
+ * @return	none.
+ */
+void  		blt_att_setEffectiveMtuSize(u16 connHandle, u8 effective_mtu);
+
+/**
+ * @brief	This function is used to reset effective ATT MTU size
+ * @param	connHandle - connect handle
+ * @return	none.
+ */
+void blc_att_resetMtuSizeToDefault(void);
 
 /**
  * @brief      set HID Report Map
@@ -169,6 +183,14 @@ u16  blc_att_getEffectiveMtuSize(void);
 ble_sts_t bls_att_setHIDReportMap(u8* p,u32 len);
 
 /**
+ * @brief      This function is used to set reject of write request. If enable, return of ATT write callback will take effect.  Error codes refer to Core Spec.
+ * @param[in]  WriteReqReject_en - 0: Disable;
+ *                           1: Enable.
+ * @return     none.
+ */
+void 		blc_att_enableWriteReqReject (u8 WriteReqReject_en);
+
+/**
  * @brief      reset HID Report Map
  * @param[in]  none
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
@@ -176,4 +198,11 @@ ble_sts_t bls_att_setHIDReportMap(u8* p,u32 len);
 ble_sts_t bls_att_resetHIDReportMap();
 
 
+/**
+ * @brief      This function is used to response to MTU size exchcange.
+ * @param[in]  connHandle - connect handle
+ * @param[in]  mtu_size - mtu size
+ * @return     BLE_SUCCESS
+ */
+ble_sts_t	blc_att_responseMtuSizeExchange (u16 connHandle, u16 mtu_size);
 

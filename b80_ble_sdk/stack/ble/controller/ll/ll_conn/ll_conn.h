@@ -25,6 +25,12 @@
 #define LL_CONN_H_
 
 /**
+ *  @brief  Definition for BLE Invalid connection handle value
+ */
+#define BLE_INVALID_CONNECTION_HANDLE    0xffff
+
+#define 		IS_CONNECTION_HANDLE_VALID(handle)  			( handle != BLE_INVALID_CONNECTION_HANDLE )
+/**
  * @brief	LE connection handle for slave role
  * controller now use 0x0040 in this SDK, never change, so user can use this value directly
  */

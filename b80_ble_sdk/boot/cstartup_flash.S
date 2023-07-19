@@ -205,7 +205,7 @@ __reset:
 #if FLASH_WAKEUP_EN
 
 FLASH_WAKEUP_BEGIN:
-	tloadr      r0,DATA_I+44
+	tloadr      r0,DATA_I+24			@Adjust number from 44 to 24, by BLE SUNWEI
 	tmov		r1,#0
 	tstorerb    r1,[r0,#1]
 	tmov        r1,#171						@Flash deep cmd: 0xAB
@@ -293,8 +293,8 @@ SET_BOOT:
 	tstorerb	r1, [r0, #1]
 	tj			COPY_DATA_RELOAD
 
-WHILE:
-	tj	WHILE
+@WHILE:				@not be necessary, delete it, by BLE SUNWEI
+@	tj	WHILE			@not be necessary, delete it, by BLE SUNWEI
 
 SET_BOOT_END:
 @********************************************************************************************************
@@ -393,12 +393,12 @@ DATA_I:
 	.word   (_rstored_)                 @12
 	.word	_data_reload_start_		@16
 	.word	_data_reload_end_			@20
-    .word	(0x0000007e)                @24
-	.word	(0x008000b8)                @28
-	.word	(0x00800060)                @32
-    .word	(0xff080000)                @36
-    .word	(0x000000f7)                @40
-	.word	(0x0080000c)                @44
+    @.word	(0x0000007e)                @24//not be used, delete it, by BLE SUNWEI
+	@.word	(0x008000b8)                @28//not be used, delete it, by BLE SUNWEI
+	@.word	(0x00800060)                @32//not be used, delete it, by BLE SUNWEI
+    @.word	(0xff080000)                @36//not be used, delete it, by BLE SUNWEI
+    @.word	(0x000000f7)                @40//not be used, delete it, by BLE SUNWEI
+	.word	(0x0080000c)                @24 not @44
 
 DEBUG_GPIO:
 	.word	(0x80050a)                  @  PBx oen
@@ -406,18 +406,20 @@ DEBUG_GPIO:
 OTP_CTRL:
 	.word	(0x800010)                  @  otp control
 
-MC_ICCT1:
-	.word	(0x800603)                  @  mc icct1
+@MC_ICCT1:
+@	.word	(0x800603)                  @  mc icct1 //not be used, delete it, by BLE SUNWEI
 
-FLL_D:
+#if FLL_STK_EN
+FLL_D:				@Only be used when FLL_STK_EN is 1, by BLE SUNWEI
 	.word	0xffffffff                	@0
 	.word	(_start_data_)    			@4
 	.word	(0x844000)		    		@12  	stack end
 	.word   _ramcode_size_div_256_      @12
+#endif
 
 BOOT_SEL_D:
 	.word	(0x80063e)
-	.word	(0x80063f)
+	@.word	(0x80063f)	//not be used, delete it, by BLE SUNWEI
 
 	.align 4
 __irq:

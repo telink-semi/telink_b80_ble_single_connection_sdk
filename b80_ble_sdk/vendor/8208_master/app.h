@@ -1,5 +1,5 @@
 /********************************************************************************************************
- * @file     user_config.h
+ * @file     app.h
  *
  * @brief    This is the header file for BLE SDK
  *
@@ -21,20 +21,39 @@
  *          limitations under the License.
  *******************************************************************************************************/
 
-#pragma once
+#ifndef _APP_H
+#define _APP_H
 
 
-#if(__PROJECT_B80_BLE_SAMPLE__)
-	#include "vendor/8208_ble_sample/app_config.h"
-#elif(__PROJECT_B80_BLE_FEATURE__)
-	#include "vendor/8208_feature/app_config.h"
-#elif(__PROJECT_B80_HCI__)
-	#include "vendor/8208_hci/app_config.h"
-#elif(__PROJECT_B80_MODULE__)
-	#include "vendor/8208_module/app_config.h"
-#elif(__PROJECT_B80_MASTER__)
-	#include "vendor/8208_master/app_config.h"
-#else
-	#include "../common/default_config.h"
-#endif
+/**
+ * @brief		user initialization when MCU power on or wake_up from deepSleep mode
+ * @param[in]	none
+ * @return      none
+ */
 
+void user_init_normal(void);
+
+
+/**
+ * @brief		user initialization when MCU wake_up from deepSleep_retention mode
+ * @param[in]	none
+ * @return      none
+ */
+void user_init_deepRetn(void);
+
+
+/**
+ * @brief     BLE main loop
+ * @param[in]  none.
+ * @return     none.
+ */
+void main_loop (void);
+
+/**
+ * @brief     BLE main idle loop
+ * @param[in]  none.
+ * @return     none.
+ */
+int main_idle_loop (void);
+
+#endif /* APP_H_ */

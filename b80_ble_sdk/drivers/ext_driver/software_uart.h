@@ -161,6 +161,10 @@ void soft_uart_en(void);
  */
 void soft_uart_rx_handler(void *prx);
 
+void soft_uart_sdk_adv_handler(void *prx);
+
+void soft_uart_SoftUartisRfState_handler(void *prx);
+
 /**
  * @brief       Serial port sending data
  * @param[in]	pointer to the buffer containing data need to send

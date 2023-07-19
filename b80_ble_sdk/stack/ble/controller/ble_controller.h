@@ -36,11 +36,15 @@
 
 
 #include "stack/ble/controller/ll/ll.h"
+#include "stack/ble/controller/ll/ll_master.h"
 #include "stack/ble/controller/ll/ll_adv.h"
 #include "stack/ble/controller/ll/ll_scan.h"
+#include "stack/ble/controller/ll/ll_master_init.h"
+#include "stack/ble/controller/ll/ll_master_scan.h"
 #include "stack/ble/controller/ll/ll_pm.h"
 #include "stack/ble/controller/ll/ll_conn/ll_conn.h"
 #include "stack/ble/controller/ll/ll_conn/ll_slave.h"
+#include "stack/ble/controller/ll/ll_conn/ll_master_single_conn.h"
 
 
 #include "stack/ble/controller/phy/phy.h"
@@ -49,6 +53,11 @@
 
 #include "algorithm/ecc/ecc_ll.h"
 #include "algorithm/aes_ccm/aes_ccm.h"
+
+
+
+
+
 
 
 #endif /* BLE_H_ */

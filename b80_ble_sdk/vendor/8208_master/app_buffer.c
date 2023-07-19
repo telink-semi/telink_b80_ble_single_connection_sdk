@@ -1,7 +1,7 @@
 /********************************************************************************************************
- * @file     user_config.h
+ * @file     app_buffer.c
  *
- * @brief    This is the header file for BLE SDK
+ * @brief    This is the source file for BLE SDK
  *
  * @author	 BLE GROUP
  * @date         12,2021
@@ -21,20 +21,27 @@
  *          limitations under the License.
  *******************************************************************************************************/
 
-#pragma once
+#include "tl_common.h"
+#include "drivers.h"
+#include "stack/ble/ble.h"
+
+#include "app_buffer.h"
+#include "app_config.h"
 
 
-#if(__PROJECT_B80_BLE_SAMPLE__)
-	#include "vendor/8208_ble_sample/app_config.h"
-#elif(__PROJECT_B80_BLE_FEATURE__)
-	#include "vendor/8208_feature/app_config.h"
-#elif(__PROJECT_B80_HCI__)
-	#include "vendor/8208_hci/app_config.h"
-#elif(__PROJECT_B80_MODULE__)
-	#include "vendor/8208_module/app_config.h"
-#elif(__PROJECT_B80_MASTER__)
-	#include "vendor/8208_master/app_config.h"
-#else
-	#include "../common/default_config.h"
-#endif
+
+/********************* ACL connection LinkLayer TX & RX data FIFO allocation, Begin ********************************/
+u8	app_acl_rxfifo[ACL_RX_FIFO_SIZE * ACL_RX_FIFO_NUM] = {0};
+u8	app_acl_txfifo[ACL_TX_FIFO_SIZE * ACL_TX_FIFO_NUM] = {0};
+/******************** ACL connection LinkLayer TX & RX data FIFO allocation, End ***********************************/
+
+
+
+
+/***************** ACL connection L2CAP layer MTU TX & RX data FIFO allocation, Begin ********************************/
+
+u8 app_l2cap_rx_fifo[L2CAP_RX_BUFF_SIZE];
+
+/***************** ACL connection L2CAP layer MTU TX & RX data FIFO allocation, End **********************************/
+
 

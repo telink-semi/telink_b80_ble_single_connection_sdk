@@ -74,7 +74,7 @@ ble_sts_t 	blc_ll_setCentralScanParameter (scan_type_t scan_type, u16 scan_inter
  * @brief	   enable or disable legacy scanning.
  * @param[in]  scan_enable
  * @param[in]  filter_duplicate - controls whether the Link Layer should filter out
- * 								  duplicate advertising rebports (Filtering_Enabled) to the Host,
+ * 								  duplicate advertising reports (Filtering_Enabled) to the Host,
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
  */
 ble_sts_t 	blc_ll_setScanEnable (scan_en_t scan_enable, dupFilter_en_t filter_duplicate);

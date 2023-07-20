@@ -90,7 +90,7 @@
 
 typedef int (*att_handleValueConfirm_callback_t)(void);
 typedef int (*att_readwrite_callback_t)(void* p);
-typedef void (*attRxMtuSizeExchangeCommpleteCb)(u16 connHandle, u16 remoteMtuSize, u16 effectMtuSize);
+typedef void (*attRxMtuSizeExchangeCompleteCb)(u16 connHandle, u16 remoteMtuSize, u16 effectMtuSize);
 
 typedef struct attribute
 {
@@ -143,7 +143,7 @@ ble_sts_t blc_att_requestMtuSizeExchange(u16 connHandle, u16 mtu_size);
  * @param[in]  cb - callback function
  * @return     none
  */
-void blc_att_registerMtuSizeExchangeCb(attRxMtuSizeExchangeCommpleteCb cb);
+void blc_att_registerMtuSizeExchangeCb(attRxMtuSizeExchangeCompleteCb cb);
 
 /**
  * @brief      This function is used to register handle value confirm callback
@@ -199,7 +199,7 @@ ble_sts_t bls_att_resetHIDReportMap();
 
 
 /**
- * @brief      This function is used to response to MTU size exchcange.
+ * @brief      This function is used to response to MTU size exchange.
  * @param[in]  connHandle - connect handle
  * @param[in]  mtu_size - mtu size
  * @return     BLE_SUCCESS

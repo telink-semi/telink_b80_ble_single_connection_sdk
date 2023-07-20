@@ -66,7 +66,7 @@ ble_sts_t ll_whiteList_getSize(u8 *returnPublicAddrListSize) ;
 
 
 /**
- * @brief      reset resolvinglist
+ * @brief      reset resolving list
  * @param[in]  none
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
  */
@@ -74,7 +74,7 @@ ble_sts_t  ll_resolvingList_reset(void);
 
 
 /**
- * @brief      add a device to resolvinglist
+ * @brief      add a device to resolving list
  * @param[in]  peerIdAddrType - device mac address type
  * @param[in]  peerIdAddr - device mac address
  * @param[in]  peer_irk - peer IRK pointer
@@ -85,7 +85,7 @@ ble_sts_t  ll_resolvingList_add(u8 peerIdAddrType, u8 *peerIdAddr, u8 *peer_irk,
 
 
 /**
- * @brief      delete a device from resolvinglist
+ * @brief      delete a device from resolving list
  * @param[in]  peerIdAddrType - device mac address type
  * @param[in]  peerIdAddr - device mac address
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed

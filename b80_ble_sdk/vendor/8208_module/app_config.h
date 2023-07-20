@@ -33,7 +33,7 @@
 #define BLE_MODULE_OTA_ENABLE				1
 
 /* firmware signature check */
-#define FIRMWARES_SIGNATURE_ENABLE     		 		0
+#define FIRMWARE_SIGNATURE_ENABLE     		 		0
 
 /* Power Management */
 #define BLE_MODULE_PM_ENABLE							1
@@ -109,7 +109,7 @@ enum{
 #if (BATT_CHECK_ENABLE)
 	#define ADC_INPUT_PCHN					VBAT    //corresponding  ADC_InputPchTypeDef in adc.h
 
-	#define VBAT_ALRAM_THRES_MV				2000   // 2000 mV low battery alarm
+	#define VBAT_ALARM_THRES_MV				2000   // 2000 mV low battery alarm
 	//////////////////////////// FEATURE PM GPIO	(EVK board) /////////////////////////////////
 	#define GPIO_WAKEUP_FEATURE				GPIO_PB6   //mcu wakeup module
 	#define	PB6_FUNC							AS_GPIO
@@ -131,7 +131,7 @@ enum{
 	#define	GPIO_LED_GREEN	GPIO_PA5
 	#define	GPIO_LED_WHITE	GPIO_PA6
 	#define	GPIO_LED_RED		GPIO_PA7
-	#define LED_ON_LEVAL 			1 		//gpio output high voltage to turn on led
+	#define LED_ON_LEVEL 			1 		//gpio output high voltage to turn on led
 
 	#define PA4_FUNC				AS_GPIO
 	#define PA5_FUNC				AS_GPIO

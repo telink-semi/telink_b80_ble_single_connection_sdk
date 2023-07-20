@@ -56,7 +56,7 @@
 #define 	SMP_TEST_LEGACY_PASSKEY_ENTRY_OOB	7 //OOB_Authentication, not test
 
 // LE_Security_Mode_1_Level_4, authenticated pairing with encryption
-#define 	SMP_TEST_SC_NUMERIC_COMPARISON		8 //Numric_Comparison
+#define 	SMP_TEST_SC_NUMERIC_COMPARISON		8 //Numeric_Comparison
 #define 	SMP_TEST_SC_PASSKEY_ENTRY_SDMI		9 //PK_Resp_Dsply_Init_Input
 #define 	SMP_TEST_SC_PASSKEY_ENTRY_MDSI		10//PK_Init_Dsply_Resp_Input
 #define 	SMP_TEST_SC_PASSKEY_ENTRY_MISI		11//PK_BOTH_INPUT, not test
@@ -147,7 +147,7 @@ enum{
 	#define	GPIO_LED_GREEN	GPIO_PA5
 	#define	GPIO_LED_WHITE	GPIO_PA6
 	#define	GPIO_LED_RED		GPIO_PA7
-	#define LED_ON_LEVAL 			1 		//gpio output high voltage to turn on led
+	#define LED_ON_LEVEL 			1 		//gpio output high voltage to turn on led
 
 	#define PA4_FUNC				AS_GPIO
 	#define PA5_FUNC				AS_GPIO

@@ -60,7 +60,7 @@ SECTIONS
 		PROVIDE(_dstored_ = . );
 	    PROVIDE(_code_size_ = .);
 	
-	 . = (0x840000 + ((0x900 + _ramcode_size_align_256_) * __LOAD_FLASH) + (0x400 * __LOAD_DUT) + (_dstored_ * __LOAD_RAM));	/* __LOAD_FLASH for MCU RUN IN Flash 0x100 alighned, must greater than or equal to:0x808000 + ram_code_size +  irq_vector(0x100) + IC_tag(0x100) + IC_cache(0x800) == 0x808a00 + ram_code_size */
+	 . = (0x840000 + ((0x900 + _ramcode_size_align_256_) * __LOAD_FLASH) + (0x400 * __LOAD_DUT) + (_dstored_ * __LOAD_RAM));	/* __LOAD_FLASH for MCU RUN IN Flash 0x100 aligned, must greater than or equal to:0x808000 + ram_code_size +  irq_vector(0x100) + IC_tag(0x100) + IC_cache(0x800) == 0x808a00 + ram_code_size */
 																													/*  __LOAD_DUT	for MCU RUN IN SRAM ,this setting is used for DUT Test and bin size is limited to 8k*/ 
 																													/* __LOAD_RAM   for MCU RUN IN SRAM */ 
 	    .data :

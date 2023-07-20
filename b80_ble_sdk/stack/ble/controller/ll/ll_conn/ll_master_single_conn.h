@@ -82,7 +82,7 @@ ble_sts_t	blm_ll_disconnect (u16 handle, u8 reason);
 
 
 /**
- * @brief      for user to start update prarameter process in master role .
+ * @brief      for user to start update parameter process in master role .
  * @param[in]  connHandle - connect handle
  * @param[in]  conn_min - minimum connection interval
  * @param[in]  conn_max - maximum connection interval

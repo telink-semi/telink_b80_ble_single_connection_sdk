@@ -156,7 +156,7 @@
 #define VK_KCR				0x90	//ok,K151
 #define VK_KCL				0x91	//ok,K150
 
-//  NOT standard,  use these reserved code to distinguish ctrol keys
+//  NOT standard,  use these reserved code to distinguish control keys
 #ifndef CTRL_SHIFT_E0E7
 #define CTRL_SHIFT_E0E7		1
 #endif
@@ -251,7 +251,7 @@ typedef struct{
 	u8 val[VK_EXT_LEN];
 }vk_ext_t;
 
-// mulit-byte keycode for media keys, cannot used directly in c code..for reference
+// multi-byte keycode for media keys, cannot used directly in c code..for reference
 #define VK_POWER_V			0x01
 #define VK_SLEEP_V			0x02
 #define VK_WAKEUP_V			0x04

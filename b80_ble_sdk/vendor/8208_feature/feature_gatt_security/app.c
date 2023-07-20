@@ -86,7 +86,7 @@ void task_connect(u8 e, u8 *p, int n)
 	bls_l2cap_requestConnParamUpdate (CONN_INTERVAL_10MS, CONN_INTERVAL_10MS, 99, CONN_TIMEOUT_4S);  // 1 S
 
 	#if (UI_LED_ENABLE)
-		gpio_write(GPIO_LED_RED, LED_ON_LEVAL);
+		gpio_write(GPIO_LED_RED, LED_ON_LEVEL);
 	#endif
 }
 
@@ -116,7 +116,7 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 
 
 	#if (UI_LED_ENABLE)
-		gpio_write(GPIO_LED_RED, !LED_ON_LEVAL);  //light off
+		gpio_write(GPIO_LED_RED, !LED_ON_LEVEL);  //light off
 	#endif
 
 	advertise_begin_tick = clock_time();
@@ -215,7 +215,7 @@ int app_host_event_callback (u32 h, u8 *para, int n)
 		}
 		break;
 
-		case GAP_EVT_SMP_TK_DISPALY:
+		case GAP_EVT_SMP_TK_DISPLAY:
 		{
 			char pc[7];
 			u32 pinCode = *(u32*)para;
@@ -260,7 +260,7 @@ int app_host_event_callback (u32 h, u8 *para, int n)
  */
 void user_init_normal(void)
 {
-	/* random number generator must be initiated here( in the beginning of user_init_nromal).
+	/* random number generator must be initiated here( in the beginning of user_init_normal).
 	 * When deepSleep retention wakeUp, no need initialize again */
 	random_generator_init();  //this is must
 
@@ -331,7 +331,7 @@ void user_init_normal(void)
 	//set security level: "LE_Security_Mode_1_Level_2"
 	blc_smp_setSecurityLevel(Unauthenticated_Pairing_with_Encryption);  //if not set, default is : LE_Security_Mode_1_Level_2(Unauthenticated_Pairing_with_Encryption)
 	blc_smp_setBondingMode(Bondable_Mode);	// if not set, default is : Bondable_Mode
-	blc_smp_setIoCapability(IO_CAPABLITY_NO_IN_NO_OUT);	// if not set, default is : IO_CAPABILITY_NO_INPUT_NO_OUTPUT
+	blc_smp_setIoCapability(IO_CAPABILITY_NO_IN_NO_OUT);	// if not set, default is : IO_CAPABILITY_NO_INPUT_NO_OUTPUT
 
 	//Smp Initialization may involve flash write/erase(when one sector stores too much information,
 	//   is about to exceed the sector threshold, this sector must be erased, and all useful information
@@ -372,7 +372,7 @@ void user_init_normal(void)
 	blc_gap_setEventMask( GAP_EVT_MASK_SMP_PAIRING_BEGIN 			|  \
 						  GAP_EVT_MASK_SMP_PAIRING_SUCCESS   		|  \
 						  GAP_EVT_MASK_SMP_PAIRING_FAIL				|  \
-						  GAP_EVT_MASK_SMP_TK_DISPALY				|  \
+						  GAP_EVT_MASK_SMP_TK_DISPLAY				|  \
 						  GAP_EVT_MASK_SMP_CONN_ENCRYPTION_DONE     |  \
 						  GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE);
 
@@ -383,7 +383,7 @@ void user_init_normal(void)
 	//set security level: "LE_Security_Mode_1_Level_4"
 	blc_smp_setSecurityLevel(Authenticated_LE_Secure_Connection_pairing_with_Encryption);  //if not set, default is : LE_Security_Mode_1_Level_2(Unauthenticated_Pairing_with_Encryption)
 	blc_smp_setpairingMethods(LE_Secure_Connection);
-	blc_smp_setSecurityParamters(Bondable_Mode, 1, 0, 0, IO_CAPABILITY_DISPLAY_ONLY);
+	blc_smp_setSecurityParameters(Bondable_Mode, 1, 0, 0, IO_CAPABILITY_DISPLAY_ONLY);
 	blc_smp_setEcdhDebugMode(debug_mode); //use debug mode for sniffer decryption
 
 	//Smp Initialization may involve flash write/erase(when one sector stores too much information,
@@ -399,7 +399,7 @@ void user_init_normal(void)
 	blc_gap_setEventMask( GAP_EVT_MASK_SMP_PAIRING_BEGIN 			|  \
 						  GAP_EVT_MASK_SMP_PAIRING_SUCCESS   		|  \
 						  GAP_EVT_MASK_SMP_PAIRING_FAIL				|  \
-						  GAP_EVT_MASK_SMP_TK_DISPALY				|  \
+						  GAP_EVT_MASK_SMP_TK_DISPLAY				|  \
 						  GAP_EVT_MASK_SMP_CONN_ENCRYPTION_DONE     |  \
 						  GAP_EVT_MASK_SMP_SECURITY_PROCESS_DONE);
 

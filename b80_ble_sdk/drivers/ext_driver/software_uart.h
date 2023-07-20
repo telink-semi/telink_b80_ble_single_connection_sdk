@@ -89,7 +89,7 @@
 #define     mutex_take(a)            	(a)
 
 /**
- *  @brief  define uart recevice struct
+ *  @brief  define uart receive struct
  */
 typedef struct{
 	unsigned short  time_interval;					//Time interval calculated by baud rate

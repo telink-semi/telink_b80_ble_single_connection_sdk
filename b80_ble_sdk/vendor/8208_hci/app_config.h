@@ -32,7 +32,7 @@
 #define	BLE_OTA_SERVER_ENABLE						1
 
 /* firmware signature check */
-#define FIRMWARES_SIGNATURE_ENABLE     		 		0
+#define FIRMWARE_SIGNATURE_ENABLE     		 		0
 
 
 /**
@@ -127,7 +127,7 @@ typedef struct {
 	#define	GPIO_LED_GREEN			GPIO_PB4
 	#define	GPIO_LED_WHITE			GPIO_PB5
 	#define	GPIO_LED_RED			GPIO_PB6
-	#define LED_ON_LEVAL 			1 		//gpio output high voltage to turn on led
+	#define LED_ON_LEVEL 			1 		//gpio output high voltage to turn on led
 	#define PB3_FUNC				AS_GPIO
 	#define PB4_FUNC				AS_GPIO
 	#define PB5_FUNC				AS_GPIO

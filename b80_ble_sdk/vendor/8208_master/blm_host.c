@@ -95,7 +95,7 @@ const u8 	telink_adv_trigger_unpair_8258[] = {7, 0xFF, 0x11, 0x02, 0x01, 0x01, 0
 
 u16 	spp_char_handle = 52;
 #if (BLE_HOST_SIMPLE_SDP_ENABLE)
-	extern void host_att_service_disccovery_clear(void);
+	extern void host_att_service_discovery_clear(void);
 	int host_att_client_handler (u16 connHandle, u8 *p);
 	ble_sts_t  host_att_discoveryService (att_db_uuid16_t *p16, int n16, att_db_uuid128_t *p128, int n128);
 
@@ -283,8 +283,8 @@ int blm_le_connection_establish_event_handle(u8 *p)
 		#if (UI_LED_ENABLE)
 			//led show connection state
 			master_connected_led_on = 1;
-			gpio_write(GPIO_LED_RED, LED_ON_LEVAL);     //red on
-			gpio_write(GPIO_LED_WHITE, !LED_ON_LEVAL);  //white off
+			gpio_write(GPIO_LED_RED, LED_ON_LEVEL);     //red on
+			gpio_write(GPIO_LED_WHITE, !LED_ON_LEVEL);  //white off
 		#endif
 
 
@@ -375,8 +375,8 @@ int 	blm_disconnect_event_handle(u8 *p)
 		//led show none connection state
 		if(master_connected_led_on){
 			master_connected_led_on = 0;
-			gpio_write(GPIO_LED_WHITE, LED_ON_LEVAL);   //white on
-			gpio_write(GPIO_LED_RED, !LED_ON_LEVAL);    //red off
+			gpio_write(GPIO_LED_WHITE, LED_ON_LEVEL);   //white on
+			gpio_write(GPIO_LED_RED, !LED_ON_LEVEL);    //red off
 		}
 	#endif
 
@@ -662,7 +662,7 @@ int app_l2cap_handler (u16 conn_handle, u8 *raw_pkt)
 					irq_disable();
 
 					#if (UI_LED_ENABLE)
-						gpio_write(GPIO_LED_WHITE, LED_ON_LEVAL);
+						gpio_write(GPIO_LED_WHITE, LED_ON_LEVEL);
 					#endif
 
 					while(1);
@@ -693,7 +693,7 @@ int app_l2cap_handler (u16 conn_handle, u8 *raw_pkt)
 			if( interval_us < 200000 && long_suspend_us < 20000000 && (long_suspend_us*2<=timeout_us) )
 			{
 				//when master host accept slave's conn param update req, should send a conn param update response on l2cap
-				//with CONN_PARAM_UPDATE_ACCEPT; if not accpet,should send  CONN_PARAM_UPDATE_REJECT
+				//with CONN_PARAM_UPDATE_ACCEPT; if not accept,should send  CONN_PARAM_UPDATE_REJECT
 				blc_l2cap_SendConnParamUpdateResponse(conn_handle, req->id, CONN_PARAM_UPDATE_ACCEPT);  //send SIG Connection Param Update Response
 
 

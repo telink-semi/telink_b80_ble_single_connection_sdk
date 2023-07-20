@@ -113,7 +113,7 @@ void task_connect(u8 e, u8 *p, int n)
 
 	A_tick = clock_time()|1;
 	#if (UI_LED_ENABLE)
-		gpio_write(GPIO_LED_RED, LED_ON_LEVAL);
+		gpio_write(GPIO_LED_RED, LED_ON_LEVEL);
 	#endif
 }
 
@@ -143,7 +143,7 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 
 
 	#if (UI_LED_ENABLE)
-		gpio_write(GPIO_LED_RED, !LED_ON_LEVAL);  //light off
+		gpio_write(GPIO_LED_RED, !LED_ON_LEVEL);  //light off
 	#endif
 
 	advertise_begin_tick = clock_time();
@@ -199,7 +199,7 @@ void blt_pm_proc(void)
  */
 void user_init_normal(void)
 {
-	/* random number generator must be initiated here( in the beginning of user_init_nromal).
+	/* random number generator must be initiated here( in the beginning of user_init_normal).
 	 * When deepSleep retention wakeUp, no need initialize again */
 	random_generator_init();  //this is must
 

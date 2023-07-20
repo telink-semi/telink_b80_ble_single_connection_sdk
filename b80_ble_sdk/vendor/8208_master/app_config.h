@@ -84,7 +84,7 @@ enum{
 	#define	MATRIX_ROW_PULL					PM_PIN_PULLDOWN_100K
 	#define	MATRIX_COL_PULL					PM_PIN_PULLUP_10K
 
-	#define	KB_LINE_HIGH_VALID				0   //dirve pin output 0 when keyscan, scanpin read 0 is valid
+	#define	KB_LINE_HIGH_VALID				0   //drive pin output 0 when keyscan, scanpin read 0 is valid
 
 	#define			KB_PAIR				0x01
 	#define			KB_UNPAIR				0x02
@@ -137,7 +137,7 @@ enum{
 	#define	GPIO_LED_GREEN	GPIO_PA5
 	#define	GPIO_LED_WHITE	GPIO_PA6
 	#define	GPIO_LED_RED		GPIO_PA7
-	#define LED_ON_LEVAL 			1 		//gpio output high voltage to turn on led
+	#define LED_ON_LEVEL 			1 		//gpio output high voltage to turn on led
 
 	#define PA4_FUNC				AS_GPIO
 	#define PA5_FUNC				AS_GPIO

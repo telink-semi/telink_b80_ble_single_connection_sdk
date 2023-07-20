@@ -49,7 +49,7 @@ u8 sendTerminate_before_enterDeep = 0;
  */
 void user_init_normal(void)
 {
-	/* random number generator must be initiated here( in the beginning of user_init_nromal).
+	/* random number generator must be initiated here( in the beginning of user_init_normal).
 	 * When deepSleep retention wakeUp, no need initialize again */
 	random_generator_init();  //this is must
 
@@ -77,8 +77,8 @@ void user_init_normal(void)
 		/* here user should set some log to know which application buffer incorrect */
 
 		#if(UI_LED_ENABLE) //add some LED to show this error
-			gpio_write(GPIO_LED_RED, LED_ON_LEVAL);
-			gpio_write(GPIO_LED_WHITE, LED_ON_LEVAL);
+			gpio_write(GPIO_LED_RED, LED_ON_LEVEL);
+			gpio_write(GPIO_LED_WHITE, LED_ON_LEVEL);
 		#endif
 
 		while(1);

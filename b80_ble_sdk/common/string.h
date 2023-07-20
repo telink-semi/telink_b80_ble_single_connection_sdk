@@ -29,7 +29,7 @@
 void *  memset(void * d, int c, unsigned int  n);
 void *  memcpy(void * des_ptr, const void * src_ptr, unsigned int);
 
-// do not return void*,  otherwise, we must use a variable to store the dest porinter, that is not performance
+// do not return void*,  otherwise, we must use a variable to store the dest pointer, that is not performance
 void   	memcpy4(void * dest, const void * src, unsigned int);
 
 int		memcmp(const void *_s1, const void *_s2, unsigned int _n);

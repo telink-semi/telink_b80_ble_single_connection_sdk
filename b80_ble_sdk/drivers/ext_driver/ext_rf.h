@@ -43,11 +43,11 @@ enum{
 
 
 /**
- * @brief   This function serves to triggle accesscode in coded Phy mode.
+ * @brief   This function serves to trigger accesscode in coded Phy mode.
  * @param   none.
  * @return  none.
  */
-static inline void rf_trigle_codedPhy_accesscode(void)
+static inline void rf_trigger_codedPhy_accesscode(void)
 {
 	WRITE_REG8(0x405, REG_ADDR8(0x405) | BIT(7)); //reg_rf_acc_len |= FLD_RF_LR_ACC_TRIG;
 }

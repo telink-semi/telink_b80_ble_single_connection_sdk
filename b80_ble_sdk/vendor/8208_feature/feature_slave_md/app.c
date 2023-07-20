@@ -93,7 +93,7 @@ void task_connect(u8 e, u8 *p, int n)
 	write_data_test_tick = clock_time();
 
 	#if (UI_LED_ENABLE)
-		gpio_write(GPIO_LED_RED, LED_ON_LEVAL);
+		gpio_write(GPIO_LED_RED, LED_ON_LEVEL);
 	#endif
 }
 
@@ -123,7 +123,7 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 
 
 	#if (UI_LED_ENABLE)
-		gpio_write(GPIO_LED_RED, !LED_ON_LEVAL);  //light off
+		gpio_write(GPIO_LED_RED, !LED_ON_LEVEL);  //light off
 	#endif
 
 	advertise_begin_tick = clock_time();
@@ -195,7 +195,7 @@ void app_switch_to_indirect_adv(u8 e, u8 *p, int n)
  */
 void user_init_normal(void)
 {
-	/* random number generator must be initiated here( in the beginning of user_init_nromal).
+	/* random number generator must be initiated here( in the beginning of user_init_normal).
 	 * When deepSleep retention wakeUp, no need initialize again */
 	random_generator_init();  //this is must
 
@@ -547,7 +547,7 @@ int myC2SWrite(void * p)
 		irq_disable();
 
 		#if (UI_LED_ENABLE)
-			gpio_write(GPIO_LED_WHITE, LED_ON_LEVAL);
+			gpio_write(GPIO_LED_WHITE, LED_ON_LEVEL);
 		#endif
 
 		while(1);

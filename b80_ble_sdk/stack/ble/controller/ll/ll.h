@@ -73,7 +73,7 @@ typedef void (*blt_event_callback_t)(u8 e, u8 *p, int n);
 #define BLT_EV_FLAG_CONN_PARA_UPDATE	 	13
 #define BLT_EV_FLAG_SUSPEND_ENTER 			14
 #define BLT_EV_FLAG_SUSPEND_EXIT 			15
-#define BLT_EV_FLAG_RX_DATA_ABANDOM 		16
+#define BLT_EV_FLAG_RX_DATA_ABANDON 		16
 #define BLT_EV_FLAG_SMP_PINCODE_PROCESS 	17
 #define BLT_EV_FLAG_SMP_KEY_MISSING 		18 //add for UTB2
 #define BLT_EV_FLAG_PHY_UPDATE              19

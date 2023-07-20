@@ -61,7 +61,7 @@ man_pair_t blm_manPair;
 /* define pair slave max num,
    if exceed this max num, two methods to process new slave pairing
    method 1: overwrite the oldest one(telink use this method)
-   method 2: not allow paring unness unpair happened  */
+   method 2: not allow paring unless unpair happened  */
 #define	USER_PAIR_SLAVE_MAX_NUM       1  //telink use max 1
 
 
@@ -74,7 +74,7 @@ typedef struct {
 
 typedef struct {
 	u32 bond_flash_idx[USER_PAIR_SLAVE_MAX_NUM];  //mark paired slave mac address in flash
-	macAddr_t bond_device[USER_PAIR_SLAVE_MAX_NUM];  //macAddr_t alreay defined in ble stack
+	macAddr_t bond_device[USER_PAIR_SLAVE_MAX_NUM];  //macAddr_t already defined in ble stack
 	u8 curNum;
 } user_salveMac_t;
 
@@ -166,7 +166,7 @@ int user_tbl_slave_mac_add(u8 adr_type, u8 *adr)  //add new mac address to table
  *              when slave paired with dongle, add this addr to table
  * 				re_poweron slave, dongle will search if this AdvA in slave adv pkt is in this table
  * 				if in, it will connect slave directly
- * 				this function must in ramcode
+ * 				this function must in ram code
  * @param[in]	adr_type
  * @param[in]	adr - pointer to point the address data
  * @return      none
@@ -350,7 +350,7 @@ int app_unpair_enable = 0;
 
 
 /**
- * @brief		host pair or upair proc in main loop
+ * @brief		host pair or unpair proc in main loop
  * @param[in]	none
  * @return      none
  */

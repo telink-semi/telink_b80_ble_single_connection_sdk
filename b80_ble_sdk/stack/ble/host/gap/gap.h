@@ -25,7 +25,7 @@
 
 
 
-#define GAP_APPEARE_UNKNOWN                     0x0000 //!< Unknown
+#define GAP_APPEAR_UNKNOWN                     0x0000 //!< Unknown
 
 
 /**

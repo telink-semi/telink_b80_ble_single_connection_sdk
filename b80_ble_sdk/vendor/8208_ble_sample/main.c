@@ -76,7 +76,7 @@ int main(void)
 	/* load customized freq_offset CAP value and TP value. */
 	blc_app_loadCustomizedParameters();
 
-	#if FIRMWARES_SIGNATURE_ENABLE
+	#if FIRMWARE_SIGNATURE_ENABLE
 		blt_firmware_signature_check();
 	#endif
 

@@ -139,7 +139,7 @@ typedef enum{
   ADV_TYPE_CONNECTABLE_UNDIRECTED             = 0x00,  // ADV_IND
   ADV_TYPE_CONNECTABLE_DIRECTED_HIGH_DUTY     = 0x01,  // ADV_INDIRECT_IND (high duty cycle)
   ADV_TYPE_SCANNABLE_UNDIRECTED               = 0x02 , // ADV_SCAN_IND
-  ADV_TYPE_NONCONNECTABLE_UNDIRECTED          = 0x03 , // ADV_NONCONN_IND
+  ADV_TYPE_UNCONNECTABLE_UNDIRECTED          = 0x03 , // ADV_UNCONN_IND
   ADV_TYPE_CONNECTABLE_DIRECTED_LOW_DUTY      = 0x04,  // ADV_INDIRECT_IND (low duty cycle)
 }adv_type_t;
 
@@ -196,8 +196,8 @@ typedef enum {
 } scan_type_t;
 
 
-/* Scannning_Interval, Time = N * 0.625 ms,
- * Notice that these are just part of but not all Scannning_Interval value */
+/* Scanning_Interval, Time = N * 0.625 ms,
+ * Notice that these are just part of but not all Scanning_Interval value */
 typedef enum{
 	SCAN_INTERVAL_10MS              =            16,
 	SCAN_INTERVAL_20MS              =            32,
@@ -224,8 +224,8 @@ typedef enum{
 	SCAN_INTERVAL_1000MS            =            1600,
 }scan_inter_t;
 
-/* Scannning_Window, Time = N * 0.625 ms,
- * Notice that these are just part of but not all Scannning_Window value */
+/* Scanning_Window, Time = N * 0.625 ms,
+ * Notice that these are just part of but not all Scanning_Window value */
 typedef enum{
 	SCAN_WINDOW_10MS                =            16,
 	SCAN_WINDOW_20MS                =            32,
@@ -257,7 +257,7 @@ typedef enum {
 	SCAN_FP_ALLOW_ADV_ANY						=		0x00,  //except direct adv address not match
 	SCAN_FP_ALLOW_ADV_WL        				=		0x01,  //except direct adv address not match
 	SCAN_FP_ALLOW_UNDIRECT_ADV      			=		0x02,  //and direct adv address match initiator's resolvable private MAC
-	SCAN_FP_ALLOW_ADV_WL_DIRECT_ADV_MACTH		=		0x03,  //and direct adv address match initiator's resolvable private MAC
+	SCAN_FP_ALLOW_ADV_WL_DIRECT_ADV_MATCH		=		0x03,  //and direct adv address match initiator's resolvable private MAC
 
 } scan_fp_type_t;
 
@@ -550,7 +550,7 @@ typedef enum{
   ADV_EVT_PROP_LEGACY_CONNECTABLE_DIRECTED_LOW_DUTY 				       	= 0x0015,		//  0001 0101'b		ADV_DIRECT_IND(low duty cycle)
   ADV_EVT_PROP_LEGACY_CONNECTABLE_DIRECTED_HIGH_DUTY 	 				    = 0x001D,		//  0001 1101'b		ADV_DIRECT_IND(high duty cycle)
   ADV_EVT_PROP_LEGACY_SCANNABLE_UNDIRECTED 							       	= 0x0012,		//  0001 0010'b		ADV_SCAN_IND
-  ADV_EVT_PROP_LEGACY_NON_CONNECTABLE_NON_SCANNABLE_UNDIRECTED				= 0x0010,		//  0001 0000'b		ADV_NONCONN_IND
+  ADV_EVT_PROP_LEGACY_NON_CONNECTABLE_NON_SCANNABLE_UNDIRECTED				= 0x0010,		//  0001 0000'b		ADV_UNCONN_IND
 
 
   ADV_EVT_PROP_EXTENDED_NON_CONNECTABLE_NON_SCANNABLE_UNDIRECTED    	    = 0x0000,		//  0000 0000'b		ADV_EXT_IND + AUX_ADV_IND/AUX_CHAIN_IND
@@ -606,7 +606,7 @@ typedef enum {
 	DATA_OPER_FIRST      	=	0x01,
 	DATA_OPER_LAST       	=	0x02,
 	DATA_OPER_COMPLETE   	=	0x03,
-	DATA_OPER_UNCHANGEED	=  	0x04,
+	DATA_OPER_UNCHANGED	=  	0x04,
 } data_oper_t;
 
 
@@ -1225,7 +1225,7 @@ typedef struct
 	u16		sync_handle;		/* Identifier of the periodic advertising train */
 	u8		enc;				/* Encryption flag */
 	u8      broadcast_code[16]; /* The code used to derive the session key that is used to encrypt and decrypt BIS payloads */
-	u8		mse;				/* The Controller can schedule reception of any number of subevents up to NSE */
+	u8		mse;				/* The Controller can schedule reception of any number of sub events up to NSE */
   	u16		big_sync_timeout;	/* Synchronization timeout for the BIG, Time = N*10 ms, Time Range: 100 ms to 163.84 s */
   	u8  	num_bis; 			/* Total number of BISes to synchronize */
   	u8      bis[1];				/* List of indices of BISes */
@@ -1245,7 +1245,7 @@ typedef struct
 	u8   codec_id_assignNum;
 	u16  codec_id_compId;
 	u16  codec_id_venderDef;
-	u8   contro_delay[3];
+	u8   control_delay[3];
 	u8   codec_config_len;
 	u8	 codec_config[19]; /* Max buffer length 19Byte */
 }hci_le_setupIsoDataPathCmdParams_t;
@@ -1271,7 +1271,7 @@ typedef enum {
 /* Data_Path_ID */
 typedef enum {
 	Data_Path_HCI	 	= 0x00,
-	//x01 to 0xFE: Logical_Channel_Number. The meaning of the logical channel is vendorspecific.
+	//x01 to 0xFE: Logical_Channel_Number. The meaning of the logical channel is vendor specific.
 } dat_path_id_t;
 
 /**

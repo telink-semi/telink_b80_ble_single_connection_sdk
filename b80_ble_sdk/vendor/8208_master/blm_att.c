@@ -216,7 +216,7 @@ ble_sts_t  host_att_discoveryService (att_db_uuid16_t *p16, int n16, att_db_uuid
 		blc_gatt_pushReadByTypeRequest(cur_conn_device.conn_handle, s, 0xffff, (u8 *)&uuid, 2);
 		if (host_att_service_wait_event(ATT_OP_READ_BY_TYPE_REQ, dat, 1000000))
 		{
-			return  GATT_ERR_SERVICE_DISCOVERY_TIEMOUT;			//timeout
+			return  GATT_ERR_SERVICE_DISCOVERY_TIMEOUT;			//timeout
 		}
 		DBG_CHN3_TOGGLE;
 		// process response data
@@ -271,7 +271,7 @@ ble_sts_t  host_att_discoveryService (att_db_uuid16_t *p16, int n16, att_db_uuid
 			blc_gatt_pushFindInformationRequest(cur_conn_device.conn_handle, p16->handle, 0xffff);
 			if (host_att_service_wait_event(ATT_OP_FIND_INFO_REQ, dat, 1000000))
 			{
-				return  GATT_ERR_SERVICE_DISCOVERY_TIEMOUT;			//timeout
+				return  GATT_ERR_SERVICE_DISCOVERY_TIMEOUT;			//timeout
 			}
 
 			att_findInfoRsp_t *p_rsp = (att_findInfoRsp_t *) dat;
@@ -293,7 +293,7 @@ ble_sts_t  host_att_discoveryService (att_db_uuid16_t *p16, int n16, att_db_uuid
 						blc_gatt_pushReadRequest(cur_conn_device.conn_handle, pd[0]);
 						if (host_att_service_wait_event(ATT_OP_READ_REQ, dat, 1000000))
 						{
-								return  GATT_ERR_SERVICE_DISCOVERY_TIEMOUT;			//timeout
+								return  GATT_ERR_SERVICE_DISCOVERY_TIMEOUT;			//timeout
 						}
 
 						att_readRsp_t *pr = (att_readRsp_t *) dat;

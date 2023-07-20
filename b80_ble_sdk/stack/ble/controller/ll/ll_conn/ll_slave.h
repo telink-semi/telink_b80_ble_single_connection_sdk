@@ -85,7 +85,7 @@ u16			bls_ll_getConnectionTimeout(void);
 int			bls_ll_requestConnBrxEventDisable(void);
 
 /**
-* @brief      diasble brx event.
+* @brief      disable brx event.
 * @param	   none
 * @return     none
 */

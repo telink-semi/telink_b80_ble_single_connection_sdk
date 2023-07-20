@@ -246,7 +246,7 @@ void app_uart_init(void)
  * @return      none
  */
 void user_init_normal(void) {
-	/* random number generator must be initiated here( in the beginning of user_init_nromal).
+	/* random number generator must be initiated here( in the beginning of user_init_normal).
 	 * When deepSleep retention wakeUp, no need initialize again */
 	random_generator_init(); //this is must
 

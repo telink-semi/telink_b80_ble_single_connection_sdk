@@ -1,7 +1,10 @@
 stages:
   - genLicense
   - checkLicense
-  - build
+  - build_sample
+  - build_module
+  - build_feature
+  - build_master
   - clean_build
   - plainPW_check
   - cov
@@ -48,7 +51,7 @@ checkLicense:
     - "no_license*.txt"
     - "unknow_type_file.txt"
 
-build:
+build_sample:
   stage: build
   tags:
     - LINUX
@@ -66,6 +69,63 @@ build:
     - "b80_ble_sdk/8208_ble_sample/*.bin"
     - "b80_ble_sdk/8208_ble_sample/*.lst"
     - "b80_ble_sdk/8208_ble_sample/*.elf"
+
+build_module:
+  stage: build
+  tags:
+    - LINUX
+    - TC32
+  before_script:
+  script:
+    - which tc32-elf-gcc
+    - chmod +x b80_ble_sdk/*.sh
+    - date
+    - $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import ./b80_ble_sdk/  -cleanBuild telink_b80_ble_single_connection_sdk/8208_module
+    - date
+
+  artifacts:
+    paths:
+    - "b80_ble_sdk/8208_module/*.bin"
+    - "b80_ble_sdk/8208_module/*.lst"
+    - "b80_ble_sdk/8208_module/*.elf"
+
+build_feature:
+  stage: build
+  tags:
+    - LINUX
+    - TC32
+  before_script:
+  script:
+    - which tc32-elf-gcc
+    - chmod +x b80_ble_sdk/*.sh
+    - date
+    - $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import ./b80_ble_sdk/  -cleanBuild telink_b80_ble_single_connection_sdk/8208_feature_test
+    - date
+
+  artifacts:
+    paths:
+    - "b80_ble_sdk/8208_feature_test/*.bin"
+    - "b80_ble_sdk/8208_feature_test/*.lst"
+    - "b80_ble_sdk/8208_feature_test/*.elf"
+    
+build_master:
+  stage: build
+  tags:
+    - LINUX
+    - TC32
+  before_script:
+  script:
+    - which tc32-elf-gcc
+    - chmod +x b80_ble_sdk/*.sh
+    - date
+    - $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import ./b80_ble_sdk/  -cleanBuild telink_b80_ble_single_connection_sdk/8208_master
+    - date
+
+  artifacts:
+    paths:
+    - "b80_ble_sdk/8208_master/*.bin"
+    - "b80_ble_sdk/8208_master/*.lst"
+    - "b80_ble_sdk/8208_master/*.elf"
 
 clean_build:
   stage: clean_build

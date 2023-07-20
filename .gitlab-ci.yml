@@ -52,7 +52,7 @@ checkLicense:
     - "unknow_type_file.txt"
 
 build_sample:
-  stage: build
+  stage: build_sample
   tags:
     - LINUX
     - TC32
@@ -71,7 +71,7 @@ build_sample:
     - "b80_ble_sdk/8208_ble_sample/*.elf"
 
 build_module:
-  stage: build
+  stage: build_module
   tags:
     - LINUX
     - TC32
@@ -90,7 +90,7 @@ build_module:
     - "b80_ble_sdk/8208_module/*.elf"
 
 build_feature:
-  stage: build
+  stage: build_feature
   tags:
     - LINUX
     - TC32
@@ -109,7 +109,7 @@ build_feature:
     - "b80_ble_sdk/8208_feature_test/*.elf"
     
 build_master:
-  stage: build
+  stage: build_master
   tags:
     - LINUX
     - TC32

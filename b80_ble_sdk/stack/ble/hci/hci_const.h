@@ -151,7 +151,7 @@
 #define HCI_LE_EVT_MASK_CHANNEL_SELECTION_ALGORITHM                  0x00080000 // core5.0 - bit19
 
 #define HCI_LE_EVT_MASK_CONNECTIONLESS_IQ_REPORT                     0x00100000 // core5.1 - bit20
-#define HCI_LE_EVT_MASK_CONNECTION_IQ_REPORTED          				 0x00200000 // core5.1 - bit21
+#define HCI_LE_EVT_MASK_CONNECTION_IQ_REPORT          				 0x00200000 // core5.1 - bit21
 #define HCI_LE_EVT_MASK_CTE_REQUEST_FAILED                           0x00400000 // core5.1 - bit22
 #define HCI_LE_EVT_MASK_PERIODIC_ADVERTISING_SYNC_TRANSFORM_RECEIVED  0x00800000 // core5.1 - bit23
 

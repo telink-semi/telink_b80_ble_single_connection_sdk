@@ -47,7 +47,7 @@
 
 u32	advertise_begin_tick;
 
-int write_data_test_tick = 0;
+u32 write_data_test_tick = 0;
 
 u8	app_test_data[TEST_DATA_LEN]={0x00,0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,
 															  0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,0x11,0x11,0x11};
@@ -89,9 +89,12 @@ void task_connect(u8 e, u8 *p, int n)
 {
 
 	bls_l2cap_requestConnParamUpdate (CONN_INTERVAL_10MS, CONN_INTERVAL_10MS, 99, CONN_TIMEOUT_4S);  // 1 S
-
-	write_data_test_tick = clock_time();
-
+	#if APP_SECURITY_ENABLE
+		u32 cur_tick = clock_time()|1;
+		write_data_test_tick = cur_tick + SYSTEM_TIMER_TICK_1S;
+	#else
+		write_data_test_tick = clock_time();
+	#endif
 	#if (UI_LED_ENABLE)
 		gpio_write(GPIO_LED_RED, LED_ON_LEVEL);
 	#endif

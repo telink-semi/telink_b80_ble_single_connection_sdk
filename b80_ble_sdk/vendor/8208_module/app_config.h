@@ -33,7 +33,7 @@
 #define BLE_MODULE_OTA_ENABLE				1
 
 /* firmware signature check */
-#define FIRMWARE_SIGNATURE_ENABLE     		 		0
+#define FIRMWARES_SIGNATURE_ENABLE     		 		0
 
 /* Power Management */
 #define BLE_MODULE_PM_ENABLE							1

@@ -46,7 +46,7 @@ _attribute_ram_code_ void irq_handler(void)
 	if (dma_chn_irq_status_get() & FLD_DMA_CHN_UART_RX) {
 		dma_chn_irq_status_clr(FLD_DMA_CHN_UART_RX);
 		u8* w = spp_rx_fifo.p + (spp_rx_fifo.wptr & (spp_rx_fifo.num - 1)) * spp_rx_fifo.size;
-		if (w[0] != 0) {
+		if (w[0] != 0 || w[1] != 0) { //Length(u16) is not 0
 			my_fifo_next(&spp_rx_fifo);
 			u8* p = spp_rx_fifo.p + (spp_rx_fifo.wptr & (spp_rx_fifo.num - 1)) * spp_rx_fifo.size;
 			reg_dma_uart_rx_addr = (u16) ((u32) p); //switch uart RX dma address
@@ -82,7 +82,7 @@ int main(void)
 
 	int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup();  //MCU deep retention wakeUp
 
-	rf_ble_1m_param_init();
+	rf_drv_ble_init();
 
 	clock_init(SYS_CLK_TYPE);
 
@@ -91,7 +91,7 @@ int main(void)
 	/* load customized freq_offset CAP value and TP value. */
 	blc_app_loadCustomizedParameters();
 
-	#if FIRMWARE_SIGNATURE_ENABLE
+	#if FIRMWARES_SIGNATURE_ENABLE
 		blt_firmware_signature_check();
 	#endif
 

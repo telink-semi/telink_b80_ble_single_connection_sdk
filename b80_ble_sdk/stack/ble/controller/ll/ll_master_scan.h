@@ -82,10 +82,10 @@ ble_sts_t 	blc_ll_setScanEnable (scan_en_t scan_enable, dupFilter_en_t filter_du
 
 /**
  * @brief      This function is used to determine whether scan request is sent for all advertising.
- * @param[in]  scan_req_file_enable - Scan request filter enable.
+ * @param[in]  scan_req_filter_enable - Scan request filter enable.
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
  */
-ble_sts_t   blc_ll_scanReq_file_en(u8 scan_req_file_enable);
+ble_sts_t   blc_ll_scanReq_filter_en(u8 scan_req_filter_enable);
 
 /**
  * @brief      This function is used to set Scan channel.

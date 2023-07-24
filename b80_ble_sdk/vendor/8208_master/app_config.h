@@ -29,9 +29,9 @@
  *  @brief  Feature select in BLE Sample project
  */
 #define FLASH_SIZE_OPTION							FLASH_SIZE_OPTION_512K //very important, user need confirm !!!
-#define BLE_HOST_SMP_ENABLE      					0
+#define BLE_HOST_SMP_ENABLE      					1
 #define BLE_HOST_SIMPLE_SDP_ENABLE				1
-#define TEST_MASTER_MD									1			//Note: Slave Demo use TEST_SLAVE_MD in 8208_feature
+#define TEST_MASTER_MD									0			//Note: Slave Demo use TEST_SLAVE_MD in 8208_feature
 #define TEST_MASTER_DLE									0			//Note: Slave Demo use TEST_SDATA_LENGTH_EXTENSION in 8208_feature
 #define SAVE_RAM_CODE_ENABLE						1			//Enable it if need save RAM code.
 																				//Note: When SAVE_RAM_CODE_ENABLE is enable, the wake-up time will increase.

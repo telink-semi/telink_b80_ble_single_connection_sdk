@@ -167,7 +167,7 @@ typedef enum {
 	ADV_REPORT_EVENT_TYPE_ADV_IND 		= 0x00,
 	ADV_REPORT_EVENT_TYPE_DIRECT_IND 	= 0x01,
 	ADV_REPORT_EVENT_TYPE_SCAN_IND 		= 0x02,
-	ADV_REPORT_EVENT_TYPE_UNCONN_IND 	= 0x03,
+	ADV_REPORT_EVENT_TYPE_NONCONN_IND 	= 0x03,
 	ADV_REPORT_EVENT_TYPE_SCAN_RSP 		= 0x04,
 } advReportEventType_t;
 
@@ -361,7 +361,7 @@ typedef enum{
 	EXTADV_RPT_EVTTYPE_LEGACY_ADV_IND 				       		= 0x0013,		//  0001 0011'b
 	EXTADV_RPT_EVTTYPE_LEGACY_ADV_DIRECT_IND			       	= 0x0015,		//  0001 0101'b
 	EXTADV_RPT_EVTTYPE_LEGACY_ADV_SCAN_IND	 					= 0x0012,		//  0001 0010'b
-	EXTADV_RPT_EVTTYPE_LEGACY_ADV_UNCONN_IND					= 0x0010,		//  0001 0000'b
+	EXTADV_RPT_EVTTYPE_LEGACY_ADV_NONCONN_IND					= 0x0010,		//  0001 0000'b
 	EXTADV_RPT_EVTTYPE_LEGACY_SCAN_RSP_2_ADV_IND				= 0x001B,		//  0001 1011'b
 	EXTADV_RPT_EVTTYPE_LEGACY_SCAN_RSP_2_ADV_SCAN_IND			= 0x001A,		//  0001 1010'b
 
@@ -480,7 +480,7 @@ typedef struct {
 /**
  * @brief     The Disconnection Complete event occurs when a connection is terminated.
  * @param[in]     status  							0x00 successfully completed.
- * 																	0x01 �C 0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * 																	0x01~0xFF failed to complete. [Vol 2] Part D, Error Codes.
  * @param[in]	  connHandle 				Connection_Handle
  * @param[in]	  reason  							Reason for disconnection. See [Vol 2] Part D, Error Codes.
  * @return			  1,0,-1
@@ -506,7 +506,7 @@ int hci_cmdComplete_evt(u8 numHciCmds, u8 opCode_ocf, u8 opCode_ogf, u8 paraLen,
  * 					  the Command_Opcode parameter has been received, and that the Controller
  * 					  is currently performing the task for this command.
  * @param[in]     status  							0x00 successfully completed.
- * 																	0x01 �C 0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * 																	0x01~0xFF failed to complete. [Vol 2] Part D, Error Codes.
  * @param[in]	  opCode_ocf 				OpCode Command Field
  * @param[in]	  opCode_ogf  				OpCode Group Field
  * @param[in]	  numHciCmds 				The Number of HCI command packets which are allowed to be sent to the
@@ -519,7 +519,7 @@ void hci_cmdStatus_evt(u8 numHciCmds, u8 opCode_ocf, u8 opCode_ogf, u8 status, u
 /**
  * @brief       The LE Connection Complete event indicates to both of the Hosts forming the connection that a new connection has been created.
  * @param[in]     status  							0x00 successfully completed.
- * 																	0x01 �C 0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * 																	0x01~0xFF failed to complete. [Vol 2] Part D, Error Codes.
  * @param[in]	  connHandle 				Connection_Handle
  * @param[in]	  role  								0x00 Connection is master, 0x01 Connection is slave
  * @param[in]	  peerAddrType 			0x00 Peer is using a Public Device Address, 0x01 Peer is using a Random Device Address
@@ -536,7 +536,7 @@ int hci_le_connectionComplete_evt(u8 status, u16 connHandle, u8 role, u8 peerAdd
 /**
  * @brief       The LE Connection Update Complete event is used to indicate that the Controller process to update the connection has completed.
  * @param[in]     status  							0x00 successfully completed.
- * 																	0x01 �C 0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * 																	0x01~0xFF failed to complete. [Vol 2] Part D, Error Codes.
  * @param[in]	  connHandle 				Connection_Handle
  * @param[in]	  connInterval  				Connection interval
  * @param[in]	  connLatency  				Slave latency
@@ -553,7 +553,7 @@ int hci_le_connectionUpdateComplete_evt(u8 status, u16 connHandle, u16 connInter
  * 					   on the connection and the features supported by the remote Bluetooth
  * 					   device specified by the Connection_Handle event parameter.
  * @param[in]     status  							0x00 successfully completed.
-																	0x01 �C 0xFF failed to complete. [Vol 2] Part D, Error Codes.
+																	0x01~0xFF failed to complete. [Vol 2] Part D, Error Codes.
  * @param[in]	  connHandle 				Connection_Handle
  * @param[in]	  feature  						LE features. See [Vol 6] Part B, Section 4.6.
  * @return			  1,0,-1
@@ -566,7 +566,7 @@ int hci_le_readRemoteFeaturesComplete_evt(u8 status, u16 connHandle, u8 *feature
  * @brief       The LE PHY Update Complete Event is used to indicate that the Controller has
  * 					   changed the transmitter PHY or receiver PHY in use.
  * @param[in]     status  							0x00 successfully completed.
-																	0x01 �C 0xFF failed to complete. [Vol 2] Part D, Error Codes.
+																	0x01~0xFF failed to complete. [Vol 2] Part D, Error Codes.
  * @param[in]	  connHandle 				Connection_Handle
  * @param[in]	  new_phy  						0x01 The receiver PHY for the connection is LE 1M
  * 																	0x02 The receiver PHY for the connection is LE 2M
@@ -589,7 +589,7 @@ int hci_le_longTermKeyRequest_evt(u16 connHandle, u8 *random, u16 ediv, u8 *resu
 /**
  * @brief       This event is generated when local P-256 key generation is complete.
  * @param[in]     status  							0x00 successfully completed.
-																	0x01 �C 0xFF failed to complete. [Vol 2] Part D, Error Codes.
+																	0x01~0xFF failed to complete. [Vol 2] Part D, Error Codes.
  * @param[in]	  localP256Key 				Local P-256 public key.
  * @return			  1,0,-1
  */
@@ -599,7 +599,7 @@ int hci_le_readLocalP256KeyComplete_evt(u8* localP256Key, u8 status);
  * @brief       This event indicates that LE Diffie Hellman key generation has been completed
  * 				   	   by the Controller.
  * @param[in]     status  							0x00 successfully completed.
- * 																	0x01 �C 0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * 																	0x01~0xFF failed to complete. [Vol 2] Part D, Error Codes.
  * @param[in]	  DHkey 							Diffie Hellman Key.
  * @return			  1,0,-1
  */

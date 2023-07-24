@@ -27,7 +27,7 @@
 //#include "stack/ble/ble_config.h"
 #include "proj_lib/firmware_encrypt.h"
 
-#if FIRMWARE_SIGNATURE_ENABLE
+#if FIRMWARES_SIGNATURE_ENABLE
 /**
  * @brief		This function is used to check digital signature of firmware
  * @param[in]	none

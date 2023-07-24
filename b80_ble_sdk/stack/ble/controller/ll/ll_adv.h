@@ -114,7 +114,7 @@ ble_sts_t   bls_ll_setAdvDuration (u32 duration_us, u8 duration_en);
  * @param[in]  chn2 - channel to replace channel 39
  * @return     none
  */
-void 		blc_ll_setAdvCustomerChannel (u8 chn0, u8 chn1, u8 chn2);
+void 		blc_ll_setAdvCustomedChannel (u8 chn0, u8 chn1, u8 chn2);
 
 
 /**

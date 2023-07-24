@@ -67,7 +67,7 @@ int main(void)
 
 	int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup();  //MCU deep retention wakeUp
 
-	rf_ble_1m_param_init();
+	rf_drv_ble_init();
 
 	clock_init(SYS_CLK_TYPE);
 
@@ -76,7 +76,7 @@ int main(void)
 	/* load customized freq_offset CAP value and TP value. */
 	blc_app_loadCustomizedParameters();
 
-	#if FIRMWARE_SIGNATURE_ENABLE
+	#if FIRMWARES_SIGNATURE_ENABLE
 		blt_firmware_signature_check();
 	#endif
 

@@ -179,7 +179,7 @@ void app_feature_adv_power(void)
 {
 	//set to special ADV channel can avoid master's scan_req to get a very clean power,
 	// but remember that special channel ADV packet can not be scanned by BLE master and captured by BLE sniffer
-    //	blc_ll_setAdvCustomerChannel(33,34,35);
+    //	blc_ll_setAdvCustomedChannel(33,34,35);
 
 
 	#if   (APP_ADV_POWER_TEST_TYPE == CONNECT_12B_1S_1CHANNEL)
@@ -258,7 +258,7 @@ void app_feature_adv_power(void)
 		// ADV interval: 1S
 		// ADV channel: 3 channel
 		u8 status = bls_ll_setAdvParam( ADV_INTERVAL_1S, ADV_INTERVAL_1S,
-										ADV_TYPE_UNCONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+										ADV_TYPE_NONCONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
 										 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_NONE);
 
 	#elif (APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_1_5S_3CHANNEL||APP_ADV_POWER_TEST_TYPE == UNCONNECT_31B_1_5S_3CHANNEL)
@@ -267,7 +267,7 @@ void app_feature_adv_power(void)
 		// ADV interval: 1.5S
 		// ADV channel: 3 channel
 		u8 status = bls_ll_setAdvParam( ADV_INTERVAL_1S5, ADV_INTERVAL_1S5,
-										ADV_TYPE_UNCONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+										ADV_TYPE_NONCONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
 										 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_NONE);
 
 	#elif (APP_ADV_POWER_TEST_TYPE == UNCONNECT_16B_2S_3CHANNEL||APP_ADV_POWER_TEST_TYPE == UNCONNECT_31B_2S_3CHANNEL)
@@ -276,7 +276,7 @@ void app_feature_adv_power(void)
 		// ADV interval: 2S
 		// ADV channel: 3 channel
 		u8 status = bls_ll_setAdvParam( ADV_INTERVAL_2S, ADV_INTERVAL_2S,
-										ADV_TYPE_UNCONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
+										ADV_TYPE_NONCONNECTABLE_UNDIRECTED, OWN_ADDRESS_PUBLIC,
 										 0,  NULL,  BLT_ENABLE_ADV_ALL, ADV_FP_NONE);
 	#endif
    if(BLE_SUCCESS != status)

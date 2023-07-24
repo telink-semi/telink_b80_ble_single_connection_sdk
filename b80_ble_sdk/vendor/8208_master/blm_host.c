@@ -201,12 +201,13 @@ int blm_le_adv_report_event_handle(u8 *p)
 	int user_manual_paring = 0;
 
 	//manual paring methods 1: button triggers
-	user_manual_paring = app_pairing_enable && (rssi > -40);  //button trigger pairing(rssi threshold, short distance)
+	user_manual_paring = app_pairing_enable && (rssi > -56);  //button trigger pairing(rssi threshold, short distance)
 
 	//manual paring methods 2: special paring adv data
 	if(!user_manual_paring){  //special adv pair data can also trigger pairing
-		user_manual_paring = (memcmp(pa->data, telink_adv_trigger_paring_8258, sizeof(telink_adv_trigger_paring_8258)) == 0) && (rssi > -40);
+		user_manual_paring = (memcmp(pa->data, telink_adv_trigger_paring_8258, sizeof(telink_adv_trigger_paring_8258)) == 0) && (rssi > -56);
 	}
+
 
 	#if (BLE_HOST_SMP_ENABLE)
 		master_auto_connect = tbl_bond_slave_search(pa->adr_type, pa->mac);

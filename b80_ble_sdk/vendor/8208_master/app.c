@@ -37,8 +37,8 @@
 
 #define	BLE_DEVICE_ADDRESS_TYPE 	BLE_DEVICE_ADDRESS_PUBLIC
 
-#define 	SCAN_ENTER_DEEP_RETENTION_TIME			60  //10 s
-#define 	CONN_ENTER_DEEP_RETENTION_TIME			120  //60 s
+#define 	SCAN_ENTER_DEEP_RETENTION_TIME			10  //10 s
+#define 	CONN_ENTER_DEEP_RETENTION_TIME			60  //60 s
 
 u32 latest_user_event_tick;
 u8 sendTerminate_before_enterDeep = 0;

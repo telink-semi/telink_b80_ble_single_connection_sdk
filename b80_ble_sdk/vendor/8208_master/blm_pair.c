@@ -166,7 +166,7 @@ int user_tbl_slave_mac_add(u8 adr_type, u8 *adr)  //add new mac address to table
  *              when slave paired with dongle, add this addr to table
  * 				re_poweron slave, dongle will search if this AdvA in slave adv pkt is in this table
  * 				if in, it will connect slave directly
- * 				this function must in ram code
+ * 				this function must in ramcode
  * @param[in]	adr_type
  * @param[in]	adr - pointer to point the address data
  * @return      none

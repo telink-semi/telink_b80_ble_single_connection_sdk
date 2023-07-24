@@ -336,6 +336,10 @@ void user_init_normal(void)
 	///////////////////////////////////////software uart init//////////////////////////////////////////////////
 	#if(SOFT_UART_ENABLE)
 		soft_uart_rx_handler(app_soft_rx_uart_cb);
+		extern void blc_sdk_adv();
+		extern void blc_ll_SoftUartisRfState();
+		soft_uart_sdk_adv_handler(blc_sdk_adv);
+		soft_uart_SoftUartisRfState_handler(blc_ll_SoftUartisRfState);
 		soft_uart_RxSetFifo(uart_rx_fifo.p, uart_rx_fifo.size);
 		soft_uart_init();
 	#endif

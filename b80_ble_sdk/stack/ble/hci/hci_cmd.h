@@ -139,7 +139,7 @@ typedef enum{
   ADV_TYPE_CONNECTABLE_UNDIRECTED             = 0x00,  // ADV_IND
   ADV_TYPE_CONNECTABLE_DIRECTED_HIGH_DUTY     = 0x01,  // ADV_INDIRECT_IND (high duty cycle)
   ADV_TYPE_SCANNABLE_UNDIRECTED               = 0x02 , // ADV_SCAN_IND
-  ADV_TYPE_UNCONNECTABLE_UNDIRECTED          = 0x03 , // ADV_UNCONN_IND
+  ADV_TYPE_NONCONNECTABLE_UNDIRECTED          = 0x03 , // ADV_NONCONN_IND
   ADV_TYPE_CONNECTABLE_DIRECTED_LOW_DUTY      = 0x04,  // ADV_INDIRECT_IND (low duty cycle)
 }adv_type_t;
 
@@ -1225,7 +1225,7 @@ typedef struct
 	u16		sync_handle;		/* Identifier of the periodic advertising train */
 	u8		enc;				/* Encryption flag */
 	u8      broadcast_code[16]; /* The code used to derive the session key that is used to encrypt and decrypt BIS payloads */
-	u8		mse;				/* The Controller can schedule reception of any number of sub events up to NSE */
+	u8		mse;				/* The Controller can schedule reception of any number of subevents up to NSE */
   	u16		big_sync_timeout;	/* Synchronization timeout for the BIG, Time = N*10 ms, Time Range: 100 ms to 163.84 s */
   	u8  	num_bis; 			/* Total number of BISes to synchronize */
   	u8      bis[1];				/* List of indices of BISes */

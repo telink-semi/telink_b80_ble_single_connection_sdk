@@ -66,7 +66,7 @@ int main(void)
 
 	int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup(); //MCU deep retention wakeUp
 
-	rf_ble_1m_param_init();
+	rf_drv_ble_init();
 
 	clock_init(SYS_CLK_TYPE);
 

@@ -36,7 +36,7 @@
 																				//Note: When this is enabled, the average power consumption increases.If user use deepsleep retention, user need to add DeepsleepRetentionEarlyWakeupTiming.
 
 /* firmware signature check */
-#define FIRMWARE_SIGNATURE_ENABLE     		 		0
+#define FIRMWARES_SIGNATURE_ENABLE     		 		0
 
 /* Power Management */
 #define BLE_APP_PM_ENABLE							1

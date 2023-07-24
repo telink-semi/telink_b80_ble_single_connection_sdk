@@ -216,6 +216,8 @@ bool		blc_ll_isControllerEventPending(void);
 
 
 
+//fix spell error
+#define BLT_EV_FLAG_RX_DATA_ABANDOM BLT_EV_FLAG_RX_DATA_ABANDON
 
 
 

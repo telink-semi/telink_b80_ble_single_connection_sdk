@@ -41,3 +41,6 @@ void 		blc_gap_peripheral_init(void);
  * @return     none
  */
 void 		blc_gap_central_init(void);
+
+//fix spell error
+#define GAP_APPEARE_UNKNOWN GAP_APPEAR_UNKNOWN

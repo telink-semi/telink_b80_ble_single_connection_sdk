@@ -251,7 +251,12 @@ void 	blc_gap_setEventMask(u32 evtMask);
 void 	blc_gap_registerHostEventHandler (gap_event_handler_t  handler);
 
 
+//Fix spell error
+#define GAP_EVT_SMP_TK_DISPALY GAP_EVT_SMP_TK_DISPLAY
+#define GAP_EVT_GATT_HANDLE_VLAUE_CONFIRM GAP_EVT_GATT_HANDLE_VALUE_CONFIRM
 
+#define GAP_EVT_MASK_SMP_TK_DISPALY GAP_EVT_MASK_SMP_TK_DISPLAY
+#define GAP_EVT_MASK_GATT_HANDLE_VLAUE_CONFIRM GAP_EVT_MASK_GATT_HANDLE_VALUE_CONFIRM
 
 
 #endif /* GAP_EVENT_H_ */

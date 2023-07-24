@@ -106,5 +106,10 @@ void blc_l2cap_initRxDataBuffer(u8 *pL2cap_rx_buff, u16 l2cap_rx_size);
  * @return	none.
  */
 void  		blc_l2cap_SendConnParamUpdateResponse(u16 connHandle, u8 req_id, conn_para_up_rsp result);
+
+
+//Fix spell err
+#define blc_l2cap_reg_att_sig_hander blc_l2cap_reg_att_sig_handler
+
 #endif
 //Master

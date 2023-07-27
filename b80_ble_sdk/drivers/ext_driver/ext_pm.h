@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file     ext_pm.h
+ * @file	ext_pm.h
  *
- * @brief    This is the header file for BLE SDK
+ * @brief	This is the header file for BLE SDK
  *
- * @author	 BLE GROUP
- * @date         12,2021
+ * @author	BLE GROUP
+ * @date	12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
+ *
  *******************************************************************************************************/
-
 #ifndef DRIVERS_8208_EXT_PM_H_
 #define DRIVERS_8208_EXT_PM_H_
 

@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file     ll_scan.h
+ * @file	ll_scan.h
  *
- * @brief    This is the header file for BLE SDK
+ * @brief	This is the header file for BLE SDK
  *
- * @author	 BLE GROUP
- * @date         06,2022
+ * @author	BLE GROUP
+ * @date	06,2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
+ *
  *******************************************************************************************************/
-
 #ifndef LL_SCAN_H_
 #define LL_SCAN_H_
 

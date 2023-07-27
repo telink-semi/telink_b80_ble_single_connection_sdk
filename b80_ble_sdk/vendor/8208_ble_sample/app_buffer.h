@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file     app_buffer.h
+ * @file	app_buffer.h
  *
- * @brief    This is the header file for BLE SDK
+ * @brief	This is the header file for BLE SDK
  *
- * @author	 BLE GROUP
- * @date         12,2021
+ * @author	BLE GROUP
+ * @date	12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
+ *
  *******************************************************************************************************/
-
 #ifndef VENDOR_B80_BLE_SAMPLE_APP_BUFFER_H_
 #define VENDOR_B80_BLE_SAMPLE_APP_BUFFER_H_
 

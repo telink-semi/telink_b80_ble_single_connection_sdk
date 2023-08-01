@@ -40,7 +40,7 @@ u8  pairing_end_status;
 volatile u8 isUartTxDone = 1;
 ///////////the code below is just for demonstration of the event callback only////////////
 
-u32 spp_cmd_restart_flag;
+_attribute_data_retention_	u32 spp_cmd_restart_flag;
 
 /**
  * @brief      callback function of LinkLayer Event
@@ -134,6 +134,88 @@ int controller_event_handler(u32 h, u8 *para, int n)
 			default:
 			break;
 		}
+	}
+
+	return 0;
+}
+
+/**
+ * @brief      BLE host event handler call-back.
+ * @param[in]  h       event type
+ * @param[in]  para    Pointer point to event parameter buffer.
+ * @param[in]  n       the length of event parameter.
+ * @return
+ */
+int app_host_event_callback (u32 h, u8 *para, int n)
+{
+	u8 event = h & 0xFF;
+
+	switch(event)
+	{
+		case GAP_EVT_SMP_PAIRING_BEGIN:
+		{
+
+		}
+		break;
+
+		case GAP_EVT_SMP_PAIRING_SUCCESS:
+		{
+			gap_smp_pairingSuccessEvt_t* p = (gap_smp_pairingSuccessEvt_t*)para;
+
+			if(p->bonding_result){
+
+			}
+			else{
+
+			}
+		}
+		break;
+
+		case GAP_EVT_SMP_PAIRING_FAIL:
+		{
+//			gap_smp_pairingFailEvt_t* p = (gap_smp_pairingFailEvt_t*)para;
+		}
+		break;
+
+		case GAP_EVT_SMP_CONN_ENCRYPTION_DONE:
+		{
+			gap_smp_connEncDoneEvt_t* p = (gap_smp_connEncDoneEvt_t*)para;
+
+			if(p->re_connect == SMP_STANDARD_PAIR){  //first pairing
+
+			}
+			else if(p->re_connect == SMP_FAST_CONNECT){  //auto connect
+
+			}
+		}
+		break;
+
+		case GAP_EVT_SMP_TK_DISPALY:
+		{
+
+		}
+		break;
+
+		case GAP_EVT_SMP_TK_REQUEST_PASSKEY:
+		{
+
+		}
+		break;
+
+		case GAP_EVT_SMP_TK_REQUEST_OOB:
+		{
+
+		}
+		break;
+
+		case GAP_EVT_SMP_TK_NUMERIC_COMPARE:
+		{
+
+		}
+		break;
+
+		default:
+		break;
 	}
 
 	return 0;

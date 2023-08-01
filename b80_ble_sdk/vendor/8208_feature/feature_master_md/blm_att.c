@@ -32,6 +32,8 @@
 
 #include "application/keyboard/keyboard.h"
 
+#if (FEATURE_TEST_MODE == TEST_MASTER_MD )
+
 #define     TELINK_UNPAIR_KEYVALUE		0xFF  //conn state, unpair
 
 const u8 my_SppS2CUUID[16]		= WRAPPING_BRACES(TELINK_SPP_DATA_SERVER2CLIENT);
@@ -320,4 +322,4 @@ u16 app_getCurrentReadReq_attHandle(void)
 	return current_read_req_handle;
 }
 
-
+#endif  //end of (FEATURE_TEST_MODE == xxx)

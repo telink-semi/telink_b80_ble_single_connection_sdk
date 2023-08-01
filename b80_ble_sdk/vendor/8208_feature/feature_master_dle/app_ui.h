@@ -24,7 +24,7 @@
 #ifndef APP_UI_H_
 #define APP_UI_H_
 
-
+#if (FEATURE_TEST_MODE == TEST_MDATA_LENGTH_EXTENSION)
 
 extern int 	key_not_released;
 extern int	button_detect_en;
@@ -55,6 +55,8 @@ void app_set_kb_wakeup(u8 e, u8 *p, int n);
 
 
 
+
+#endif //end of (FEATURE_TEST_MODE == xxx)
 
 
 #endif /* APP_UI_H_ */

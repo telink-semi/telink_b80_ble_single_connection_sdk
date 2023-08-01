@@ -24,6 +24,12 @@
 #pragma once
 
 
+
+#include "../feature_config.h"
+
+#if (FEATURE_TEST_MODE == TEST_MDATA_LENGTH_EXTENSION )
+
+
 ///////////////////////// Feature Configuration////////////////////////////////////////////////
 /**
  *  @brief  Feature select in BLE Sample project
@@ -47,7 +53,11 @@
 ///////////////////////// System Clock  Configuration /////////////////////////////////////////
 #define CLOCK_SYS_CLOCK_HZ      					32000000
 
-#if(CLOCK_SYS_CLOCK_HZ == 32000000)
+#if (CLOCK_SYS_CLOCK_HZ == 16000000)
+	#define SYS_CLK_TYPE  							SYS_CLK_16M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ == 24000000)
+	#define SYS_CLK_TYPE  							SYS_CLK_24M_Crystal
+#elif(CLOCK_SYS_CLOCK_HZ == 32000000)
 	#define SYS_CLK_TYPE  							SYS_CLK_32M_Crystal
 #elif(CLOCK_SYS_CLOCK_HZ == 48000000)
 	#define SYS_CLK_TYPE  							SYS_CLK_48M_Crystal
@@ -203,5 +213,6 @@ enum{
 
 
 /////////////////// set default   ////////////////
-
 #include "../common/default_config.h"
+
+#endif //end of (FEATURE_TEST_MODE == xxx)

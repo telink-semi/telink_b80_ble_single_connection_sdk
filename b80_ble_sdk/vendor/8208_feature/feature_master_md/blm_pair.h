@@ -1,5 +1,5 @@
 /********************************************************************************************************
- * @file	blm_att.h
+ * @file	blm_pair.h
  *
  * @brief	This is the header file for BLE SDK
  *
@@ -21,10 +21,47 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-#ifndef BLM_ATT_H_
-#define BLM_ATT_H_
+#ifndef BLM_PAIR_H_
+#define BLM_PAIR_H_
 
-u16 blm_att_findHandleOfUuid16 (att_db_uuid16_t *p, u16 uuid, u16 ref);
-u16 blm_att_findHandleOfUuid128 (att_db_uuid128_t *p, const u8 * uuid);
-extern const u8 my_SppC2SUUID[16];
-#endif /* BLM_ATT_H_ */
+#if (FEATURE_TEST_MODE == TEST_MASTER_MD )
+
+
+#if (!BLE_HOST_SMP_ENABLE)
+
+	typedef struct{
+		u8 manual_pair;
+		u8 mac_type;  //address type
+		u8 mac[6];
+		u32 pair_tick;
+	}man_pair_t;
+
+	extern man_pair_t blm_manPair;
+
+
+	void user_master_host_pairing_management_init(void);
+	void user_tbl_salve_mac_unpair_proc(void);
+	int user_tbl_slave_mac_search(u8 adr_type, u8 * adr);
+	int user_tbl_slave_mac_add(u8 adr_type, u8 *adr);
+	int user_tbl_slave_mac_delete_by_adr(u8 adr_type, u8 *adr);
+
+#endif
+
+
+void app_setCurrentReadReq_attHandle(u16 handle);
+
+/**
+ * @brief		host pair or upair proc in main loop
+ * @param[in]	none
+ * @return      none
+ */
+void host_pair_unpair_proc(void);
+
+
+
+extern int	app_pairing_enable;
+extern int app_unpair_enable;
+
+#endif  //end of (FEATURE_TEST_MODE == xxx)
+
+#endif /* APP_PAIR_H_ */

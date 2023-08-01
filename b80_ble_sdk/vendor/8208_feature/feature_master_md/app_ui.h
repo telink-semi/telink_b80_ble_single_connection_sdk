@@ -24,6 +24,8 @@
 #ifndef APP_UI_H_
 #define APP_UI_H_
 
+#if (FEATURE_TEST_MODE == TEST_MASTER_MD )
+
 
 
 extern int 	key_not_released;
@@ -54,7 +56,6 @@ void app_set_kb_wakeup(u8 e, u8 *p, int n);
 
 
 
-
-
+#endif  //end of (FEATURE_TEST_MODE == xxx)
 
 #endif /* APP_UI_H_ */

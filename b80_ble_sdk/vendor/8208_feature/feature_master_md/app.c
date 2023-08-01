@@ -33,6 +33,10 @@
 #include "blm_host.h"
 #include "blm_pair.h"
 
+#include "../default_att.h"
+
+#if (FEATURE_TEST_MODE == TEST_MASTER_MD)
+
 #define MY_RF_POWER_INDEX			RF_POWER_P2p87dBm
 
 #define	BLE_DEVICE_ADDRESS_TYPE 	BLE_DEVICE_ADDRESS_PUBLIC
@@ -148,6 +152,26 @@ void user_init_normal(void)
 }
 
 
+u32 write_data_test_tick = 0;
+#define TEST_DATA_LEN		20
+u8	app_test_data[TEST_DATA_LEN]={0x00,0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,
+															  0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,0x11,0x11,0x11};
+void feature_md_test_mainloop(void)
+{
+	if(write_data_test_tick && clock_time_exceed(write_data_test_tick, 500)){ // >1s
+		write_data_test_tick = clock_time() | 1;
+
+		if(blc_ll_getCurrentState() == BLS_LINK_STATE_CONN)
+		{
+			if( BLE_SUCCESS == blc_gatt_pushWriteCommand (cur_conn_device.conn_handle, spp_char_handle, app_test_data, 20)){
+				app_test_data[0] ++;
+			}
+		}
+	}
+}
+
+
+
 /**
  * @brief     BLE main idle loop
  * @param[in]  none.
@@ -159,6 +183,9 @@ int main_idle_loop (void)
 	blm_sdk_main_loop();
 
 	host_pair_unpair_proc();
+
+	feature_md_test_mainloop();
+
 	////////////////////////////////////// UI entry /////////////////////////////////
 	#if (UI_LED_ENABLE)
 		gpio_write(GPIO_LED_GREEN,1);
@@ -190,4 +217,7 @@ void main_loop (void)
 		main_service = 0;
 	}
 }
+
+
+#endif //end of (FEATURE_TEST_MODE == xxx)
 

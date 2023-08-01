@@ -47,15 +47,8 @@ _attribute_ram_code_ void irq_handler(void)
  */
 int main(void)
 {
-#if (BLE_APP_PM_ENABLE)
-	#if (SAVE_RAM_CODE_ENABLE)
-		blc_pm_select_internal_32k_crystal_save_ram();
-	#else
-		blc_pm_select_internal_32k_crystal();
-	#endif
-#endif
 
-	int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup();  //MCU deep retention wakeUp
+
 
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
 
@@ -63,17 +56,13 @@ int main(void)
 
 	clock_init(SYS_CLK_TYPE);
 
-	gpio_init( !deepRetWakeUp );  //analog resistance will keep available in deepSleep mode, so no need initialize again
+	gpio_init(1);  //analog resistance will keep available in deepSleep mode, so no need initialize again
 
 	/* load customized freq_offset CAP value and TP value. */
 	blc_app_loadCustomizedParameters();
-	if( deepRetWakeUp ){
-		user_init_deepRetn ();
-	}
-	else
-	{
-		user_init_normal ();
-	}
+
+	user_init_normal ();
+
 
     irq_enable();
 	while (1) {

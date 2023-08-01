@@ -27,11 +27,17 @@
 
 
 #include "app.h"
-#include "app_ui.h"
 #include "app_buffer.h"
+#include "app_ui.h"
 
 #include "blm_host.h"
 #include "blm_pair.h"
+
+#include "../default_att.h"
+
+
+
+#if (FEATURE_TEST_MODE == TEST_MDATA_LENGTH_EXTENSION)
 
 #define MY_RF_POWER_INDEX			RF_POWER_P2p87dBm
 
@@ -145,7 +151,9 @@ void user_init_normal(void)
 	blc_ll_setScanEnable (BLC_SCAN_ENABLE, DUP_FILTER_DISABLE);
 	latest_user_event_tick = clock_time();
 
+
 }
+
 
 
 /**
@@ -159,6 +167,10 @@ int main_idle_loop (void)
 	blm_sdk_main_loop();
 
 	host_pair_unpair_proc();
+
+
+	feature_mdle_test_mainloop();
+
 	////////////////////////////////////// UI entry /////////////////////////////////
 	#if (UI_LED_ENABLE)
 		gpio_write(GPIO_LED_GREEN,1);
@@ -184,10 +196,7 @@ void main_loop (void)
 {
 	main_idle_loop ();
 
-	if (main_service)
-	{
-		main_service ();
-		main_service = 0;
-	}
 }
+
+#endif //end of (FEATURE_TEST_MODE == xxx)
 

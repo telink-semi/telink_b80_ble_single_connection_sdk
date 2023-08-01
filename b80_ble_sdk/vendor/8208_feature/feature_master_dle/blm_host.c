@@ -31,7 +31,7 @@
 #include "blm_pair.h"
 #include "blm_host.h"
 #include "blm_att.h"
-
+#if (FEATURE_TEST_MODE == TEST_MDATA_LENGTH_EXTENSION)
 u32 connect_event_occurTick = 0;
 u32 mtuExchange_check_tick = 0;
 u8 mtuExchange_started_flg;
@@ -148,6 +148,7 @@ int app_host_smp_finish (void)  //smp finish callback
 	#else
 		app_host_smp_sdp_pending = 0;  //no sdp
 	#endif
+
 	return 0;
 }
 #endif
@@ -299,6 +300,7 @@ int blm_le_connection_establish_event_handle(u8 *p)
 
 		connect_event_occurTick = clock_time()|1;
 		latest_user_event_tick = clock_time();
+
 	}
 
 
@@ -515,6 +517,34 @@ int controller_event_callback (u32 h, u8 *p, int n)
 
 }
 
+
+/**
+ * @brief		master dle test in mainloop
+ * @param[in]	none
+ * @return      none
+ */
+void feature_mdle_test_mainloop(void)
+{
+	if(connect_event_occurTick && clock_time_exceed(connect_event_occurTick, 500000)){  //500ms after connection established
+		connect_event_occurTick = 0;
+		mtuExchange_check_tick = clock_time() | 1;
+
+		if(!mtuExchange_started_flg){  //master do not send MTU exchange request in time
+			printf("After conn 200ms, if not receive S's MTU exchange pkt, M send MTU exchange req to S.\n");
+			blc_att_requestMtuSizeExchange(cur_conn_device.conn_handle, MTU_SIZE_SETTING);
+		}
+	}
+
+	if(mtuExchange_check_tick && clock_time_exceed(mtuExchange_check_tick, 500000 )){  //1S after connection established
+		mtuExchange_check_tick = 0;
+
+		if(!dle_started_flg){ //master do not send data length request in time
+			printf("Master initiated the DLE.\n");
+			blm_ll_exchangeDataLength(0x14 , ACL_CONN_MAX_TX_OCTETS);
+		}
+	}
+}
+
 /**
  * @brief      update connection parameter in mainloop
  * @param[in]  none
@@ -537,6 +567,7 @@ void host_update_conn_proc(void)
 
 
 volatile int app_l2cap_handle_cnt = 0;
+
 /**
  * @brief      callback function of L2CAP layer handle packet data
  * @param[in]  conn_handle - connect handle
@@ -594,6 +625,7 @@ int app_l2cap_handler (u16 conn_handle, u8 *raw_pkt)
 		}
 		else if(pAtt->opcode == ATT_OP_HANDLE_VALUE_NOTI)  //slave handle notify
 		{
+
 		}
 		else if (pAtt->opcode == ATT_OP_HANDLE_VALUE_IND)
 		{
@@ -654,3 +686,5 @@ int app_l2cap_handler (u16 conn_handle, u8 *raw_pkt)
 
 	return 0;
 }
+
+#endif  //end of (FEATURE_TEST_MODE == xxx)

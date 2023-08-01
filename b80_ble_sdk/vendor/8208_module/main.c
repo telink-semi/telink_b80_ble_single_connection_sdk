@@ -92,9 +92,7 @@ int main(void)
 	/* load customized freq_offset CAP value and TP value. */
 	blc_app_loadCustomizedParameters();
 
-	#if FIRMWARES_SIGNATURE_ENABLE
-		blt_firmware_signature_check();
-	#endif
+
 
 	#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 		if( deepRetWakeUp ){
@@ -103,13 +101,19 @@ int main(void)
 		else
 	#endif
 		{
+
+		#if FIRMWARES_SIGNATURE_ENABLE
+			blt_firmware_signature_check();
+		#endif
 			user_init_normal ();
 		}
 
     irq_enable();
 
 	while (1) {
-
+#if (MODULE_WATCHDOG_ENABLE)
+		wd_clear(); //clear watch dog
+#endif
 		main_loop ();
 	}
 }

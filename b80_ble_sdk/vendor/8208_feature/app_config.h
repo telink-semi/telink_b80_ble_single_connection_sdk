@@ -51,6 +51,10 @@
 	#include "feature_soft_uart/app_config.h"
 #elif(FEATURE_TEST_MODE == TEST_GATT_SECURITY)
 	#include "feature_gatt_security/app_config.h"
+#elif(FEATURE_TEST_MODE == TEST_MDATA_LENGTH_EXTENSION)
+	#include "feature_master_dle/app_config.h"
+#elif(FEATURE_TEST_MODE == TEST_MASTER_MD)
+	#include "feature_master_md/app_config.h"
 #endif
 
 

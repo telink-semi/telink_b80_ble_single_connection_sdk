@@ -34,12 +34,6 @@
 void user_init_normal(void);
 
 
-/**
- * @brief		user initialization when MCU wake_up from deepSleep_retention mode
- * @param[in]	none
- * @return      none
- */
-void user_init_deepRetn(void);
 
 
 /**

@@ -1,7 +1,7 @@
 /********************************************************************************************************
- * @file	app_ui.h
+ * @file	main.c
  *
- * @brief	This is the header file for BLE SDK
+ * @brief	This is the source file for BLE SDK
  *
  * @author	BLE GROUP
  * @date	12,2021
@@ -21,40 +21,51 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-#ifndef APP_UI_H_
-#define APP_UI_H_
+#include "tl_common.h"
+#include "drivers.h"
+#include "stack/ble/ble.h"
 
+#include "app.h"
 
-
-extern int 	key_not_released;
-extern int	button_detect_en;
-extern u32	button_detect_tick;
-extern int	button_not_released;
-extern int 	ota_is_working;
-extern u32 latest_user_event_tick;
-
-/**
- * @brief      this function is used to detect if key pressed or released.
- * @param[in]  e - LinkLayer Event type
- * @param[in]  p - data pointer of event
- * @param[in]  n - data length of event
- * @return     none
- */
-void proc_keyboard (u8 e, u8 *p, int n);
+#if (FEATURE_TEST_MODE == TEST_MDATA_LENGTH_EXTENSION)
 
 
 /**
- * @brief      callback function of LinkLayer Event "BLT_EV_FLAG_SUSPEND_ENTER"
- * @param[in]  e - LinkLayer Event type
- * @param[in]  p - data pointer of event
- * @param[in]  n - data length of event
- * @return     none
+ * @brief   IRQ handler
+ * @param   none.
+ * @return  none.
  */
-void app_set_kb_wakeup(u8 e, u8 *p, int n);
+_attribute_ram_code_ void irq_handler(void)
+{
+	blm_sdk_irq_handler();
+}
 
 
+/**
+ * @brief		This is main function
+ * @param[in]	none
+ * @return      none
+ */
+int main(void)
+{
 
 
+	cpu_wakeup_init(EXTERNAL_XTAL_24M);
 
+	rf_drv_ble_init();
 
-#endif /* APP_UI_H_ */
+	clock_init(SYS_CLK_TYPE);
+
+	gpio_init(1);  //analog resistance will keep available in deepSleep mode, so no need initialize again
+
+	/* load customized freq_offset CAP value and TP value. */
+	blc_app_loadCustomizedParameters();
+	user_init_normal ();
+
+    irq_enable();
+	while (1) {
+		main_loop ();
+	}
+}
+
+#endif  //end of (FEATURE_TEST_MODE == xxx)

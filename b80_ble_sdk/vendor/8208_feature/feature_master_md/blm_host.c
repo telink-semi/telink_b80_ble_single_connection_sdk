@@ -32,6 +32,8 @@
 #include "blm_host.h"
 #include "blm_att.h"
 
+#if (FEATURE_TEST_MODE == TEST_MASTER_MD )
+
 u32 connect_event_occurTick = 0;
 u32 mtuExchange_check_tick = 0;
 u8 mtuExchange_started_flg;
@@ -148,6 +150,10 @@ int app_host_smp_finish (void)  //smp finish callback
 	#else
 		app_host_smp_sdp_pending = 0;  //no sdp
 	#endif
+
+	extern u32 write_data_test_tick;
+	write_data_test_tick = clock_time() | 1;
+
 	return 0;
 }
 #endif
@@ -299,6 +305,10 @@ int blm_le_connection_establish_event_handle(u8 *p)
 
 		connect_event_occurTick = clock_time()|1;
 		latest_user_event_tick = clock_time();
+		#if (!BLE_HOST_SMP_ENABLE)
+			extern int write_data_test_tick;
+			write_data_test_tick = clock_time();
+		#endif
 	}
 
 
@@ -537,6 +547,9 @@ void host_update_conn_proc(void)
 
 
 volatile int app_l2cap_handle_cnt = 0;
+
+u8 seq_num_next = 0;
+
 /**
  * @brief      callback function of L2CAP layer handle packet data
  * @param[in]  conn_handle - connect handle
@@ -594,6 +607,25 @@ int app_l2cap_handler (u16 conn_handle, u8 *raw_pkt)
 		}
 		else if(pAtt->opcode == ATT_OP_HANDLE_VALUE_NOTI)  //slave handle notify
 		{
+
+				u8 seq_num = pAtt->dat[0];
+
+				if(seq_num == seq_num_next){
+
+				}
+				else{
+					write_reg8(0x40000, 0x77);
+					irq_disable();
+
+					#if (UI_LED_ENABLE)
+						gpio_write(GPIO_LED_WHITE, LED_ON_LEVEL);
+					#endif
+
+					while(1);
+				}
+
+				seq_num_next = seq_num + 1;
+
 		}
 		else if (pAtt->opcode == ATT_OP_HANDLE_VALUE_IND)
 		{
@@ -654,3 +686,5 @@ int app_l2cap_handler (u16 conn_handle, u8 *raw_pkt)
 
 	return 0;
 }
+
+#endif  //end of (FEATURE_TEST_MODE == xxx)

@@ -64,12 +64,6 @@ build_sample:
     - $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import ./b80_ble_sdk/  -cleanBuild telink_b80_ble_single_connection_sdk/8208_ble_sample
     - date
 
-  artifacts:
-    paths:
-    - "b80_ble_sdk/8208_ble_sample/*.bin"
-    - "b80_ble_sdk/8208_ble_sample/*.lst"
-    - "b80_ble_sdk/8208_ble_sample/*.elf"
-
 build_module:
   stage: build_module
   tags:
@@ -83,12 +77,6 @@ build_module:
     - $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import ./b80_ble_sdk/  -cleanBuild telink_b80_ble_single_connection_sdk/8208_module
     - date
 
-  artifacts:
-    paths:
-    - "b80_ble_sdk/8208_module/*.bin"
-    - "b80_ble_sdk/8208_module/*.lst"
-    - "b80_ble_sdk/8208_module/*.elf"
-
 build_feature:
   stage: build_feature
   tags:
@@ -101,12 +89,6 @@ build_feature:
     - date
     - $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import ./b80_ble_sdk/  -cleanBuild telink_b80_ble_single_connection_sdk/8208_feature_test
     - date
-
-  artifacts:
-    paths:
-    - "b80_ble_sdk/8208_feature_test/*.bin"
-    - "b80_ble_sdk/8208_feature_test/*.lst"
-    - "b80_ble_sdk/8208_feature_test/*.elf"
     
 build_master:
   stage: build_master
@@ -120,12 +102,6 @@ build_master:
     - date
     - $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import ./b80_ble_sdk/  -cleanBuild telink_b80_ble_single_connection_sdk/8208_master
     - date
-
-  artifacts:
-    paths:
-    - "b80_ble_sdk/8208_master/*.bin"
-    - "b80_ble_sdk/8208_master/*.lst"
-    - "b80_ble_sdk/8208_master/*.elf"
 
 clean_build:
   stage: clean_build

@@ -202,34 +202,34 @@ fossid:
 release_sdk_S1:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.2_S1"
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.2.0_S1"
 
 release_sdk_S2:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.2_S2"
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.2.0_S2"
 
 release_sdk_S3:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.2_S3"
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.2.0_S3"
 
 release_sdk_custom_made_S0:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.2_custom_made_S0"
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.2.0_custom_made_S0"
 
 release_sdk_custom_made_S1:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.2_custom_made_S1"
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.2.0_custom_made_S1"
 
 release_sdk_custom_made_S2:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.2_custom_made_S2"
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.2.0_custom_made_S2"
 
 release_sdk_custom_made_S3:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.2_custom_made_S3"
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.2.0_custom_made_S3"

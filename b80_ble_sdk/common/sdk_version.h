@@ -29,7 +29,7 @@
  * the replace rules is: "$$$B85m_driver_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
  * will replace with this macro value.
  */
-#define B80_SDK_VERSION_NUM				V3.4.1.2
+#define B80_SDK_VERSION_NUM				V3.4.2.0
 
 #define SDK_VERSION_NUM					B80_SDK_VERSION_NUM
 

@@ -38,16 +38,59 @@
 
 	extern man_pair_t blm_manPair;
 
-
+	/**
+	 * @brief		this function serves to init the master host paring management
+	 * @param[in]	none
+	 * @return      none
+	 */
 	void user_master_host_pairing_management_init(void);
+
+	/**
+	 * @brief		this function serves to unpair cmd proc
+	 * 				when press unpair button on dongle or send unpair cmd from slave
+	 * 				dongle will call this function to process current unpair cmd
+	 * @param[in]	none
+	 * @return      none
+	 */
 	void user_tbl_salve_mac_unpair_proc(void);
+
+	/**
+	 * @brief		this function serves to search mac address in the bond slave mac table:
+	 *              when slave paired with dongle, add this addr to table
+	 * 				re_poweron slave, dongle will search if this AdvA in slave adv pkt is in this table
+	 * 				if in, it will connect slave directly
+	 * 				this function must in ramcode
+	 * @param[in]	adr_type
+	 * @param[in]	adr - pointer to point the address data
+	 * @return      none
+	 */
 	int user_tbl_slave_mac_search(u8 adr_type, u8 * adr);
+
+	/**
+	 * @brief		this function serves to add new mac address to table
+	 * @param[in]	adr_type
+	 * @param[in]	adr - pointer to point the address data
+	 * @return      none
+	 */
 	int user_tbl_slave_mac_add(u8 adr_type, u8 *adr);
+
+	/**
+	 * @brief		this function serves to remove adr from slave mac table by adr
+	 * 				when rc trigger unpair, use this function to delete the slave mac
+	 * @param[in]	adr_type
+	 * @param[in]	adr - pointer to point the address data
+	 * @return      none
+	 */
 	int user_tbl_slave_mac_delete_by_adr(u8 adr_type, u8 *adr);
 
 #endif
 
 
+/**
+ * @brief       this function serves to set current ReadRequest attribute handle
+ * @param[in]	handle - connect handle
+ * @return      none
+ */
 void app_setCurrentReadReq_attHandle(u16 handle);
 
 /**

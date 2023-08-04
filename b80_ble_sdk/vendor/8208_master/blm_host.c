@@ -73,7 +73,6 @@ const u8 	telink_adv_trigger_unpair_8258[] = {7, 0xFF, 0x11, 0x02, 0x01, 0x01, 0
 
 u16 	spp_char_handle = 52;
 #if (BLE_HOST_SIMPLE_SDP_ENABLE)
-	extern void host_att_service_discovery_clear(void);
 	int host_att_client_handler (u16 connHandle, u8 *p);
 	ble_sts_t  host_att_discoveryService (att_db_uuid16_t *p16, int n16, att_db_uuid128_t *p128, int n128);
 
@@ -113,6 +112,11 @@ u16 	spp_char_handle = 52;
 
 	}
 
+	/**
+	 * @brief	This function is used to register the function for main service
+	 * @param	*p - the pointer direct to main_service
+	 * @return	none.
+	 */
 	void app_register_service (void *p)
 	{
 		main_service = p;
@@ -364,8 +368,6 @@ int 	blm_disconnect_event_handle(u8 *p)
 	}
 
 	host_update_conn_param_req = 0; //when disconnect, clear update conn flag
-
-//	host_att_data_clear();
 
 
 	//MTU size reset to default 23 bytes when connection terminated

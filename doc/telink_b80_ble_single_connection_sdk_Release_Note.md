@@ -24,11 +24,9 @@
       - Enable deepsleep retention: 11.2k Byte
    * The values above are obtained by compiling 8208_ble_sample with calling APIs of saving RAM
    
-   * FLASH:
-	  -29.4k
+   * FLASH: 29.4k Byte
    *The value above is obtained by compiling 8208_master with default configuration. 
-   * RAM:
-      -10.7k
+   * RAM: 10.7k Byte
    *The value above is obtained by compiling 8208_master with default configuration. 
    
 ### Features
@@ -55,12 +53,10 @@
       - 打开deepsleep retention: 11.2k Byte
    * 以上大小时是调用节省ram的API编译8208_ble_sample得到
    
-   * FLASH:
-	  -29.4k
-   *以上大小是使用默认配置编译8208_master得到
-   * RAM:
-      -10.7k
-   *以上大小是使用默认配置编译8208_master得到
+   * FLASH: 29.4k Byte
+   * 以上大小是使用默认配置编译8208_master得到
+   * RAM: 10.7k Byte
+   * 以上大小是使用默认配置编译8208_master得到
 
 # V3.4.1.2 (Public release)
 

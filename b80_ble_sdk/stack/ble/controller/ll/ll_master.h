@@ -29,7 +29,7 @@
 #include "stack/ble/ble_common.h"
 
 /**
- * @brief	irq_handler for BLE stack, process system tick interrupt and RF interrupt
+ * @brief	irq_handler for BLE stack, process system tick interrupt and RF interrupt in master role
  * @param	none
  * @return	none
  */
@@ -37,14 +37,14 @@ void		blm_sdk_irq_handler(void);
 
 
 /**
- * @brief   main_loop for BLE stack, process data and event
+ * @brief   main_loop for BLE stack, process data and event in master role
  * @param	none
  * @return	none
  */
 int 		blm_sdk_main_loop(void);
 
 /**
- * @brief      this function is used to exchange data length for Central Role.
+ * @brief      this function is used to exchange data length in master role.
  * @param[in]	opcode - LL Control PDU Opcode
  * @param[in]	maxTxOct - max TX octets of ACL_CONN
  * @return     status, 0x00:  succeed
@@ -53,7 +53,7 @@ int 		blm_sdk_main_loop(void);
 ble_sts_t 	blm_ll_exchangeDataLength (u8 opcode, u16 maxTxOct);
 
 /**
- * @brief   LinkLayer initialization after deepSleep retention wake_up in central role.
+ * @brief   LinkLayer initialization after deepSleep retention wake_up in master role.
  * @param	none
  * @return	none
  */

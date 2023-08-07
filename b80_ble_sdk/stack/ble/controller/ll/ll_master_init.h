@@ -31,7 +31,7 @@ extern int blm_create_connection;
 /******************************* User Interface  ************************************/
 
 /**
- * @brief      this function is used to initiate link layer initiating state .
+ * @brief      this function is used to initiate link layer initiating state in master role.
  * @param	   none
  * @return     none
  */
@@ -39,7 +39,7 @@ void	 	blc_ll_initInitiating_module(void);
 
 
 /**
- * @brief      this function is used to start connection process .
+ * @brief      this function is used to start connection process in master role.
  * @param[in]  scan_interval - scan interval
  * @param[in]  scan_window - scan window
  * @param[in]  initiator_filter_policy - filter policy
@@ -64,7 +64,7 @@ ble_sts_t 	blc_ll_createConnection (u16 scan_interval, u16 scan_window, init_fp_
 
 
 /**
- * @brief      this function is used to to cancel create connection process .
+ * @brief      this function is used to to cancel create connection process in master role.
  * @param	   none
  * @return     status, 0x00:  succeed
  * 					   other: failed
@@ -73,7 +73,7 @@ ble_sts_t 	blc_ll_createConnectionCancel (void);
 
 
 /**
- * @brief      this function is used to set create connection process timeout.
+ * @brief      this function is used to set create connection process timeout in master role.
  * @param	   timeout_ms - timeout threshold
  * @return     status, 0x00:  succeed
  * 					   other: failed

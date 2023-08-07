@@ -29,7 +29,7 @@
 
 
 /**
- * @brief      for user to initialize scanning module
+ * @brief      for user to initialize scanning module in master role
  * @param	   none
  * @return     none
  */
@@ -37,7 +37,7 @@ void 		blc_ll_initScanning_module();
 
 
 /**
- * @brief      This function is used to set the scan parameters
+ * @brief      This function is used to set the scan parameters in master role.
  * @param[in]  scan_type - passive Scanning or active scanning.
  * @param[in]  scan_interval - time interval from when the Controller started its last LE scan until it begins the subsequent LE scan
  * @param[in]  scan_window - The duration of the LE scan.
@@ -49,7 +49,7 @@ ble_sts_t 	blc_ll_setCentralScanParameter (scan_type_t scan_type, u16 scan_inter
 
 
 /**
- * @brief	   enable or disable legacy scanning.
+ * @brief	   enable or disable legacy scanning in master role.
  * @param[in]  scan_enable
  * @param[in]  filter_duplicate - controls whether the Link Layer should filter out
  * 								  duplicate advertising reports (Filtering_Enabled) to the Host,
@@ -59,14 +59,14 @@ ble_sts_t 	blc_ll_setScanEnable (scan_en_t scan_enable, dupFilter_en_t filter_du
 
 
 /**
- * @brief      This function is used to determine whether scan request is sent for all advertising.
+ * @brief      This function is used to determine whether scan request is sent for all advertising in master role.
  * @param[in]  scan_req_filter_enable - Scan request filter enable.
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
  */
 ble_sts_t   blc_ll_scanReq_filter_en(u8 scan_req_filter_enable);
 
 /**
- * @brief      This function is used to set Scan channel.
+ * @brief      This function is used to set Scan channel in master role.
  * @param[in]  scan_channelMap - channel map
  * @return     Status - 0x00:  success;
  * 						other: fail

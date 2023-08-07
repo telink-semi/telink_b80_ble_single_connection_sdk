@@ -33,7 +33,7 @@
 
 
 /**
- * @brief      for user to initialize ACL connection master role.
+ * @brief      for user to initialize ACL connection master(central) role.
  * @param	   none
  * @return     none
  */
@@ -41,7 +41,7 @@ void		blc_ll_initMasterRole_module(void);
 
 
 /**
- * @brief      for user to check if RF Machine is busy.
+ * @brief      for user to check if RF Machine is busy in master role.
  * @param	   none
  * @return     status. 1:  busy
  * 					   other: not busy

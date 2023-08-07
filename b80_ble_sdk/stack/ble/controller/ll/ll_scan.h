@@ -26,7 +26,7 @@
 
 
 /**
- * @brief      This function is used to set the scan parameters
+ * @brief      This function is used to set the scan parameters in slave role
  * @param[in]  scan_type - passive Scanning or active scanning.Active scanning is unavailable.
  * @param[in]  scan_interval - time interval from when the Controller started its last LE scan until it begins the subsequent LE scan
  * @param[in]  scan_window - The duration of the LE scan.
@@ -37,7 +37,7 @@
 ble_sts_t 	blc_ll_setScanParameter (scan_type_t scan_type, u16 scan_interval, u16 scan_window, own_addr_type_t  ownAddrType, scan_fp_type_t scanFilter_policy);
 
 /**
- * @brief      This function is used to initialize scanning.
+ * @brief      This function is used to initialize scanning in slave role.
  * @param[in]  none.
  * @return     Status - 0x00: BLE success; 0x01-0xFF: fail
  */

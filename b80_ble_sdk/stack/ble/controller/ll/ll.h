@@ -86,21 +86,21 @@ typedef void (*blt_event_callback_t)(u8 e, u8 *p, int n);
 
 
 /**
- * @brief	irq_handler for BLE stack, process system tick interrupt and RF interrupt
+ * @brief	irq_handler for BLE stack, process system tick interrupt and RF interrupt in slave role
  * @param	none
  * @return	none
  */
 void 		blc_sdk_irq_handler(void);
 
 /**
- * @brief   main_loop for BLE stack, process data and event
+ * @brief   main_loop for BLE stack, process data and event in slave role
  * @param	none
  * @return	none
  */
 int 		blc_sdk_main_loop (void);
 
 /**
- * @brief   LinkLayer initialization after deepSleep retention wake_up
+ * @brief   LinkLayer initialization after deepSleep retention wake_up in slave role
  * @param	none
  * @return	none
  */

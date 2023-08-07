@@ -25,9 +25,9 @@
    * The values above are obtained by compiling 8208_ble_sample with calling APIs of saving RAM
    
    * FLASH: 29.4k Byte
-   *The value above is obtained by compiling 8208_master with default configuration. 
+   * The value above is obtained by compiling 8208_master with default configuration. 
    * RAM: 10.7k Byte
-   *The value above is obtained by compiling 8208_master with default configuration. 
+   * The value above is obtained by compiling 8208_master with default configuration. 
    
 ### Features
    * 支持ACL master角色

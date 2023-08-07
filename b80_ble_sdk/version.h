@@ -24,6 +24,6 @@
 #ifndef VERSION_H_
 #define VERSION_H_
 
-#define RELEASE_VERSION        V3.4.1.1
+#define RELEASE_VERSION        V3.4.2.0
 
 #endif /* VERSION_H_ */

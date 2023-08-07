@@ -1,6 +1,7 @@
 # V3.4.2.0
 
 ### Features
+   * SDK version：telink_b80_ble_single_connection_sdk_v3.4.2.0
    * Support ACL master role
    * Add 8208_master project
 
@@ -30,6 +31,7 @@
    * The value above is obtained by compiling 8208_master with default configuration. 
    
 ### Features
+   * SDK 版本：telink_b80_ble_single_connection_sdk_v3.4.2.0
    * 支持ACL master角色
    * 增加8208_master工程
    

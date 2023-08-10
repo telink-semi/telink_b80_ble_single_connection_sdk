@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	battery_check.c
+ * @file     battery_check.c
  *
- * @brief	This is the source file for BLE SDK
+ * @brief    This is the source file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,7 +19,6 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
 #include "tl_common.h"
 #include "drivers.h"
@@ -70,11 +69,11 @@ int battery_get_detect_enable (void)
 
 /**
  * @brief		This is battery check function
- * @param[in]	alarm_vol_mv - input battery calculate
+ * @param[in]	alram_vol_mv - input battery calue
  * @return      0 fail 1 success
  */
 //_attribute_ram_code_ 
-int app_battery_power_check(u16 alarm_vol_mv)
+int app_battery_power_check(u16 alram_vol_mv)
 {
 	u16 temp;
 	int i,j;
@@ -178,7 +177,7 @@ int app_battery_power_check(u16 alarm_vol_mv)
 	extern signed char g_adc_vref_offset;
 	batt_vol_mv  = ((adc_vbat_divider*adc_result*adc_pre_scale*g_adc_vref)>>13) + g_adc_vref_offset;
 
-	if(batt_vol_mv < alarm_vol_mv){
+	if(batt_vol_mv < alram_vol_mv){
 		return 0;
 	}
 	else{ // batt level > alarm level

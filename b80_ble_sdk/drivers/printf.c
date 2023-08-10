@@ -44,7 +44,7 @@ typedef char* VA_LIST;
 #ifndef		BIT_INTERVAL
 #define		BIT_INTERVAL	(sys_tick_per_us*1000*1000/PRINT_BAUD_RATE)
 #endif
-_attribute_data_reload_ unsigned char init_flag = 1;
+
 /**
  * @brief      This function serves to foramt string.
  * @param[in]  byte  -  a byte need to print
@@ -53,6 +53,7 @@ _attribute_data_reload_ unsigned char init_flag = 1;
 _attribute_ram_code_sec_noinline_  void io_putchar(unsigned char byte){
 	unsigned char j = 0;
 	unsigned int t1 = 0,t2 = 0;
+	static unsigned char init_flag = 1;
 	if(init_flag==1)
 	{
 		TX_PIN_GPIO_EN();

@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app_config.h
+ * @file     app_config.h
  *
- * @brief	This is the header file for BLE SDK
+ * @brief    This is the header file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #pragma once
 
 ///////////////////////// Feature Configuration////////////////////////////////////////////////
@@ -127,7 +127,7 @@ typedef struct {
 	#define	GPIO_LED_GREEN			GPIO_PB4
 	#define	GPIO_LED_WHITE			GPIO_PB5
 	#define	GPIO_LED_RED			GPIO_PB6
-	#define LED_ON_LEVEL 			1 		//gpio output high voltage to turn on led
+	#define LED_ON_LEVAL 			1 		//gpio output high voltage to turn on led
 	#define PB3_FUNC				AS_GPIO
 	#define PB4_FUNC				AS_GPIO
 	#define PB5_FUNC				AS_GPIO

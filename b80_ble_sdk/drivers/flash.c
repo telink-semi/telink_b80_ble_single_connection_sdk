@@ -27,7 +27,7 @@
 #include "irq.h"
 #include "timer.h"
 #include "string.h"
-#include "watchdog.h"
+
 /*
  *	If add flash type, need pay attention to the read uid command and the bit number of status register
 	Flash Type	uid CMD			MID		Company		Sector Erase Time(MAX)
@@ -190,7 +190,6 @@ _attribute_ram_code_sec_noinline_ void flash_mspi_write_ram(unsigned char cmd, u
  */
 void flash_erase_sector(unsigned long addr)
 {
-	wd_clear();
 	flash_mspi_write_ram(FLASH_SECT_ERASE_CMD, addr, 1, NULL, 0);
 }
 

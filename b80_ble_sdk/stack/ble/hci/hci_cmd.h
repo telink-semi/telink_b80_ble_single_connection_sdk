@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	hci_cmd.h
+ * @file     hci_cmd.h
  *
- * @brief	This is the header file for BLE SDK
+ * @brief    This is the header file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #ifndef HCI_CMD_H_
 #define HCI_CMD_H_
 
@@ -196,8 +196,8 @@ typedef enum {
 } scan_type_t;
 
 
-/* Scanning_Interval, Time = N * 0.625 ms,
- * Notice that these are just part of but not all Scanning_Interval value */
+/* Scannning_Interval, Time = N * 0.625 ms,
+ * Notice that these are just part of but not all Scannning_Interval value */
 typedef enum{
 	SCAN_INTERVAL_10MS              =            16,
 	SCAN_INTERVAL_20MS              =            32,
@@ -224,8 +224,8 @@ typedef enum{
 	SCAN_INTERVAL_1000MS            =            1600,
 }scan_inter_t;
 
-/* Scanning_Window, Time = N * 0.625 ms,
- * Notice that these are just part of but not all Scanning_Window value */
+/* Scannning_Window, Time = N * 0.625 ms,
+ * Notice that these are just part of but not all Scannning_Window value */
 typedef enum{
 	SCAN_WINDOW_10MS                =            16,
 	SCAN_WINDOW_20MS                =            32,
@@ -257,7 +257,7 @@ typedef enum {
 	SCAN_FP_ALLOW_ADV_ANY						=		0x00,  //except direct adv address not match
 	SCAN_FP_ALLOW_ADV_WL        				=		0x01,  //except direct adv address not match
 	SCAN_FP_ALLOW_UNDIRECT_ADV      			=		0x02,  //and direct adv address match initiator's resolvable private MAC
-	SCAN_FP_ALLOW_ADV_WL_DIRECT_ADV_MATCH		=		0x03,  //and direct adv address match initiator's resolvable private MAC
+	SCAN_FP_ALLOW_ADV_WL_DIRECT_ADV_MACTH		=		0x03,  //and direct adv address match initiator's resolvable private MAC
 
 } scan_fp_type_t;
 
@@ -606,7 +606,7 @@ typedef enum {
 	DATA_OPER_FIRST      	=	0x01,
 	DATA_OPER_LAST       	=	0x02,
 	DATA_OPER_COMPLETE   	=	0x03,
-	DATA_OPER_UNCHANGED	=  	0x04,
+	DATA_OPER_UNCHANGEED	=  	0x04,
 } data_oper_t;
 
 
@@ -1245,7 +1245,7 @@ typedef struct
 	u8   codec_id_assignNum;
 	u16  codec_id_compId;
 	u16  codec_id_venderDef;
-	u8   control_delay[3];
+	u8   contro_delay[3];
 	u8   codec_config_len;
 	u8	 codec_config[19]; /* Max buffer length 19Byte */
 }hci_le_setupIsoDataPathCmdParams_t;
@@ -1271,7 +1271,7 @@ typedef enum {
 /* Data_Path_ID */
 typedef enum {
 	Data_Path_HCI	 	= 0x00,
-	//x01 to 0xFE: Logical_Channel_Number. The meaning of the logical channel is vendor specific.
+	//x01 to 0xFE: Logical_Channel_Number. The meaning of the logical channel is vendorspecific.
 } dat_path_id_t;
 
 /**

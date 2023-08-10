@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	l2cap.h
+ * @file     l2cap.h
  *
- * @brief	This is the header file for BLE SDK
+ * @brief    This is the header file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #ifndef _L2CAP_H
 #define _L2CAP_H
 
@@ -85,7 +85,7 @@ int 		blc_l2cap_packet_receive (u16 connHandle, u8 * p);
  * @param	*p - the pointer of l2cap data
  * @return	none.
  */
-void 		blc_l2cap_reg_att_sig_handler(void *p);//signaling pkt proc
+void 		blc_l2cap_reg_att_sig_hander(void *p);//signaling pkt proc
 
 
 
@@ -98,18 +98,6 @@ void 		blc_l2cap_reg_att_sig_handler(void *p);//signaling pkt proc
  */
 void blc_l2cap_initRxDataBuffer(u8 *pL2cap_rx_buff, u16 l2cap_rx_size);
 
-/**
- * @brief	This function is used to send connect parameter update response
- * @param	connHandle - connection handle
- * @param	req_id - Request packet identifier
- * @param	result - connect parameter update result
- * @return	none.
- */
-void  		blc_l2cap_SendConnParamUpdateResponse(u16 connHandle, u8 req_id, conn_para_up_rsp result);
-
-
-//Fix spell err
-#define blc_l2cap_reg_att_sig_hander blc_l2cap_reg_att_sig_handler
 
 #endif
 //Master

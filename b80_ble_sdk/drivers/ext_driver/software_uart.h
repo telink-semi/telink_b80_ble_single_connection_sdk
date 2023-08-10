@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	software_uart.h
+ * @file     software_uart.h
  *
- * @brief	This is the header file for BLE SDK
+ * @brief    This is the header file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	01,2022
+ * @author	 BLE GROUP
+ * @date         01,2022
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #ifndef BLT_SOFTWARE_UART_H_
 #define BLT_SOFTWARE_UART_H_
 
@@ -89,7 +89,7 @@
 #define     mutex_take(a)            	(a)
 
 /**
- *  @brief  define uart receive struct
+ *  @brief  define uart recevice struct
  */
 typedef struct{
 	unsigned short  time_interval;					//Time interval calculated by baud rate
@@ -160,10 +160,6 @@ void soft_uart_en(void);
  * @return      none
  */
 void soft_uart_rx_handler(void *prx);
-
-void soft_uart_sdk_adv_handler(void *prx);
-
-void soft_uart_SoftUartisRfState_handler(void *prx);
 
 /**
  * @brief       Serial port sending data

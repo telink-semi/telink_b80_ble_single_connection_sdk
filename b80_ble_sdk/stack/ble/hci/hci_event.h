@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	hci_event.h
+ * @file     hci_event.h
  *
- * @brief	This is the header file for BLE SDK
+ * @brief    This is the header file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #ifndef HCI_EVENT_H_
 #define HCI_EVENT_H_
 
@@ -470,7 +470,7 @@ typedef struct {
 typedef struct {
 	u8         subEventCode;
 	u16        connHandle;
-	u8		   channel_selection_algorithm;
+	u8		   channel_selection_algotihm;
 } hci_le_chnSelectAlgorithmEvt_t;
 
 
@@ -480,7 +480,7 @@ typedef struct {
 /**
  * @brief     The Disconnection Complete event occurs when a connection is terminated.
  * @param[in]     status  							0x00 successfully completed.
- * 																	0x01~0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * 																	0x01 每 0xFF failed to complete. [Vol 2] Part D, Error Codes.
  * @param[in]	  connHandle 				Connection_Handle
  * @param[in]	  reason  							Reason for disconnection. See [Vol 2] Part D, Error Codes.
  * @return			  1,0,-1
@@ -506,7 +506,7 @@ int hci_cmdComplete_evt(u8 numHciCmds, u8 opCode_ocf, u8 opCode_ogf, u8 paraLen,
  * 					  the Command_Opcode parameter has been received, and that the Controller
  * 					  is currently performing the task for this command.
  * @param[in]     status  							0x00 successfully completed.
- * 																	0x01~0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * 																	0x01 每 0xFF failed to complete. [Vol 2] Part D, Error Codes.
  * @param[in]	  opCode_ocf 				OpCode Command Field
  * @param[in]	  opCode_ogf  				OpCode Group Field
  * @param[in]	  numHciCmds 				The Number of HCI command packets which are allowed to be sent to the
@@ -519,7 +519,7 @@ void hci_cmdStatus_evt(u8 numHciCmds, u8 opCode_ocf, u8 opCode_ogf, u8 status, u
 /**
  * @brief       The LE Connection Complete event indicates to both of the Hosts forming the connection that a new connection has been created.
  * @param[in]     status  							0x00 successfully completed.
- * 																	0x01~0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * 																	0x01 每 0xFF failed to complete. [Vol 2] Part D, Error Codes.
  * @param[in]	  connHandle 				Connection_Handle
  * @param[in]	  role  								0x00 Connection is master, 0x01 Connection is slave
  * @param[in]	  peerAddrType 			0x00 Peer is using a Public Device Address, 0x01 Peer is using a Random Device Address
@@ -536,7 +536,7 @@ int hci_le_connectionComplete_evt(u8 status, u16 connHandle, u8 role, u8 peerAdd
 /**
  * @brief       The LE Connection Update Complete event is used to indicate that the Controller process to update the connection has completed.
  * @param[in]     status  							0x00 successfully completed.
- * 																	0x01~0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * 																	0x01 每 0xFF failed to complete. [Vol 2] Part D, Error Codes.
  * @param[in]	  connHandle 				Connection_Handle
  * @param[in]	  connInterval  				Connection interval
  * @param[in]	  connLatency  				Slave latency
@@ -553,7 +553,7 @@ int hci_le_connectionUpdateComplete_evt(u8 status, u16 connHandle, u16 connInter
  * 					   on the connection and the features supported by the remote Bluetooth
  * 					   device specified by the Connection_Handle event parameter.
  * @param[in]     status  							0x00 successfully completed.
-																	0x01~0xFF failed to complete. [Vol 2] Part D, Error Codes.
+																	0x01 每 0xFF failed to complete. [Vol 2] Part D, Error Codes.
  * @param[in]	  connHandle 				Connection_Handle
  * @param[in]	  feature  						LE features. See [Vol 6] Part B, Section 4.6.
  * @return			  1,0,-1
@@ -566,7 +566,7 @@ int hci_le_readRemoteFeaturesComplete_evt(u8 status, u16 connHandle, u8 *feature
  * @brief       The LE PHY Update Complete Event is used to indicate that the Controller has
  * 					   changed the transmitter PHY or receiver PHY in use.
  * @param[in]     status  							0x00 successfully completed.
-																	0x01~0xFF failed to complete. [Vol 2] Part D, Error Codes.
+																	0x01 每 0xFF failed to complete. [Vol 2] Part D, Error Codes.
  * @param[in]	  connHandle 				Connection_Handle
  * @param[in]	  new_phy  						0x01 The receiver PHY for the connection is LE 1M
  * 																	0x02 The receiver PHY for the connection is LE 2M
@@ -589,7 +589,7 @@ int hci_le_longTermKeyRequest_evt(u16 connHandle, u8 *random, u16 ediv, u8 *resu
 /**
  * @brief       This event is generated when local P-256 key generation is complete.
  * @param[in]     status  							0x00 successfully completed.
-																	0x01~0xFF failed to complete. [Vol 2] Part D, Error Codes.
+																	0x01 每 0xFF failed to complete. [Vol 2] Part D, Error Codes.
  * @param[in]	  localP256Key 				Local P-256 public key.
  * @return			  1,0,-1
  */
@@ -599,7 +599,7 @@ int hci_le_readLocalP256KeyComplete_evt(u8* localP256Key, u8 status);
  * @brief       This event indicates that LE Diffie Hellman key generation has been completed
  * 				   	   by the Controller.
  * @param[in]     status  							0x00 successfully completed.
- * 																	0x01~0xFF failed to complete. [Vol 2] Part D, Error Codes.
+ * 																	0x01 每 0xFF failed to complete. [Vol 2] Part D, Error Codes.
  * @param[in]	  DHkey 							Diffie Hellman Key.
  * @return			  1,0,-1
  */

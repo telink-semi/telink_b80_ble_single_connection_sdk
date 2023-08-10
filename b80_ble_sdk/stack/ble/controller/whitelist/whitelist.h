@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	whitelist.h
+ * @file     whitelist.h
  *
- * @brief	This is the header file for BLE SDK
+ * @brief    This is the header file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #ifndef LL_WHITELIST_H_
 #define LL_WHITELIST_H_
 
@@ -66,7 +66,7 @@ ble_sts_t ll_whiteList_getSize(u8 *returnPublicAddrListSize) ;
 
 
 /**
- * @brief      reset resolving list
+ * @brief      reset resolvinglist
  * @param[in]  none
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
  */
@@ -74,7 +74,7 @@ ble_sts_t  ll_resolvingList_reset(void);
 
 
 /**
- * @brief      add a device to resolving list
+ * @brief      add a device to resolvinglist
  * @param[in]  peerIdAddrType - device mac address type
  * @param[in]  peerIdAddr - device mac address
  * @param[in]  peer_irk - peer IRK pointer
@@ -85,7 +85,7 @@ ble_sts_t  ll_resolvingList_add(u8 peerIdAddrType, u8 *peerIdAddr, u8 *peer_irk,
 
 
 /**
- * @brief      delete a device from resolving list
+ * @brief      delete a device from resolvinglist
  * @param[in]  peerIdAddrType - device mac address type
  * @param[in]  peerIdAddr - device mac address
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed

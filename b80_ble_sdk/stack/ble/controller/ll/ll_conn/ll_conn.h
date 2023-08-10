@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	ll_conn.h
+ * @file     ll_conn.h
  *
- * @brief	This is the header file for BLE SDK
+ * @brief    This is the header file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,17 +19,11 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #ifndef LL_CONN_H_
 #define LL_CONN_H_
 
-/**
- *  @brief  Definition for BLE Invalid connection handle value
- */
-#define BLE_INVALID_CONNECTION_HANDLE    0xffff
-
-#define 		IS_CONNECTION_HANDLE_VALID(handle)  			( handle != BLE_INVALID_CONNECTION_HANDLE )
 /**
  * @brief	LE connection handle for slave role
  * controller now use 0x0040 in this SDK, never change, so user can use this value directly

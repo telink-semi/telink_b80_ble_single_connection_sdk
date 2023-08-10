@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app_config.h
+ * @file     app_config.h
  *
- * @brief	This is the header file for BLE SDK
+ * @brief    This is the header file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #pragma once
 
 
@@ -51,10 +51,6 @@
 	#include "feature_soft_uart/app_config.h"
 #elif(FEATURE_TEST_MODE == TEST_GATT_SECURITY)
 	#include "feature_gatt_security/app_config.h"
-#elif(FEATURE_TEST_MODE == TEST_MDATA_LENGTH_EXTENSION)
-	#include "feature_master_dle/app_config.h"
-#elif(FEATURE_TEST_MODE == TEST_MASTER_MD)
-	#include "feature_master_md/app_config.h"
 #endif
 
 

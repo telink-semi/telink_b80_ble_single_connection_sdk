@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	software_uart.c
+ * @file     software_uart.c
  *
- * @brief	This is the source file for BLE SDK
+ * @brief    This is the source file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	06,2022
+ * @author	 BLE GROUP
+ * @date         06,2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #include "compiler.h"
 #include "software_uart.h"
 #include "../gpio.h"
@@ -35,11 +35,7 @@ volatile soft_uart_rece_t soft_uart_rece;
 typedef int (*soft_uart_rx_handler_t)(void);
 soft_uart_rx_handler_t soft_uart_RxHandler = 0; //rx
 
-typedef int (*soft_uart_sdk_adv_handler_t)(void);
-soft_uart_sdk_adv_handler_t soft_uart_sdk_advhandler = 0;
 
-typedef int (*soft_uart_SoftUartisRfState_handler_t)(int);
-soft_uart_SoftUartisRfState_handler_t soft_uart_SoftUartisRfStatehandler = 0;
 
 /**
  * @brief      software serial port interrupt handler function
@@ -224,18 +220,8 @@ void soft_uart_rx_handler(void *prx)
 	soft_uart_RxHandler = prx;
 }
 
-void soft_uart_sdk_adv_handler(void *prx)
-{
-	soft_uart_sdk_advhandler = prx;
-}
-
-void soft_uart_SoftUartisRfState_handler(void *prx)
-{
-	soft_uart_SoftUartisRfStatehandler = prx;
-}
-
 /**
- * @brief      This function serves to format string.
+ * @brief      This function serves to foramt string.
  * @param[in]  byte  -  a byte need to print
  * @return     none.
  */
@@ -271,11 +257,11 @@ void soft_uart_send(unsigned char * buf, unsigned char len) {
 		 #define 		    BLS_LINK_STATE_CONN								BIT(3)
 		 * */
 		if (s == BIT(3)) {
-			if(soft_uart_SoftUartisRfStatehandler)
-				soft_uart_SoftUartisRfStatehandler(SOFT_UART_SEND_ONE_BYTE);
+			extern void blc_ll_SoftUartisRfState(int acl_margin_us);
+			blc_ll_SoftUartisRfState(SOFT_UART_SEND_ONE_BYTE);
 		} else if (s == BIT(0)) {
-			if(soft_uart_sdk_advhandler)
-				soft_uart_sdk_advhandler();
+			extern void blc_sdk_adv(void);
+			blc_sdk_adv();
 		}
 		soft_uart_putchar(buf[i]);
 	}

@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	ext_rf.h
+ * @file     ext_rf.h
  *
- * @brief	This is the header file for BLE SDK
+ * @brief    This is the header file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #ifndef DRIVERS_8208_EXT_RF_H_
 #define DRIVERS_8208_EXT_RF_H_
 
@@ -43,11 +43,11 @@ enum{
 
 
 /**
- * @brief   This function serves to trigger accesscode in coded Phy mode.
+ * @brief   This function serves to triggle accesscode in coded Phy mode.
  * @param   none.
  * @return  none.
  */
-static inline void rf_trigger_codedPhy_accesscode(void)
+static inline void rf_trigle_codedPhy_accesscode(void)
 {
 	WRITE_REG8(0x405, REG_ADDR8(0x405) | BIT(7)); //reg_rf_acc_len |= FLD_RF_LR_ACC_TRIG;
 }
@@ -55,8 +55,6 @@ static inline void rf_trigger_codedPhy_accesscode(void)
 
 typedef void (*rf_1m_init_t)(void);
 extern rf_1m_init_t rf_ble_1m_param_init; ///This function serves to set RF  ble 1m Register initialization.
-
-#define rf_drv_ble_init rf_ble_1m_param_init
 
 typedef enum{
 	FSM_BTX 	= 0x81,

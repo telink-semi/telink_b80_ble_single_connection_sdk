@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	spp.c
+ * @file     spp.c
  *
- * @brief	This is the source file for BLE SDK
+ * @brief    This is the source file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	06,2022
+ * @author	 BLE GROUP
+ * @date         06,2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #include "tl_common.h"
 #include "drivers.h"
 #include "stack/ble/ble.h"
@@ -40,7 +40,7 @@ u8  pairing_end_status;
 volatile u8 isUartTxDone = 1;
 ///////////the code below is just for demonstration of the event callback only////////////
 
-_attribute_data_retention_	u32 spp_cmd_restart_flag;
+u32 spp_cmd_restart_flag;
 
 /**
  * @brief      callback function of LinkLayer Event
@@ -134,88 +134,6 @@ int controller_event_handler(u32 h, u8 *para, int n)
 			default:
 			break;
 		}
-	}
-
-	return 0;
-}
-
-/**
- * @brief      BLE host event handler call-back.
- * @param[in]  h       event type
- * @param[in]  para    Pointer point to event parameter buffer.
- * @param[in]  n       the length of event parameter.
- * @return
- */
-int app_host_event_callback (u32 h, u8 *para, int n)
-{
-	u8 event = h & 0xFF;
-
-	switch(event)
-	{
-		case GAP_EVT_SMP_PAIRING_BEGIN:
-		{
-
-		}
-		break;
-
-		case GAP_EVT_SMP_PAIRING_SUCCESS:
-		{
-			gap_smp_pairingSuccessEvt_t* p = (gap_smp_pairingSuccessEvt_t*)para;
-
-			if(p->bonding_result){
-
-			}
-			else{
-
-			}
-		}
-		break;
-
-		case GAP_EVT_SMP_PAIRING_FAIL:
-		{
-//			gap_smp_pairingFailEvt_t* p = (gap_smp_pairingFailEvt_t*)para;
-		}
-		break;
-
-		case GAP_EVT_SMP_CONN_ENCRYPTION_DONE:
-		{
-			gap_smp_connEncDoneEvt_t* p = (gap_smp_connEncDoneEvt_t*)para;
-
-			if(p->re_connect == SMP_STANDARD_PAIR){  //first pairing
-
-			}
-			else if(p->re_connect == SMP_FAST_CONNECT){  //auto connect
-
-			}
-		}
-		break;
-
-		case GAP_EVT_SMP_TK_DISPALY:
-		{
-
-		}
-		break;
-
-		case GAP_EVT_SMP_TK_REQUEST_PASSKEY:
-		{
-
-		}
-		break;
-
-		case GAP_EVT_SMP_TK_REQUEST_OOB:
-		{
-
-		}
-		break;
-
-		case GAP_EVT_SMP_TK_NUMERIC_COMPARE:
-		{
-
-		}
-		break;
-
-		default:
-		break;
 	}
 
 	return 0;
@@ -511,7 +429,7 @@ int tx_to_uart_cb(void) {
  */
 void spp_restart_proc(void)
 {
-	//when received SPP_CMD_RESTART_MOD, leave 500ms(you can change this time) for module to send uart ack to host, then restart.
+	//when received SPP_CMD_RESTART_MOD, leave 500ms(you can change this time) for moudle to send uart ack to host, then restart.
 	if(spp_cmd_restart_flag && clock_time_exceed(spp_cmd_restart_flag, 500000)){
 		cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_TIMER, clock_time() + 10000 * SYSTEM_TIMER_TICK_1US);
 	}

@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	boot.link
+ * @file     boot.link
  *
- * @brief	This is the link file for BLE SDK
+ * @brief    This is the link file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 /* to tell the linker the program begin from __start label in cstartup.s, thus do not treat it as a unused symbol */
 ENTRY(__start)
 
@@ -60,7 +60,7 @@ SECTIONS
 		PROVIDE(_dstored_ = . );
 	    PROVIDE(_code_size_ = .);
 	
-	 . = (0x840000 + ((0x900 + _ramcode_size_align_256_) * __LOAD_FLASH) + (0x400 * __LOAD_DUT) + (_dstored_ * __LOAD_RAM));	/* __LOAD_FLASH for MCU RUN IN Flash 0x100 aligned, must greater than or equal to:0x808000 + ram_code_size +  irq_vector(0x100) + IC_tag(0x100) + IC_cache(0x800) == 0x808a00 + ram_code_size */
+	 . = (0x840000 + ((0x900 + _ramcode_size_align_256_) * __LOAD_FLASH) + (0x400 * __LOAD_DUT) + (_dstored_ * __LOAD_RAM));	/* __LOAD_FLASH for MCU RUN IN Flash 0x100 alighned, must greater than or equal to:0x808000 + ram_code_size +  irq_vector(0x100) + IC_tag(0x100) + IC_cache(0x800) == 0x808a00 + ram_code_size */
 																													/*  __LOAD_DUT	for MCU RUN IN SRAM ,this setting is used for DUT Test and bin size is limited to 8k*/ 
 																													/* __LOAD_RAM   for MCU RUN IN SRAM */ 
 	    .data :

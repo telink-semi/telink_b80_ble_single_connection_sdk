@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app.c
+ * @file     app.c
  *
- * @brief	This is the source file for BLE SDK
+ * @brief    This is the source file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,7 +19,6 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
 #include "tl_common.h"
 #include "drivers.h"
@@ -39,7 +38,7 @@
 
 #define MY_RF_POWER_INDEX			RF_POWER_P2p87dBm
 
-#define MY_DIRECT_ADV_TIME			10000000
+#define MY_DIRECT_ADV_TMIE			10000000
 
 #define	BLE_DEVICE_ADDRESS_TYPE 	BLE_DEVICE_ADDRESS_PUBLIC
 
@@ -267,7 +266,7 @@ void app_power_management ()
  */
 void user_init_normal(void)
 {
-	/* random number generator must be initiated here( in the beginning of user_init_normal).
+	/* random number generator must be initiated here( in the beginning of user_init_nromal).
 	 * When deepSleep retention wakeUp, no need initialize again */
 	random_generator_init();  //this is must
 
@@ -281,22 +280,22 @@ void user_init_normal(void)
 				So these initialization must be done after  battery check
 	*****************************************************************************************/
 	#if (BATT_CHECK_ENABLE)  //battery check must do before OTA relative operation
-		u8 battery_check_returnValue = 0;
+		u8 battery_check_returnVaule = 0;
 		if(analog_read(USED_DEEP_ANA_REG) & LOW_BATT_FLG){
-			battery_check_returnValue = app_battery_power_check(VBAT_ALARM_THRES_MV + 200);  //2.2 V
+			battery_check_returnVaule = app_battery_power_check(VBAT_ALRAM_THRES_MV + 200);  //2.2 V
 		}
 		else{
-			battery_check_returnValue = app_battery_power_check(VBAT_ALARM_THRES_MV);  //2.0 V
+			battery_check_returnVaule = app_battery_power_check(VBAT_ALRAM_THRES_MV);  //2.0 V
 		}
-		if(battery_check_returnValue){
+		if(battery_check_returnVaule){
 			analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)&(~LOW_BATT_FLG));  //clr
 		}
 		else{
 			#if (UI_LED_ENABLE)  //led indicate
 				for(int k=0;k<3;k++){
-					gpio_write(GPIO_LED_BLUE, LED_ON_LEVEL);
+					gpio_write(GPIO_LED_BLUE, LED_ON_LEVAL);
 					sleep_us(200000);
-					gpio_write(GPIO_LED_BLUE, !LED_ON_LEVEL);
+					gpio_write(GPIO_LED_BLUE, !LED_ON_LEVAL);
 					sleep_us(200000);
 				}
 			#endif
@@ -550,22 +549,22 @@ void main_loop (void)
 #if (BATT_CHECK_ENABLE)
 	if(battery_get_detect_enable() && clock_time_exceed(lowBattDet_tick, 500000) ){
 		lowBattDet_tick = clock_time();
-		u8 battery_check_returnValue;
+		u8 battery_check_returnVaule;
 		if(analog_read(USED_DEEP_ANA_REG) & LOW_BATT_FLG){
-			battery_check_returnValue=app_battery_power_check(VBAT_ALARM_THRES_MV + 200);  //2.2 V
+			battery_check_returnVaule=app_battery_power_check(VBAT_ALRAM_THRES_MV + 200);  //2.2 V
 		}
 		else{
-			battery_check_returnValue=app_battery_power_check(VBAT_ALARM_THRES_MV);  //2.0 V
+			battery_check_returnVaule=app_battery_power_check(VBAT_ALRAM_THRES_MV);  //2.0 V
 		}
-		if(battery_check_returnValue){
+		if(battery_check_returnVaule){
 			analog_write(USED_DEEP_ANA_REG,  analog_read(USED_DEEP_ANA_REG)&(~LOW_BATT_FLG));  //clr
 		}
 		else{
 			#if (UI_LED_ENABLE)  //led indicate
 				for(int k=0;k<3;k++){
-					gpio_write(GPIO_LED_BLUE, LED_ON_LEVEL);
+					gpio_write(GPIO_LED_BLUE, LED_ON_LEVAL);
 					sleep_us(200000);
-					gpio_write(GPIO_LED_BLUE, !LED_ON_LEVEL);
+					gpio_write(GPIO_LED_BLUE, !LED_ON_LEVAL);
 					sleep_us(200000);
 				}
 			#endif

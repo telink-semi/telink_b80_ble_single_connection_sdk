@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	main.c
+ * @file     main.c
  *
- * @brief	This is the source file for BLE SDK
+ * @brief    This is the source file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #include "tl_common.h"
 #include "drivers.h"
 #include "stack/ble/ble.h"
@@ -67,7 +67,7 @@ int main(void)
 
 	int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup();  //MCU deep retention wakeUp
 
-	rf_drv_ble_init();
+	rf_ble_1m_param_init();
 
 	clock_init(SYS_CLK_TYPE);
 
@@ -76,6 +76,9 @@ int main(void)
 	/* load customized freq_offset CAP value and TP value. */
 	blc_app_loadCustomizedParameters();
 
+	#if FIRMWARES_SIGNATURE_ENABLE
+		blt_firmware_signature_check();
+	#endif
 
 	#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 		if( deepRetWakeUp ){
@@ -84,11 +87,6 @@ int main(void)
 		else
 	#endif
 		{
-
-		#if FIRMWARES_SIGNATURE_ENABLE
-			blt_firmware_signature_check();
-		#endif
-
 		#if(BATT_CHECK_ENABLE)
 			blc_app_loadADCParameters();
 		#endif

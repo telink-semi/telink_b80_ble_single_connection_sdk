@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	string.c
+ * @file     string.c
  *
- * @brief	This is the source file for BLE SDK
+ * @brief    This is the source file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #include "types.h"
 #include "string.h"
 #include "common/assert.h"
@@ -74,8 +74,8 @@ void * memcpy(void * out, const void * in, unsigned int length) {
 void memcpy4(void * d, const void * s, unsigned int length){
 	int* dst = (int*)d;
 	int* src = (int*)s;
-	assert((((int)dst) >> 2) << 2 == ((int)dst));			// address must align to 4
-	assert((((int)src) >> 2) << 2 == ((int)src));			// address must align to 4
+	assert((((int)dst) >> 2) << 2 == ((int)dst));			// address must alighn to 4
+	assert((((int)src) >> 2) << 2 == ((int)src));			// address must alighn to 4
 	assert((length >> 2) << 2 == length);					// length % 4 == 0
 	assert(( ((char*)dst) + length <= (const char*)src) || (((const char*)src) + length <= (char*)dst));	//  no overlapped
 	unsigned int len = length >> 2;

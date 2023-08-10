@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	ll.h
+ * @file     ll.h
  *
- * @brief	This is the header file for BLE SDK
+ * @brief    This is the header file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #ifndef LL__H_
 #define LL__H_
 
@@ -73,7 +73,7 @@ typedef void (*blt_event_callback_t)(u8 e, u8 *p, int n);
 #define BLT_EV_FLAG_CONN_PARA_UPDATE	 	13
 #define BLT_EV_FLAG_SUSPEND_ENTER 			14
 #define BLT_EV_FLAG_SUSPEND_EXIT 			15
-#define BLT_EV_FLAG_RX_DATA_ABANDON 		16
+#define BLT_EV_FLAG_RX_DATA_ABANDOM 		16
 #define BLT_EV_FLAG_SMP_PINCODE_PROCESS 	17
 #define BLT_EV_FLAG_SMP_KEY_MISSING 		18 //add for UTB2
 #define BLT_EV_FLAG_PHY_UPDATE              19
@@ -86,21 +86,21 @@ typedef void (*blt_event_callback_t)(u8 e, u8 *p, int n);
 
 
 /**
- * @brief	irq_handler for BLE stack, process system tick interrupt and RF interrupt in slave role
+ * @brief	irq_handler for BLE stack, process system tick interrupt and RF interrupt
  * @param	none
  * @return	none
  */
 void 		blc_sdk_irq_handler(void);
 
 /**
- * @brief   main_loop for BLE stack, process data and event in slave role
+ * @brief   main_loop for BLE stack, process data and event
  * @param	none
  * @return	none
  */
 int 		blc_sdk_main_loop (void);
 
 /**
- * @brief   LinkLayer initialization after deepSleep retention wake_up in slave role
+ * @brief   LinkLayer initialization after deepSleep retention wake_up
  * @param	none
  * @return	none
  */
@@ -216,8 +216,6 @@ bool		blc_ll_isControllerEventPending(void);
 
 
 
-//fix spell error
-#define BLT_EV_FLAG_RX_DATA_ABANDOM BLT_EV_FLAG_RX_DATA_ABANDON
 
 
 

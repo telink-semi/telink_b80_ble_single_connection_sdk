@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	main.c
+ * @file     main.c
  *
- * @brief	This is the source file for BLE SDK
+ * @brief    This is the source file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,7 +19,6 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
 #include "tl_common.h"
 #include "drivers.h"
@@ -47,7 +46,7 @@ _attribute_ram_code_ void irq_handler(void)
 	if (dma_chn_irq_status_get() & FLD_DMA_CHN_UART_RX) {
 		dma_chn_irq_status_clr(FLD_DMA_CHN_UART_RX);
 		u8* w = spp_rx_fifo.p + (spp_rx_fifo.wptr & (spp_rx_fifo.num - 1)) * spp_rx_fifo.size;
-		if (w[0] != 0 || w[1] != 0) { //Length(u16) is not 0
+		if (w[0] != 0) {
 			my_fifo_next(&spp_rx_fifo);
 			u8* p = spp_rx_fifo.p + (spp_rx_fifo.wptr & (spp_rx_fifo.num - 1)) * spp_rx_fifo.size;
 			reg_dma_uart_rx_addr = (u16) ((u32) p); //switch uart RX dma address
@@ -83,7 +82,7 @@ int main(void)
 
 	int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup();  //MCU deep retention wakeUp
 
-	rf_drv_ble_init();
+	rf_ble_1m_param_init();
 
 	clock_init(SYS_CLK_TYPE);
 
@@ -92,7 +91,9 @@ int main(void)
 	/* load customized freq_offset CAP value and TP value. */
 	blc_app_loadCustomizedParameters();
 
-
+	#if FIRMWARES_SIGNATURE_ENABLE
+		blt_firmware_signature_check();
+	#endif
 
 	#if (PM_DEEPSLEEP_RETENTION_ENABLE)
 		if( deepRetWakeUp ){
@@ -101,19 +102,13 @@ int main(void)
 		else
 	#endif
 		{
-
-		#if FIRMWARES_SIGNATURE_ENABLE
-			blt_firmware_signature_check();
-		#endif
 			user_init_normal ();
 		}
 
     irq_enable();
 
 	while (1) {
-#if (MODULE_WATCHDOG_ENABLE)
-		wd_clear(); //clear watch dog
-#endif
+
 		main_loop ();
 	}
 }

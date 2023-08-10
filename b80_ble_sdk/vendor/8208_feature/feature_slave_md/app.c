@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app.c
+ * @file     app.c
  *
- * @brief	This is the source file for BLE SDK
+ * @brief    This is the source file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #include "tl_common.h"
 #include "drivers.h"
 #include "stack/ble/ble.h"
@@ -47,7 +47,7 @@
 
 u32	advertise_begin_tick;
 
-u32 write_data_test_tick = 0;
+int write_data_test_tick = 0;
 
 u8	app_test_data[TEST_DATA_LEN]={0x00,0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,
 															  0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,0x11,0x11,0x11};
@@ -89,14 +89,11 @@ void task_connect(u8 e, u8 *p, int n)
 {
 
 	bls_l2cap_requestConnParamUpdate (CONN_INTERVAL_10MS, CONN_INTERVAL_10MS, 99, CONN_TIMEOUT_4S);  // 1 S
-	#if APP_SECURITY_ENABLE
-		u32 cur_tick = clock_time()|1;
-		write_data_test_tick = cur_tick + SYSTEM_TIMER_TICK_1S;
-	#else
-		write_data_test_tick = clock_time();
-	#endif
+
+	write_data_test_tick = clock_time();
+
 	#if (UI_LED_ENABLE)
-		gpio_write(GPIO_LED_RED, LED_ON_LEVEL);
+		gpio_write(GPIO_LED_RED, LED_ON_LEVAL);
 	#endif
 }
 
@@ -126,7 +123,7 @@ void task_terminate(u8 e,u8 *p, int n) //*p is terminate reason
 
 
 	#if (UI_LED_ENABLE)
-		gpio_write(GPIO_LED_RED, !LED_ON_LEVEL);  //light off
+		gpio_write(GPIO_LED_RED, !LED_ON_LEVAL);  //light off
 	#endif
 
 	advertise_begin_tick = clock_time();
@@ -198,7 +195,7 @@ void app_switch_to_indirect_adv(u8 e, u8 *p, int n)
  */
 void user_init_normal(void)
 {
-	/* random number generator must be initiated here( in the beginning of user_init_normal).
+	/* random number generator must be initiated here( in the beginning of user_init_nromal).
 	 * When deepSleep retention wakeUp, no need initialize again */
 	random_generator_init();  //this is must
 
@@ -550,7 +547,7 @@ int myC2SWrite(void * p)
 		irq_disable();
 
 		#if (UI_LED_ENABLE)
-			gpio_write(GPIO_LED_WHITE, LED_ON_LEVEL);
+			gpio_write(GPIO_LED_WHITE, LED_ON_LEVAL);
 		#endif
 
 		while(1);

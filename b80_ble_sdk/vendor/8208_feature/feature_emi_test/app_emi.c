@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app_emi.c
+ * @file     app_emi.c
  *
- * @brief	This is the source file for BLE SDK
+ * @brief    This is the source file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,7 +19,6 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
 #include "tl_common.h"
 #include "drivers.h"
@@ -55,7 +54,7 @@
  * */
 #define CLOSE_INTERNAL_CAP						0
 
-#if CHN_DEFAULT_VALUE_SET_FLASH
+#if CHN_DEFUALT_VALUE_SET_FLASH
 	#define CHN_SET_FLASH_ADDR				0x770e0
 #endif
 
@@ -63,7 +62,7 @@
 	#define DEBUG				1
 	#define MAX_NOISE_VALUE		-70
 	#define READ_RSSI_TIMES		100
-	#define COMPENSATION_VALUE   0
+	#define COPENSATION_VALUE   0
 
 	#if DEBUG
 		typedef struct{
@@ -97,14 +96,14 @@
 	#if DEBUG
 			if(debug_index >= 100)
 				debug_index = 0;
-			debug[debug_index].rssi = rssi_noise + COMPENSATION_VALUE;
+			debug[debug_index].rssi = rssi_noise + COPENSATION_VALUE;
 			debug[debug_index].tick = clock_time();
 			debug_index++;
 	#endif
 		}
 		rtn = rssi_noise;// changed by Pengcheng 20201222, for calculating the energy value of white noise
 
-		return rtn + COMPENSATION_VALUE;
+		return rtn + COPENSATION_VALUE;
 	}
 
 	#endif
@@ -377,13 +376,13 @@ struct  test_list_s  ate_list[] = {
 		{0x07,emi_con_tx55},
 		{0x08,emi_con_tx0f},
 #else
-		{0x07,emi_deepio_noren},//deep with io wakeup without retention
-		{0x08,emi_deeptimer_noren},//deep with timer without retention
+		{0x07,emi_deepio_noren},//deep with io wakeup without retension
+		{0x08,emi_deeptimer_noren},//deep with timer without retension
 #endif
-		{0x09,emi_suspendio_noren},//suspend with io wakeup without retention
-		{0x0a,emi_suspendtimer_noren},//suspend with timer without retention
-		{0x0b,emi_deepio_ren},//deep with io wakeup with retention
-		{0x0c,emi_deeptimer_ren},//deep with timer with retention
+		{0x09,emi_suspendio_noren},//suspend with io wakeup without retension
+		{0x0a,emi_suspendtimer_noren},//suspend with timer without retension
+		{0x0b,emi_deepio_ren},//deep with io wakeup with retension
+		{0x0c,emi_deeptimer_ren},//deep with timer with retension
 };
 
 

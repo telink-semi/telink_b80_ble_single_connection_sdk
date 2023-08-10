@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app_config.h
+ * @file     app_config.h
  *
- * @brief	This is the header file for BLE SDK
+ * @brief    This is the header file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #pragma once
 
 
@@ -94,7 +94,7 @@ enum{
 	#define	MATRIX_ROW_PULL					PM_PIN_PULLDOWN_100K
 	#define	MATRIX_COL_PULL					PM_PIN_PULLUP_10K
 
-	#define	KB_LINE_HIGH_VALID				0   //drive pin output 0 when keyscan, scanpin read 0 is valid
+	#define	KB_LINE_HIGH_VALID				0   //dirve pin output 0 when keyscan, scanpin read 0 is valid
 
 
 
@@ -153,7 +153,7 @@ enum{
 	#define	GPIO_LED_GREEN	GPIO_PA5
 	#define	GPIO_LED_WHITE	GPIO_PA6
 	#define	GPIO_LED_RED		GPIO_PA7
-	#define LED_ON_LEVEL 			1 		//gpio output high voltage to turn on led
+	#define LED_ON_LEVAL 			1 		//gpio output high voltage to turn on led
 
 	#define PA4_FUNC				AS_GPIO
 	#define PA5_FUNC				AS_GPIO

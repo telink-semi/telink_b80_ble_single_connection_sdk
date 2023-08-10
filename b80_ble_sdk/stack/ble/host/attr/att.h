@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	att.h
+ * @file     att.h
  *
- * @brief	This is the header file for BLE SDK
+ * @brief    This is the header file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #pragma once
 
 #include "tl_common.h"
@@ -90,7 +90,7 @@
 
 typedef int (*att_handleValueConfirm_callback_t)(void);
 typedef int (*att_readwrite_callback_t)(void* p);
-typedef void (*attRxMtuSizeExchangeCompleteCb)(u16 connHandle, u16 remoteMtuSize, u16 effectMtuSize);
+typedef void (*attRxMtuSizeExchangeCommpleteCb)(u16 connHandle, u16 remoteMtuSize, u16 effectMtuSize);
 
 typedef struct attribute
 {
@@ -143,7 +143,7 @@ ble_sts_t blc_att_requestMtuSizeExchange(u16 connHandle, u16 mtu_size);
  * @param[in]  cb - callback function
  * @return     none
  */
-void blc_att_registerMtuSizeExchangeCb(attRxMtuSizeExchangeCompleteCb cb);
+void blc_att_registerMtuSizeExchangeCb(attRxMtuSizeExchangeCommpleteCb cb);
 
 /**
  * @brief      This function is used to register handle value confirm callback
@@ -159,20 +159,6 @@ void bls_att_registerHandleValueConfirmCb(att_handleValueConfirm_callback_t cb);
  */
 u16  blc_att_getEffectiveMtuSize(void);
 
-/**
- * @brief	This function is used to set effective ATT MTU size
- * @param	connHandle - connect handle
- * @param	effective_mtu - bltAtt.effective_MTU
- * @return	none.
- */
-void  		blt_att_setEffectiveMtuSize(u16 connHandle, u8 effective_mtu);
-
-/**
- * @brief	This function is used to reset effective ATT MTU size
- * @param	connHandle - connect handle
- * @return	none.
- */
-void blc_att_resetMtuSizeToDefault(void);
 
 /**
  * @brief      set HID Report Map
@@ -183,14 +169,6 @@ void blc_att_resetMtuSizeToDefault(void);
 ble_sts_t bls_att_setHIDReportMap(u8* p,u32 len);
 
 /**
- * @brief      This function is used to set reject of write request. If enable, return of ATT write callback will take effect.  Error codes refer to Core Spec.
- * @param[in]  WriteReqReject_en - 0: Disable;
- *                           1: Enable.
- * @return     none.
- */
-void 		blc_att_enableWriteReqReject (u8 WriteReqReject_en);
-
-/**
  * @brief      reset HID Report Map
  * @param[in]  none
  * @return     Status - 0x00: command succeeded; 0x01-0xFF: command failed
@@ -198,11 +176,4 @@ void 		blc_att_enableWriteReqReject (u8 WriteReqReject_en);
 ble_sts_t bls_att_resetHIDReportMap();
 
 
-/**
- * @brief      This function is used to response to MTU size exchange.
- * @param[in]  connHandle - connect handle
- * @param[in]  mtu_size - mtu size
- * @return     BLE_SUCCESS
- */
-ble_sts_t	blc_att_responseMtuSizeExchange (u16 connHandle, u16 mtu_size);
 

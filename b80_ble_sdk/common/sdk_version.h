@@ -7,6 +7,7 @@
  * @date	2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -19,7 +20,6 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
 /*
  * It is only used by SDK, and the customer is not allowed to modify it
@@ -29,7 +29,7 @@
  * the replace rules is: "$$$B85m_driver_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
  * will replace with this macro value.
  */
-#define B80_SDK_VERSION_NUM				V3.4.2.0
+#define B80_SDK_VERSION_NUM				V3.4.1.2
 
 #define SDK_VERSION_NUM					B80_SDK_VERSION_NUM
 

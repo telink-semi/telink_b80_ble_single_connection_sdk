@@ -4,7 +4,6 @@ stages:
   - build_sample
   - build_module
   - build_feature
-  - build_master
   - clean_build
   - plainPW_check
   - cov
@@ -90,19 +89,6 @@ build_feature:
     - $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import ./b80_ble_sdk/  -cleanBuild telink_b80_ble_single_connection_sdk/8208_feature_test
     - date
     
-build_master:
-  stage: build_master
-  tags:
-    - LINUX
-    - TC32
-  before_script:
-  script:
-    - which tc32-elf-gcc
-    - chmod +x b80_ble_sdk/*.sh
-    - date
-    - $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import ./b80_ble_sdk/  -cleanBuild telink_b80_ble_single_connection_sdk/8208_master
-    - date
-
 clean_build:
   stage: clean_build
   tags:
@@ -178,34 +164,34 @@ fossid:
 release_sdk_S1:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.2.0_S1"
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.2_S1"
 
 release_sdk_S2:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.2.0_S2"
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.2_S2"
 
 release_sdk_S3:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.2.0_S3"
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.2_S3"
 
 release_sdk_custom_made_S0:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.2.0_custom_made_S0"
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.2_custom_made_S0"
 
 release_sdk_custom_made_S1:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.2.0_custom_made_S1"
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.2_custom_made_S1"
 
 release_sdk_custom_made_S2:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.2.0_custom_made_S2"
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.2_custom_made_S2"
 
 release_sdk_custom_made_S3:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.2.0_custom_made_S3"
+    PACK_NAME: "telink_b80_ble_single_connection_sdk_V3.4.1.2_custom_made_S3"

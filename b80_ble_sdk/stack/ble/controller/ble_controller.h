@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	ble_controller.h
+ * @file     ble_controller.h
  *
- * @brief	This is the header file for BLE SDK
+ * @brief    This is the header file for BLE SDK
  *
- * @author	BLE GROUP
- * @date	12,2021
+ * @author	 BLE GROUP
+ * @date         12,2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -19,8 +19,8 @@
  *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *          See the License for the specific language governing permissions and
  *          limitations under the License.
- *
  *******************************************************************************************************/
+
 #ifndef BLE_CONTROLLER_H_
 #define BLE_CONTROLLER_H_
 
@@ -36,15 +36,11 @@
 
 
 #include "stack/ble/controller/ll/ll.h"
-#include "stack/ble/controller/ll/ll_master.h"
 #include "stack/ble/controller/ll/ll_adv.h"
 #include "stack/ble/controller/ll/ll_scan.h"
-#include "stack/ble/controller/ll/ll_master_init.h"
-#include "stack/ble/controller/ll/ll_master_scan.h"
 #include "stack/ble/controller/ll/ll_pm.h"
 #include "stack/ble/controller/ll/ll_conn/ll_conn.h"
 #include "stack/ble/controller/ll/ll_conn/ll_slave.h"
-#include "stack/ble/controller/ll/ll_conn/ll_master_single_conn.h"
 
 
 #include "stack/ble/controller/phy/phy.h"
@@ -53,11 +49,6 @@
 
 #include "algorithm/ecc/ecc_ll.h"
 #include "algorithm/aes_ccm/aes_ccm.h"
-
-
-
-
-
 
 
 #endif /* BLE_H_ */
